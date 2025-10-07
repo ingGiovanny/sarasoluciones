@@ -19,7 +19,7 @@ from mi_app.view.principal.views_principal import principal
 app_name = 'mi_app'
 urlpatterns = [
    #path('index.html', vista, name='index'),
-   path('xd/', vista, name='principal'),
+   path('', principal, name='principal'),
      
    #_________________________ Modulo de Administrador __________________________
     path('administradores/listar/', AdministradorListView.as_view(), name='administrador_lista'),
