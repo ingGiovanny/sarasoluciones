@@ -3,6 +3,8 @@ from django.forms import ModelForm, TextInput, DateTimeInput, ClearableFileInput
 from mi_app.models import Marca
 
 
+
+
 class MarcaForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,8 +29,8 @@ class MarcaForm(ModelForm):
             ),
             'logo_marca': ClearableFileInput(
                 attrs={
-                    'class': 'form-control-file',
-                    'accept': 'image/*'
+                    'class': 'form-control',
+                    #'accept': 'image/*'
                 }
             ),
         }

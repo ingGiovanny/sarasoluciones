@@ -11,7 +11,7 @@ from mi_app.forms.form_compra import CompraForm
 
 
 
-def listar_compra(request):
+def listar_compras(request):
     data = {
         "titulo": "Listado de compras",
         "compra":Compra.objects.all()

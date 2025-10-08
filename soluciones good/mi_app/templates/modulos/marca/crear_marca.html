@@ -2,6 +2,7 @@
 {% load widget_tweaks %}
 
 {% block form %}
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     {% for field in form.visible_fields %}
@@ -18,13 +19,11 @@
         {% endif %}
     </div>
     {% endfor %}
-{% endblock %}
 
-{% block Cancelar %}
-    <button type="submit" class="btn btn-primary btn-flat">
-        <i class="fas fa-save"></i> Agregar
-    </button>
-    <a href="{% url 'mi_app:marca_lista' %}" class="btn btn-danger btn-flat float-right">
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="{% url 'mi_app:marca_lista' %}" class="btn btn-danger float-right">
         <i class="fas fa-times"></i> Cancelar
     </a>
+</form>
+
 {% endblock %}
