@@ -5,9 +5,10 @@
 {% endblock titulo %}
 
 {% block agregar %}
-<a href="{{crear_url}}" class=" btn btn-primary btn btn-xs"><i class="fas fa-plus"></i>
-          Agregar
+<a href="{% url 'crear_compra' %}" class="btn btn-primary btn btn-xs">
+    <i class="fas fa-plus"></i> Agregar
 </a>
+
 {% endblock %}
 
 {% block columnas %}

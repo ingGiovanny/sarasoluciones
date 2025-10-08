@@ -73,35 +73,35 @@
                     </li>
                        <li class="nav-item">
                     
-                     <!--modulo marca-->
-                     <a href="{% url 'mi_app:presentacionTipo_lista' %}" class="nav-link">
+                     <!--modulo presentacion-->
+                     <a href="{% url 'mi_app:presentacion_lista' %}" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Presentacion/Tipo de prodcuto</p>
+                      <p>Presentacion de prodcuto</p>
                       </a>
                      </li>
                                 <li class="nav-item">
                     
-                     <!--modulo marca-->
+                     <!--modulo categoria-->
                      <a href="{% url 'mi_app:categoria_lista' %}" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>categoria</p>
                       </a>
                      </li>
-
+                     <!--modulo factura-->
                      <li class="nav-item">
                      <a href="{% url 'mi_app:factura_lista' %}" class="nav-link">
                      <i class="nav-icon bi bi-circle"></i>
                        <p>Factura</p>
                         </a>
                       </li>
-
+                     <!--modulo garantia-->
                       <li class="nav-item">
                      <a href="{% url 'mi_app:garantia_lista' %}" class="nav-link">
                      <i class="nav-icon bi bi-circle"></i>
                        <p>Garantias</p>
                         </a>
                       </li>
-
+                      <!--modulo pedido-->
                       <li class="nav-item">
                      <a href="{% url 'mi_app:pedido_lista' %}" class="nav-link">
                      <i class="nav-icon bi bi-circle"></i>
@@ -109,6 +109,7 @@
                         </a>
                       </li>
 
+                      <!--modulo ventas-->
                       <li class="nav-item">
                      <a href="{% url 'mi_app:ventas_lista' %}" class="nav-link">
                      <i class="nav-icon bi bi-circle"></i>
@@ -116,177 +117,28 @@
                         </a>
                       </li>
 
+                      <!--modulo productos-->
+                      <li class="nav-item">
+                      <a href="{% url 'mi_app:producto_lista' %}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                       <p>Productos</p>
+                        </a>
+                      </li>
+
+                      <!--modulo compras-->
+                      <li class="nav-item">
+                      <a href="{% url 'mi_app:compras_lista' %}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                       <p>Compras</p>
+                        </a>
+                      </li>
+
                 </ul>
               </li>
               <li class="nav-item">
 
-                <!--GENERATE BOOSTRAP-->
-                <a href="{% static 'AdminLTE/dist/generate/theme.html' %}" class="nav-link">
-                  <i class="nav-icon bi bi-palette"></i>
-                  <p>Theme Generate</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-box-seam-fill"></i>
-                  <p>
-                    Widgets
-                    <i class="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/widgets/small-box.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Small Box</p>
-                    </a>
-                  </li>
-
-                   <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/widgets/info-box.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>info Box</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                     <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/widgets/cards.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Cards</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item menu-open">
-                <a href="#" class="nav-link active">
-                  <i class="nav-icon bi bi-clipboard-fill"></i>
-                  <p>
-                    Layout Options
-                    <span class="nav-badge badge text-bg-secondary me-3">6</span>
-                    <i class="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/layout/unfixed-sidebar.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Default Sidebar</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/layout/fixed-sidebar.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Fixed Sidebar</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/layout/fixed-header.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Fixed Header</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/layout/fixed-footer.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Fixed Footer</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/layout/fixed-complete.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Fixed Complete</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/layout/layout-custom-area.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Layout <small>+ Custom Area </small></p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/layout/sidebar-mini.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Sidebar Mini</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/layout/collapsed-sidebar.html' %}" class="nav-link active">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Sidebar Mini <small>+ Collapsed</small></p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/layout/logo-switch.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Sidebar Mini <small>+ Logo Switch</small></p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/layout/layout-rtl.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Layout RTL</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-tree-fill"></i>
-                  <p>
-                    UI Elements
-                    <i class="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/UI/general.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>General</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/UI/icons.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Icons</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-
-                    <!--WIDGET BOOSTRAP-->
-                    <a href="{% static 'AdminLTE/dist/UI/timeline.html' %}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Timeline</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
+                
+              
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-pencil-square"></i>

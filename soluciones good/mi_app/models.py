@@ -65,7 +65,7 @@ class Marca(models.Model):
         return self.nombre_marca
 
 
-class PresentacionTipo(models.Model):
+class Presentacion(models.Model):
     """Modelo para tipos de presentación de productos"""
     nombre = models.CharField(max_length=100, unique=True)
     color = models.CharField(max_length=25)
@@ -113,7 +113,7 @@ class Producto(models.Model):
     # Relaciones con related_name únicos
     id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='productos_categoria')
     id_marca = models.ForeignKey(Marca, on_delete=models.CASCADE, related_name='productos_marca')
-    id_presentacion = models.ForeignKey(PresentacionTipo, on_delete=models.CASCADE, related_name='productos_presentacion')
+    id_presentacion = models.ForeignKey(Presentacion, on_delete=models.CASCADE, related_name='productos_presentacion')
     
     # Campos del producto
     nombre_producto = models.CharField(max_length=100)
