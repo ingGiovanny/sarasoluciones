@@ -5,7 +5,8 @@ from mi_app.view.administrador.views_administrador import *
 from mi_app.view.cliente.views_cliente import *
 from mi_app.view.proveedor.views_proveedor import *
 from mi_app.view.marca.views_marca import *
-from mi_app.view.presentacion.views_presentacionTipo import *
+# Presentación: importar el módulo correcto
+from mi_app.view.presentacion.views_presentacion import *
 from mi_app.view.categoria.views_categoria import *
 from mi_app.view.producto.views_producto import *
 from mi_app.view.servicio.views_gestionservicio import *
@@ -14,6 +15,7 @@ from mi_app.view.factura.views_factura import *
 from mi_app.view.ventas.views_ventas import *
 from mi_app.view.garantia.views_garantia import *
 from mi_app.view.principal.views_principal import principal
+from mi_app.view.compra.views_compra import CompraListView, CompraCreateView, CompraUpdateView, CompraDeleteView
 
 
 app_name = 'mi_app'
@@ -49,11 +51,11 @@ urlpatterns = [
     path('marcas/eliminar/<int:pk>/', marcaDeleteView.as_view(), name='marca_eliminar'),
     
     
-#_________________________modulo presentacionTipo_________________________________________
-    path('presentacionTipo/listar/', presentacionTipoListView.as_view(), name='presentacionTipo_lista'),    
-    path('presentacionTipo/crear/', presentacionTipoCreateView.as_view(), name='presentacionTipo_crear'),
-    path('presentacionTipo/editar/<int:pk>/', presentacionTipoupdateView.as_view(), name='presentacionTipo_editar'),
-    path('presentacionTipo/eliminar/<int:pk>/', presentacionTipoDeleteView.as_view(), name='presentacionTipo_eliminar'),   
+#_________________________modulo presentacion_________________________________________
+    path('presentacion/listar/', presentacionListView.as_view(), name='presentacion_lista'),    
+    path('presentacion/crear/', presentacionCreateView.as_view(), name='presentacion_crear'),
+    path('presentacion/editar/<int:pk>/', presentacionupdateView.as_view(), name='presentacion_editar'),
+    path('presentacion/eliminar/<int:pk>/', presentacionDeleteView.as_view(), name='presentacion_eliminar'),   
     
 #_________________________modulo categoria_________________________________________
     path('categoria/listar/', categoriaListView.as_view(), name='categoria_lista'), 
@@ -100,6 +102,12 @@ urlpatterns = [
         path('ventas/crear/', ventasCreateView.as_view(), name='ventas_crear'),
         path('ventas/editar/<int:pk>/', ventasUpdateView.as_view(), name='ventas_editar'),
         path('ventas/eliminar/<int:pk>/', ventasDeleteView.as_view(), name='ventas_eliminar'),
+        
+#--------------------------------modulo compras ---------------------------------------
+        path('compras/listar/', CompraListView.as_view(), name='compras_lista'),
+        path('compras/crear/', CompraCreateView.as_view(), name='compras_crear'),
+        path('compras/editar/<int:pk>/', CompraUpdateView.as_view(), name='compras_editar'),
+        path('compras/eliminar/<int:pk>/', CompraDeleteView.as_view(), name='compras_eliminar'),        
                   
 ]
 

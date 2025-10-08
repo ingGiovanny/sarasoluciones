@@ -1,40 +1,46 @@
 from django import forms
 from django.forms import ModelForm, TextInput
-from mi_app.models import PresentacionTipo
+from mi_app.models import Presentacion
 
-class presentacionTipoForm(ModelForm):
+class presentacionForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['nombre'].widget.attrs['autofocus'] = True
     
     class Meta:
-        model = PresentacionTipo
+        model = Presentacion
         fields = '__all__'
         widgets = {
-            'Nombre de la presentacion': TextInput(
+            'nombre': TextInput(
                 attrs={
                     'placeholder': 'Ingrese el nombre de la presentación',
+                    'class': 'form-control'
                 }
             ),
-            'Color': TextInput(
+            'color': TextInput(
                 attrs={
                     'placeholder': 'Ingrese el color',
+                    'class': 'form-control'
                 }
             ),
-            'Modelo': TextInput(
+            'modelo': TextInput(
                 attrs={
                     'placeholder': 'Ingrese el modelo de la presentacion',
+                    'class': 'form-control'
                 }
             ),
-            'Funcion principal': TextInput(
+            'funcion_principal': TextInput(
                 attrs={
-                    'placeholder': 'cual es la funcion principal',
+                    'placeholder': 'Cuál es la función principal',
+                    'class': 'form-control'
                 }
-                
             ),
-            'Descripcion': TextInput(
+            'descripcion': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese una breve descripcion',
+
+
+                    'placeholder': 'Ingrese una breve descripción',
+                    'class': 'form-control'
                 }
             ),
         }
