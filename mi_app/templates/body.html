@@ -5,7 +5,14 @@
   <body class="layout-fixed sidebar-expand-lg sidebar-mini sidebar-collapse bg-body-tertiary">
     <!--begin::App Wrapper-->
     <div class="app-wrapper"><!--estoy contiene lo que es las bases de la plantilla su header footer y esaas cosas sidebar tambien-->
-
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <div class="text-center mb-4 position-relative">
+    <img src="{% static 'img/capacitaciones.png' %}" alt="Capacitaciones" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+      <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0, 0, 0, 0.5);"></div>
+      <div class="position-absolute top-50 start-50 translate-middle">
+        <h1 class="text-center  fw-bold" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); font-size:5rem; color: #F5F5DC">Soluciones Sara</h1>
+      </div>    
+    </div>
 
       <!--begin::Sidebar-->
       {% include 'sidebar.html' %}
