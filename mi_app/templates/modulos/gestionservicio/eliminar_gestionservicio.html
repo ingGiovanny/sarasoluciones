@@ -1,0 +1,15 @@
+{% extends 'eliminar.html' %}
+
+{% block eliminar %}
+                <h5><i class="icon fas fa-ban"></i> Advertencia¡</h5>
+                Deseas eliminar el servicio? #{{object.id}}?
+{% endblock %}
+
+{% block validar %}
+            <button type="submit" class="btn btn-success swalDefauldtSuccess">
+                <i class="fas fa-save"></i> Si, Aceptar
+            </button>
+            <a href="{{ listar_url }}" class="btn btn-info btn-flat">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+{% endblock %}

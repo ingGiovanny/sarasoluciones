@@ -1,0 +1,94 @@
+{% extends 'body.html' %}
+{% load static %}
+{% block content %}
+
+<div class="main-content" style="padding: 20px; padding-top: 70px; padding-bottom: 80px; width: 100%">
+  <div class="col-md-12">
+    <div class="card card-default">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-exclamation-triangle"></i>
+          {% block titulo %}
+          
+          {% endblock titulo %}
+         
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="card-footer">
+          {% block agregar %}
+          {% endblock %}
+        </div>
+        <table id="example1" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              {% block columnas %}
+              {% endblock %}
+            </tr>
+          </thead>
+          <!--el id de esta tabla funciona con cualquier modulo ya que en el listar  -->
+                   <!-- de cualquier modulo solo llamamos los bloques de columnas y de iterar -->
+          <tbody id="tablagenerica">
+            {% block iterar %}
+            {% endblock %}
+          </tbody>
+        </table>
+
+        <style>
+          /* Estilo para el campo de búsqueda de DataTables */
+          .dataTables_filter input {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #ccc !important;
+            border-radius: 5px !important;
+            padding: 5px 10px !important;
+          }
+        </style>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================== LIBRERÍAS CSS ================== -->
+
+<!-- ================== LIBRERÍAS JS ================== -->
+<!-- 1. JQUERY -->
+<!--<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>-->
+
+<!-- 2. BOOTSTRAP -->
+<!-- <script src="{% static 'lib/datatables-1.10.20/plugins/bootstrap-4-4.1.1/js/bootstrap.min.js' %}"></script>-->
+
+<!-- 3. DATATABLES + PLUGINS -->
+<!-- 4. ADMINLTE -->
+
+<!-- 5. SWEETALERT2 -->
+{% if messages %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  {% for message in messages %}
+  Swal.fire({
+    icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
+    title: '{{ message|escapejs }}',
+    timer: 2500,
+    showConfirmButton: false
+  });
+  {% endfor %}
+</script>
+{% endif %}
+
+<!-- 6. SCRIPT PERSONALIZADO -->
+<script>
+  $(function() {
+    $("#example1").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+    });
+  });
+</script>
+
+<!-- 7. BLOQUE EXTRA -->
+{% block extra_js %}
+{% endblock %}
+
+{% endblock %}

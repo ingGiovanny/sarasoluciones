@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block body %}
+  <body class="layout-fixed sidebar-expand-lg sidebar-mini sidebar-collapse bg-body-tertiary">
+    <!--begin::App Wrapper-->
+    <div class="app-wrapper"><!--estoy contiene lo que es las bases de la plantilla su header footer y esaas cosas sidebar tambien-->
+
+
+      <!--begin::Sidebar-->
+      {% include 'sidebar.html' %}
+      <!--end::Sidebar-->
+
+      <!--begin::Main Content--> 
+      {% block content %}{% endblock %}
+      <!--end::Main Content-->
+      
+      <!--begin::Footer-->
+      <!--end::Footer-->
+    </div>
+    <!--end::App Wrapper-->
+
+    <!--begin::OverlayScrollbars Configure-->
+    <script>
+      const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+      const Default = {
+        scrollbarTheme: 'os-theme-light',
+        scrollbarAutoHide: 'leave',
+        scrollbarClickScroll: true,
+      };
+      document.addEventListener('DOMContentLoaded', function () {
+        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+        const isMobile = window.innerWidth <= 992;
+
+        if (
+          sidebarWrapper &&
+          window.OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+          !isMobile
+        ) {
+          window.OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+            scrollbars: {
+              theme: Default.scrollbarTheme,
+              autoHide: Default.scrollbarAutoHide,
+              clickScroll: Default.scrollbarClickScroll,
+            },
+          });
+        }
+      });
+    </script>
+    <!--end::OverlayScrollbars Configure-->
+  </body>
+{% endblock %}

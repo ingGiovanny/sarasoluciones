@@ -1,0 +1,64 @@
+{% extends "listar.html" %}
+
+{% block titulo %}
+        <h1 class="text-center">Gestion de marcas</h1>
+{% endblock titulo %}
+
+{% block agregar %}
+<a href="{{crear_url}}" class=" btn btn-primary btn btn-xs"><i class="fas fa-plus"></i>
+          Agregar
+</a>
+{% endblock %}
+
+{% block columnas %}
+
+                <th>Id</th>
+                        <th>Nombre de marca</th>
+                        <th>Fecha de registro</th>
+                        <th>logo de marca</th>
+                        <th>Acciones</th>
+{% endblock %}
+
+{% block iterar %}
+
+            {% for a in object_list %}
+                    <tr>
+                        <td>{{ a.id }}</td>
+                        <td>{{ a.nombre_marca }}</td>
+                        <td>{{ a.fecha_registro }}</td>
+                        <td>
+                          {% if a.logo_marca %}
+                            <img src="{{ a.logo_marca.url }}" alt="Logo {{ a.nombre_marca }}" width="100">
+                          {% else %}
+                              Sin logo
+                          {% endif %}
+                        </td>
+
+
+                        <td>
+                            <a href="{% url 'mi_app:marca_editar' a.id %}" class="btn btn-warning btn-sm"><i class="bi bi-pen-fill"></i></a>
+                            <a href="{% url 'mi_app:marca_eliminar' a.id %}" class="btn btn-danger btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="7">No hay marcas registrados.</td>
+                    </tr>
+                    {% endfor %}
+
+<!-- Mensajes con SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  {% if messages %}
+    {% for message in messages %}
+      Swal.fire({
+        icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
+        title: '{{ message|escapejs }}',
+        timer: 2500,
+        showConfirmButton: false
+      });
+    {% endfor %}
+  {% endif %}
+</script>
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "body.html" %}
+
+{% block content %}
+<div class="main-content" style="padding: 20px; padding-top: 70px; padding-bottom: 80px;">
+<form method="post" action="">
+    <div class="card card-default">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-plus"></i>
+                {{titulo}}
+            </h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            {% csrf_token %}
+            {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al intentar guardar la factura</h5>
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{error}}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <div class="card-footer">
+                <button type="submit" class="btn btn-info btn-flat ">
+                    <i class="fas fa-check"></i> Sí, Aceptar
+                </button>
+                <a href="{{ listar_url }}" class="btn btn-danger">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    {% if form.errors %}  
+    var errors = '';
+    {% for field in form%}
+        {% for error in field.errors %}
+              errors +- = '{{ error}}\n';
+            {%endfor%}  
+        {% endfor %}    
+    Swal.fire({
+        title: 'Error',
+        html: {% for field in form %}{% for error in field.errors %}{{ error|escapejs }}<br>{% endfor %}{% endfor %},
+        icon: 'error',
+    });
+    {% endif %}
+</script>
+{% endblock %}
