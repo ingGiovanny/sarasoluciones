@@ -16,12 +16,12 @@ class AdministradorForm(ModelForm):
                     'placeholder': 'Ingrese el nombre del administrador',
                 }
             ),
-            'email': EmailInput(
+            'correo_electronico': EmailInput(
                 attrs={
                     'placeholder': 'Ingrese el correo del administrador',
                 }
             ),
-            'contraseña': PasswordInput(
+            'contrasena': PasswordInput(
                 attrs={
                     'placeholder': 'Ingrese la contraseña',
                 }

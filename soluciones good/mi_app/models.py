@@ -4,11 +4,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
 
 class Administrador(models.Model):
-    nombres_completos = models.CharField(max_length=50, default="")
-    email = models.EmailField(max_length=50, default="")
-    contraseña = models.CharField(max_length=128, default="")
-    cedula = models.CharField(max_length=20, default="")
-    telefono = models.CharField(max_length=15, default="")
+    nombres_completos = models.CharField(max_length=50, default="", verbose_name="Nombres Completos")
+    correo_electronico = models.EmailField(max_length=50, default="", verbose_name="Correo Electrónico")
+    contrasena = models.CharField(max_length=128, default="", verbose_name="Contraseña")
+    cedula = models.CharField(max_length=20, default="", verbose_name="Cédula")
+    telefono = models.CharField(max_length=15, default="", verbose_name="Teléfono")
 
     class Meta:
         verbose_name = "Administrador"
@@ -20,12 +20,12 @@ class Administrador(models.Model):
 
 class Proveedor(models.Model):
     """Modelo para proveedores"""
-    nombre_completo = models.CharField(max_length=100)
-    tipo_documento = models.CharField(max_length=50, blank=True, null=True)
-    numero_documento_nit = models.CharField(max_length=15, unique=True)
-    direccion_empresa = models.CharField(max_length=30)
-    numero_telefonico = models.CharField(max_length=15)
-    descripcion = models.TextField(max_length=100)
+    nombre_completo = models.CharField(max_length=100, verbose_name="Nombre Completo")
+    tipo_documento = models.CharField(max_length=50, blank=True, null=True, verbose_name="Tipo Documento")
+    numero_documento_nit = models.CharField(max_length=15, unique=True, verbose_name="Número Documento NIT")
+    direccion_empresa = models.CharField(max_length=30, verbose_name="Dirección Empresa")
+    numero_telefonico = models.CharField(max_length=15, verbose_name="Número Telefónico")
+    descripcion = models.TextField(max_length=100, verbose_name="Descripción")
     
     class Meta:
         verbose_name = "Proveedor"
@@ -37,11 +37,11 @@ class Proveedor(models.Model):
 
 class GestionCliente(models.Model):
     """Modelo para gestión de clientes"""
-    nombre_completo = models.CharField(max_length=100)
-    numero_telefonico = models.CharField(max_length=50, null=True, blank=True)
-    numero_documento = models.CharField(max_length=50, unique=True)
-    correo_electronico = models.EmailField(max_length=50)
-    contrasena = models.CharField(max_length=50)
+    nombre_completo = models.CharField(max_length=100, verbose_name="Nombre Completo")
+    numero_telefonico = models.CharField(max_length=50, null=True, blank=True, verbose_name="Número Telefónico")
+    numero_documento = models.CharField(max_length=50, unique=True, verbose_name="Número Documento")
+    correo_electronico = models.EmailField(max_length=50, verbose_name="Correo Electrónico")
+    contrasena = models.CharField(max_length=50, verbose_name="Contraseña")
     
     class Meta:
         verbose_name = "Cliente"
@@ -53,9 +53,9 @@ class GestionCliente(models.Model):
 
 class Marca(models.Model):
     """Modelo para marcas de productos"""
-    nombre_marca = models.CharField(max_length=80, unique=True)
-    fecha_registro = models.DateTimeField(auto_now_add=True)
-    logo_marca = models.ImageField(upload_to='logos/', blank=True, null=True)
+    nombre_marca = models.CharField(max_length=80, unique=True, verbose_name="Nombre Marca")
+    fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name="Fecha Registro")
+    logo_marca = models.ImageField(upload_to='logos/', blank=True, null=True, verbose_name="Logo Marca")
     
     class Meta:
         verbose_name = "Marca"
@@ -67,11 +67,11 @@ class Marca(models.Model):
 
 class Presentacion(models.Model):
     """Modelo para tipos de presentación de productos"""
-    nombre = models.CharField(max_length=100, unique=True)
-    color = models.CharField(max_length=25)
-    modelo = models.CharField(max_length=25)
-    funcion_principal = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=60)
+    nombre = models.CharField(max_length=100, unique=True, verbose_name="Nombre")
+    color = models.CharField(max_length=25, verbose_name="Color")
+    modelo = models.CharField(max_length=25, verbose_name="Modelo")
+    funcion_principal = models.CharField(max_length=100, verbose_name="Función Principal")
+    descripcion = models.CharField(max_length=60, verbose_name="Descripción")
     
     class Meta:
         verbose_name = "Tipo de Presentación"
@@ -83,8 +83,8 @@ class Presentacion(models.Model):
 
 class Categoria(models.Model):
     """Modelo para categorías de productos"""
-    nombre_categoria = models.CharField(max_length=80, unique=True)
-    descripcion = models.TextField(max_length=100)
+    nombre_categoria = models.CharField(max_length=80, unique=True, verbose_name="Nombre Categoría")
+    descripcion = models.TextField(max_length=100, verbose_name="Descripción")
     
     class Meta:
         verbose_name = "Categoría"
@@ -96,9 +96,9 @@ class Categoria(models.Model):
 
 class GestionServicio(models.Model):
     """Modelo para gestión de servicios"""
-    nombre_servicio = models.CharField(max_length=50)
-    descripcion = models.TextField(max_length=100)
-    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    nombre_servicio = models.CharField(max_length=50, verbose_name="Nombre Servicio")
+    descripcion = models.TextField(max_length=100, verbose_name="Descripción")
+    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor")
     
     class Meta:
         verbose_name = "Servicio"
@@ -116,10 +116,10 @@ class Producto(models.Model):
     id_presentacion = models.ForeignKey(Presentacion, on_delete=models.CASCADE, related_name='productos_presentacion')
     
     # Campos del producto
-    nombre_producto = models.CharField(max_length=100)
-    cantidad_producto = models.IntegerField(validators=[MinValueValidator(0)])
-    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Decimal('0.01'))])
-    estado_producto = models.CharField(max_length=30)
+    nombre_producto = models.CharField(max_length=100, verbose_name="Nombre Producto")
+    cantidad_producto = models.IntegerField(validators=[MinValueValidator(0)], verbose_name="Cantidad Producto")
+    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Decimal('0.01'))], verbose_name="Valor Unitario")
+    estado_producto = models.CharField(max_length=30, verbose_name="Estado Producto")
     
     # Timestamps
     fecha_creacion = models.DateTimeField(auto_now_add=True)
@@ -141,26 +141,27 @@ class Factura(models.Model):
     id_servicio = models.ForeignKey(GestionServicio, on_delete=models.SET_NULL, null=True, blank=True, related_name='facturas_servicio')
     
     # Campos de factura
-    fecha_factura = models.DateField()
-    descripcion_venta = models.TextField(max_length=255)
-    terminos_condiciones = models.TextField(max_length=255)
-    nit = models.CharField(max_length=50)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_factura = models.DateField(verbose_name="Fecha Factura")
+    descripcion_venta = models.TextField(max_length=255, verbose_name="Descripción Venta")
+    terminos_condiciones = models.TextField(max_length=255, verbose_name="Términos y Condiciones")
+    nit = models.CharField(max_length=50, verbose_name="NIT")
+    total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total")
     
     class Meta:
         verbose_name = "Factura"
         verbose_name_plural = "Facturas"
         
     def __str__(self):
-        return f"Factura #{self.id} - {self.fecha_facturacion}"
+        # usar el nombre correcto del campo: fecha_factura
+        return f"Factura #{self.id} - {self.fecha_factura}"
 
 
 class Garantia(models.Model):
     """Modelo para gestión de garantías"""
     # CORREGIDO: Aseguramos que apunte correctamente a Facturacion
     id_factura = models.ForeignKey(Factura, on_delete=models.CASCADE, related_name='garantias_factura', null=True, blank=True)
-    descripcion_garantia = models.TextField(max_length=255)
-    fecha_garantia = models.DateField()
+    descripcion_garantia = models.TextField(max_length=255, verbose_name="Descripción Garantía")
+    fecha_garantia = models.DateField(verbose_name="Fecha Garantía")
     opciones=[
         ('PENDIENTE', 'pendiente'),
         ('APROVADO', 'aprovado'),
@@ -182,19 +183,19 @@ class Pedido(models.Model):
     """Modelo para pedidos de clientes"""
     id_cliente = models.ForeignKey(GestionCliente, on_delete=models.CASCADE, related_name='pedidos_cliente')
     id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='pedidos_producto')
-    nombre_de_producto = models.CharField(max_length=50)
-    cantidad = models.IntegerField(validators=[MinValueValidator(1)])
-    departamento_entrega = models.CharField(max_length=50)
-    municipio_ciudad_entrega = models.CharField(max_length=50)
-    direccion_entrega = models.CharField(max_length=50)
-    comprobante_pago = models.CharField(max_length=50, default="pago exitoso")
+    nombre_de_producto = models.CharField(max_length=50, verbose_name="Nombre Producto")
+    cantidad = models.IntegerField(validators=[MinValueValidator(1)], verbose_name="Cantidad")
+    departamento_entrega = models.CharField(max_length=50, verbose_name="Departamento Entrega")
+    municipio_ciudad_entrega = models.CharField(max_length=50, verbose_name="Municipio/Ciudad Entrega")
+    direccion_entrega = models.CharField(max_length=50, verbose_name="Dirección Entrega")
+    comprobante_pago = models.CharField(max_length=50, default="pago exitoso", verbose_name="Comprobante Pago")
     opciones=[
         ('PROCESO', 'proceso'),
         ('PEDIDO EXITOSO', 'pedido exitoso')
      
     ]
-    estado_pedido = models.CharField(max_length=20, choices=opciones)
-    email = models.EmailField(max_length=50)
+    estado_pedido = models.CharField(max_length=20, choices=opciones, verbose_name="Estado Pedido")
+    email = models.EmailField(max_length=50, verbose_name="Email")
     
     class Meta:
         verbose_name = "Pedido"
@@ -209,10 +210,10 @@ class Compra(models.Model):
     id_administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE, related_name='compras_admin')
     id_proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE, related_name='compras_proveedor')
     id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='compras_producto')
-    cantidad_productos = models.IntegerField(validators=[MinValueValidator(1)])
-    observaciones = models.TextField(max_length=60, blank=True)
-    fecha_compra = models.DateField()
-    valor_total = models.DecimalField(max_digits=10, decimal_places=2)
+    cantidad_productos = models.IntegerField(validators=[MinValueValidator(1)], verbose_name="Cantidad Productos")
+    observaciones = models.TextField(max_length=60, blank=True, verbose_name="Observaciones")
+    fecha_compra = models.DateField(verbose_name="Fecha Compra")
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total")
     
     class Meta:
         verbose_name = "Compra"
@@ -225,9 +226,9 @@ class Compra(models.Model):
 class Ventas(models.Model):
     """Modelo para registro de ventas"""
     id_pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='ventas_pedido')
-    comprobante_pago = models.CharField(max_length=50)
-    fecha_venta = models.DateField()
-    id_administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE, related_name='ventas_admin')
+    comprobante_pago = models.CharField(max_length=50, verbose_name="Comprobante Pago")
+    fecha_venta = models.DateField(verbose_name="Fecha Venta")
+    id_administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE, related_name='ventas_admin', verbose_name="Administrador")
     
     class Meta:
         verbose_name = "Venta"
