@@ -1,7 +1,7 @@
 {% extends "listar.html" %}
 
 {% block titulo %}
-        <h1 class="text-center">Listar Proveedores</h1>
+        <h1 class="text-center">Gestión De Proveedores</h1>
 {% endblock titulo %}
 
 {% block agregar %}
@@ -12,10 +12,10 @@
 
 {% block columnas %}
 
-                <th>Id</th>
+                <th>N°</th>
                         <th>Nombre Completo</th>
                         <th>Tipo Documento</th>
-                        <th>N° Documento / NIT</th>
+                        <th>Documento</th>
                          <th>Dirección Empresa</th>
                         <th>Número Telefónico</th>
                         <th>Descripción</th>
@@ -29,7 +29,7 @@
                         <td>{{ a.id }}</td>
                         <td>{{ a.nombre_completo }}</td>
                         <td>{{ a.tipo_documento }}</td>
-                        <td>{{ a.numero_documento_nit }}</td>
+                        <td>{{ a.numero_documento }}</td>
                         <td>{{ a.direccion_empresa }}</td>
                         <td>{{ a.numero_telefonico }}</td>
                         <td>{{ a.descripcion }}</td>
