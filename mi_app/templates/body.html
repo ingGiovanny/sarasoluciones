@@ -6,20 +6,17 @@
     <!--begin::App Wrapper-->
     <div class="app-wrapper"><!--estoy contiene lo que es las bases de la plantilla su header footer y esaas cosas sidebar tambien-->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <div class="text-center mb-4 position-relative">
-    <img src="{% static 'img/capacitaciones.png' %}" alt="Capacitaciones" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
-      <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0, 0, 0, 0.5);"></div>
-      <div class="position-absolute top-50 start-50 translate-middle">
-        <h1 class="text-center  fw-bold" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); font-size:5rem; color: #F5F5DC">Soluciones Sara</h1>
-      </div>    
-    </div>
+
+
 
       <!--begin::Sidebar-->
       {% include 'sidebar.html' %}
       <!--end::Sidebar-->
 
       <!--begin::Main Content--> 
+ 
       {% block content %}{% endblock %}
+ 
       <!--end::Main Content-->
       
       <!--begin::Footer-->
@@ -55,5 +52,43 @@
       });
     </script>
     <!--end::OverlayScrollbars Configure-->
+
+    <!-- este escrp sirve para que los tooltips o mensajes flotantes sean inicializados(los mensajes para los botones) -->
+    <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
+  });
+</script>
+
   </body>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const toggleButton = document.getElementById("theme-toggle");
+  const themeIcon = document.getElementById("theme-icon");
+
+  //  Verifica si el usuario ya tenía una preferencia guardada
+  const currentTheme = localStorage.getItem("theme");
+  if (currentTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    themeIcon.classList.replace("bi-moon-fill", "bi-sun-fill");
+  }
+
+  //  Cambiar tema al hacer clic
+  toggleButton.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    const isDark = document.body.classList.contains("dark-mode");
+
+    // Actualiza el ícono
+    if (isDark) {
+      themeIcon.classList.replace("bi-moon-fill", "bi-sun-fill");
+      localStorage.setItem("theme", "dark");
+    } else {
+      themeIcon.classList.replace("bi-sun-fill", "bi-moon-fill");
+      localStorage.setItem("theme", "light");
+    }
+  });
+});
+</script>
+
 {% endblock %}

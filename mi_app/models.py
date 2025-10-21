@@ -21,7 +21,7 @@ class Administrador(models.Model):
 class Proveedor(models.Model):
     """Modelo para proveedores"""
     nombre_completo = models.CharField(max_length=100)
-    tipo_documento = models.CharField(max_length=50, blank=True, null=True)
+    tipo_documento = models.CharField(max_length=50)
     numero_documento_nit = models.CharField(max_length=15, unique=True)
     direccion_empresa = models.CharField(max_length=30)
     numero_telefonico = models.CharField(max_length=15)
@@ -182,8 +182,8 @@ class Pedido(models.Model):
     """Modelo para pedidos de clientes"""
     id_cliente = models.ForeignKey(GestionCliente, on_delete=models.CASCADE, related_name='pedidos_cliente')
     id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='pedidos_producto')
-    nombre_de_producto = models.CharField(max_length=50)
     cantidad = models.IntegerField(validators=[MinValueValidator(1)])
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2)
     departamento_entrega = models.CharField(max_length=50)
     municipio_ciudad_entrega = models.CharField(max_length=50)
     direccion_entrega = models.CharField(max_length=50)
