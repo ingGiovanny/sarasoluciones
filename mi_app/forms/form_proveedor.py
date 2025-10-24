@@ -7,14 +7,14 @@ class ProveedorForm(ModelForm):
     TIPO_DOCUMENTO_CHOICES = [
         ('', 'Seleccione tipo de documento'),
         ('CC', 'Cédula de Ciudadanía'),
-        ('CE', 'Cédula de Extranjería'),
+        
         ('TI', 'Tarjeta de Identidad'),
-        ('PASAPORTE', 'Pasaporte'),
+       
         ('NIT', 'Número de Identificación Tributaria (NIT)'),
-        ('RUT', 'Registro Único Tributario (RUT)'),
-        ('DNI', 'Documento Nacional de Identidad'),
-        ('PPT', 'Permiso por Protección Temporal'),
-        ('CD', 'Carné Diplomático'),
+        
+        
+   
+   
     ]
     
     def __init__(self, *args, **kwargs):
