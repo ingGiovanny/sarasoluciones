@@ -1,7 +1,7 @@
 {% extends "listar.html" %}
 
 {% block titulo %}
-        <h1 class="text-center">Gestion de cliente</h1>
+        <h1 class="text-center">Gestión De Cliente</h1>
 {% endblock titulo %}
 
 {% block agregar %}
@@ -12,11 +12,11 @@
 
 {% block columnas %}
 
-                <th>Id</th>
-                        <th>Nombres completos</th>
-                        <th>Numero telefonico</th>
-                        <th>N° Documento</th>
-                         <th>email</th>
+                <th>N°</th>
+                        <th>Nombre Completo</th>
+                        <th>Número Telefónico</th>
+                        <th>Documento</th>
+                         <th>Correo Electrónico</th>
                         <th>Contraseña</th>
                         <th>Acciones</th>
 {% endblock %}
@@ -30,7 +30,7 @@
                         <td>{{ a.numero_telefonico }}</td>
                         <td>{{ a.numero_documento }}</td>
                         <td>{{ a.correo_electronico }}</td>
-                        <td>{{ a.contraseña }}</td>
+                        <td>{{ a.contrasena }}</td>
 
                         <td>
                             <a href="{% url 'mi_app:cliente_editar' a.id %}" class="btn btn-warning btn-sm"><i class="bi bi-pen-fill"></i></a>

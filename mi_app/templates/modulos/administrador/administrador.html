@@ -1,7 +1,7 @@
 {% extends "listar.html" %}
 
 {% block titulo %}
-        <h1 class="text-center">Lista de Administradores</h1>
+        <h1 class="text-center">Gestión De Administradores</h1>
 {% endblock titulo %}
 
 {% block agregar %}
@@ -12,12 +12,12 @@
 
 {% block columnas %}
 
-                <th>Id</th>
-                        <th>Nombre</th>
-                         <th>email</th>
-                        <th>Contraseña</th>
-                        <th>Cedula</th>
-                        <th>Telefono</th>
+                <th>N°</th>
+    <th>Nombre</th>
+       <th>Correo Electrónico</th>
+      <th>Contraseña</th>
+      <th>Cédula</th>
+      <th>Teléfono</th>
                         <th>Acciones</th>
 {% endblock %}
 
@@ -27,8 +27,8 @@
                     <tr>
                         <td>{{ a.id }}</td>
                         <td>{{ a.nombres_completos }}</td>
-                        <td>{{ a.email }}</td>
-                        <td>{{ a.contraseña }}</td>
+                        <td>{{ a.correo_electronico }}</td>
+                        <td>{{ a.contrasena }}</td>
                         <td>{{ a.cedula }}</td>
                         <td>{{ a.telefono }}</td>
                         <td>
