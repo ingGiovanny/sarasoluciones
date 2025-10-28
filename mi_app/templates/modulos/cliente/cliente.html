@@ -5,9 +5,11 @@
 {% endblock titulo %}
 
 {% block agregar %}
-<a href="{{crear_url}}" class=" btn btn-primary btn btn-xs"><i class="fas fa-plus"></i>
-          Agregar
+<a href="{% url 'mi_app:cliente_crear' %}" class="btn btn-primary btn-xs">
+    <i class="fas fa-plus"></i> Agregar
 </a>
+
+
 {% endblock %}
 
 {% block columnas %}
@@ -33,8 +35,8 @@
                         <td>{{ a.contrasena }}</td>
 
                         <td>
-                            <a href="{% url 'mi_app:cliente_editar' a.id %}" class="btn btn-warning btn-sm"><i class="bi bi-pen-fill"></i></a>
-                            <a href="{% url 'mi_app:cliente_eliminar' a.id %}" class="btn btn-danger btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                              <a href="{% url 'mi_app:cliente_editar' a.id %}"class="btn btn-warning btn-sm"data-bs-toggle="tooltip"title="Editar"><i class="bi bi-pen-fill"></i></a>
+                              <a href="{% url 'mi_app:cliente_eliminar' a.id %}"class="btn btn-danger btn-sm"data-bs-toggle="tooltip"title="Eliminar"><i class="bi bi-trash3-fill"></i></a>
                         </td>
                     </tr>
                     {% empty %}
