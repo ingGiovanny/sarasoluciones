@@ -52,10 +52,15 @@
      <!--ruta que tiene el widget de acceseibilidad-->
       <link rel="stylesheet" href="{% static 'css/widget_custom.css' %}">
       <!--iconos del widgets-->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">  
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--ruta para scrip de el sidebar o menu lateral-->
+       <script src="{% static 'js/sidebar.js' %}"></script> 
+      <!-- este escrip sirve para que los tooltips que son los mensajes pequeños que aparecen cuando ponemos el curso encima de algo(los mensajes para los botones) -->
+        <script src="{% static 'js/mensajesBotones(tooltips).js' %}"></script>  
   </head>
   <!--modo oscuro-->
 <link rel="stylesheet" href="{% static 'css/modo_oscuro.css' %}">
+ <script src="{% static 'js/modoOscuro.js' %}"></script> 
 
   <!-- Inclusión del encabezado desde otra plantilla -->
   {% include 'header.html' %}
@@ -65,6 +70,7 @@
 
   <!-- Inclusión del pie de página desde otra plantilla -->
   {% include 'footer.html' %}
+  <!--Scrip para el widget de acceseibilidad-->
      <script src="{% static 'js/siena_widgte_accesibilidad.js' %}"></script>
    <script src="{% static 'js/siena-config.js' %}"></script>
 

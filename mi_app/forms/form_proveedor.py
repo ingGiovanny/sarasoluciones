@@ -7,9 +7,7 @@ class ProveedorForm(ModelForm):
     TIPO_DOCUMENTO_CHOICES = [
         ('', 'Seleccione tipo de documento'),
         ('CC', 'Cédula de Ciudadanía'),
-        
         ('TI', 'Tarjeta de Identidad'),
-       
         ('NIT', 'Número de Identificación Tributaria (NIT)'),
         
         

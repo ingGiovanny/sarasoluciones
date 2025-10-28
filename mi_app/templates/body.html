@@ -9,108 +9,20 @@
 
 
 
-      <!--begin::Sidebar-->
+     
       {% include 'sidebar.html' %}
-      <!--end::Sidebar-->
-
-      <!--begin::Main Content--> 
+   
  
       {% block content %}{% endblock %}
  
-      <!--end::Main Content-->
-      
-      <!--begin::Footer-->
-      <!--end::Footer-->
+   
     </div>
-    <!--end::App Wrapper-->
-
-    <!--begin::OverlayScrollbars Configure-->
-    <script>
-      const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
-      const Default = {
-        scrollbarTheme: 'os-theme-light',
-        scrollbarAutoHide: 'leave',
-        scrollbarClickScroll: true,
-      };
-      document.addEventListener('DOMContentLoaded', function () {
-        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
-        const isMobile = window.innerWidth <= 992;
-
-        if (
-          sidebarWrapper &&
-          window.OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
-          !isMobile
-        ) {
-          window.OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-            scrollbars: {
-              theme: Default.scrollbarTheme,
-              autoHide: Default.scrollbarAutoHide,
-              clickScroll: Default.scrollbarClickScroll,
-            },
-          });
-        }
-      });
-    </script>
-    <!--end::OverlayScrollbars Configure-->
-
-    <!-- este escrp sirve para que los tooltips o mensajes flotantes sean inicializados(los mensajes para los botones) -->
-    <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
-  });
-</script>
 
   </body>
-  <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const toggleButton = document.getElementById("theme-toggle");
-  const themeIcon = document.getElementById("theme-icon");
+  
+<!--Esto incluye el codigo para poder mostrar en la pagina el boton de accesiibildad-->
+{% include "boton_widgetAccesibilidad.html" %}
 
-  //  Verifica si el usuario ya tenía una preferencia guardada
-  const currentTheme = localStorage.getItem("theme");
-  if (currentTheme === "dark") {
-    document.body.classList.add("dark-mode");
-    themeIcon.classList.replace("bi-moon-fill", "bi-sun-fill");
-  }
-
-  //  Cambiar tema al hacer clic
-  toggleButton.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    const isDark = document.body.classList.contains("dark-mode");
-
-    // Actualiza el ícono
-    if (isDark) {
-      themeIcon.classList.replace("bi-moon-fill", "bi-sun-fill");
-      localStorage.setItem("theme", "dark");
-    } else {
-      themeIcon.classList.replace("bi-sun-fill", "bi-moon-fill");
-      localStorage.setItem("theme", "light");
-    }
-  });
-});
-</script>
-<div class="asw-widget">
-  <div class="asw-menu-btn">
-    <svg>...</svg>
-  </div>
-  <div class="asw-menu">
-    <div class="asw-menu-header">
-      <div>Accesibilidad</div>
-      <div role="button">✕</div>
-    </div>
-    <div class="asw-menu-content">
-      <ul class="asw-items">
-        <li class="asw-btn"><span class="material-icons">text_fields</span> Fuente Legible</li>
-        <li class="asw-btn"><span class="material-icons">contrast</span> Alto Contraste</li>
-        <!-- ... otros botones -->
-      </ul>
-    </div>
-    <div class="asw-footer">
-      <a href="#">Más información</a>
-    </div>
-  </div>
-</div>
 
 
 {% endblock %}
