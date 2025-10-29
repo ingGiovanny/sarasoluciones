@@ -1,9 +1,6 @@
 from django import forms
-from django.forms import ModelForm, TextInput, DateTimeInput, ClearableFileInput
+from django.forms import ModelForm, TextInput, ClearableFileInput
 from mi_app.models import Marca
-
-
-
 
 class MarcaForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -12,7 +9,8 @@ class MarcaForm(ModelForm):
         
     class Meta:
         model = Marca
-        fields = '__all__'
+        # Excluir fecha_registro porque tiene auto_now_add=True
+        fields = ['nombre_marca', 'logo_marca']
         widgets = {
             'nombre_marca': TextInput(
                 attrs={
@@ -20,17 +18,10 @@ class MarcaForm(ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'fecha_registro': DateTimeInput(
-                attrs={
-                    'placeholder': 'Seleccione la fecha y hora de registro',
-                    'class': 'form-control',
-                    'type': 'datetime-local'
-                }
-            ),
             'logo_marca': ClearableFileInput(
                 attrs={
                     'class': 'form-control',
-                    #'accept': 'image/*'
+                    'accept': 'image/*'
                 }
             ),
         }
