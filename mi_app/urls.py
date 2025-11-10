@@ -15,13 +15,16 @@ from mi_app.view.factura.views_factura import *
 from mi_app.view.ventas.views_ventas import *
 from mi_app.view.garantia.views_garantia import *
 from mi_app.view.principal.views_principal import principal
+from mi_app.view.principalcliente.views_principal_cliente import pagina_clientes
 from mi_app.view.compra.views_compra import CompraListView, CompraCreateView, CompraUpdateView, CompraDeleteView
 
 
 app_name = 'mi_app'
 urlpatterns = [
    #path('index.html', vista, name='index'),
-   path('', principal, name='principal'),
+   path('principal', principal, name='principal'),
+   path('', pagina_clientes, name='principalclientes'),
+   
      
    #_________________________ Modulo de Administrador __________________________
     path('administradores/listar/', AdministradorListView.as_view(), name='administrador_lista'),
