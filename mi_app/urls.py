@@ -23,7 +23,7 @@ app_name = 'mi_app'
 urlpatterns = [
    #path('index.html', vista, name='index'),
    path('principal', principal, name='principal'),
-   path('', pagina_clientes, name='principalclientes'),
+   path('', pagina_clientes, name='principralclientes'),
    
      
    #_________________________ Modulo de Administrador __________________________
