@@ -1,0 +1,135 @@
+{%load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="{% static 'img/logosara.png' %}">
+  <title>Mi Tienda</title>
+  <!--link para los estilos de la pagina-->
+   <link rel="stylesheet" href="{% static 'css/stilospagClientes.css' %}">
+   <!--link para los iconos de bootstrap-->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<style>
+  .titulo {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 2em;
+    color: #333;
+  }
+</style>
+ 
+</head>
+<body>
+  <!-- ======== NAVBAR ======== -->
+  <nav class="navbar">
+   
+    <a href="#" class="navbar-logo">Soluciones sara</a>
+
+    <ul class="navbar-menu">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#productos">Productos</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li>  <a href="https://wa.me/573125338803?text=Hola,%20me%20gustaría%20más%20información%20sobre%20el%20producto%20A" 
+          class="text-decoration-none">Contactanos</a>.</li>
+    </ul>
+    
+    <i class="bi bi-cart-fill"></i>
+
+  </nav>
+  
+  <!-- ======== CARRUSEL DEL HEADER ======== -->
+  <div class="carrusel-container">
+    <div class="carrusel-slides">
+      <!-- Slide 1 -->
+      <div class="slide">
+        <img src="{% static 'img/capacitaciones.png' %}" alt="banner 1" loading="eager">
+        <div class="slide-content">
+          <h1>BLACK DAYS EN MI TIENDA</h1>
+          <p>Hasta 55% de descuento en productos seleccionados</p>
+        </div>
+      </div>
+      
+      <!-- Slide 2 -->
+      <div class="slide">
+        <img src="{% static 'img/altura.jpg' %}" alt="banner 2" loading="eager">
+        <div class="slide-content">
+          <h1>NUEVA COLECCIÓN</h1>
+          <p>Descubre las últimas tendencias en moda</p>
+        </div>
+      </div>
+      
+      <!-- Slide 3 -->
+      <div class="slide">
+        <img src="{% static 'img/ocupacional.jpg' %}" alt="Banner 3" loading="eager">
+        <div class="slide-content">
+          <h1>ENVÍO GRATIS</h1>
+          <p>En compras superiores a $100.000</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Botones de navegación -->
+    <button class="carrusel-btn prev" onclick="cambiarSlide(-1)">&#10094;</button>
+    <button class="carrusel-btn next" onclick="cambiarSlide(1)">&#10095;</button>
+    
+    <!-- Indicadores -->
+    <div class="carrusel-indicators">
+      <span class="indicator active" onclick="irASlide(0)"></span>
+      <span class="indicator" onclick="irASlide(1)"></span>
+      <span class="indicator" onclick="irASlide(2)"></span>
+    </div>
+  </div>
+  
+  <!-- ======== SECCIÓN DE PRODUCTOS ======== -->
+ <h1  class="titulo">Algunos de nuestros productos</h1>
+
+  <section class="productos">
+    <div class="producto">
+      <img src="{% static 'img/gafas.jpg' %}" alt="producto 1">
+      <h3>Producto 1</h3>
+      <p>$120.000</p>
+    </div>
+    <div class="producto">
+      <img src="{% static 'img/cascoepp.png' %}" alt="producto 2">
+      <h3>Producto 2</h3>
+      <p>$89.900</p>
+    </div>
+    <div class="producto">
+      <img src="{% static 'img/botas.png' %}" alt="producto 3">
+      <h3>Producto 3</h3>
+      <p>$75.000</p>
+    </div>
+  </section>
+
+  <br><br>
+  <section class="servicios" id="servicios">
+    <h2>Nuestros Servicios</h2>
+    <div class="servicio">
+      <h3>Asesoría Personalizada</h3>
+      <p>Te ayudamos a elegir el equipo de protección adecuado para tus necesidades.</p>
+    </div>
+    <div class="servicio">
+      <h3>Capacitaciones</h3>
+      <p>Ofrecemos cursos y talleres sobre seguridad laboral y uso correcto del equipo.</p>
+    </div>
+    <div class="servicio">
+      <h3>Soporte Postventa</h3>
+      <p>Brindamos asistencia y soporte después de tu compra para garantizar tu satisfacción.</p>
+    </div>
+  </section>
+
+
+  
+  <!-- ======== FOOTER ======== -->
+  <footer>
+    &copy; 2025 Mi Tienda - Todos los derechos reservados
+  </footer>
+<!--carga el js de la pagina para clientes-->
+  <script src="{% static 'js/scrippagClientes.js' %}"></script>
+
+
+</body>
+</html>

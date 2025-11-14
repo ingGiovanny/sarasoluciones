@@ -9,21 +9,10 @@ from django.urls import reverse_lazy
 from mi_app.forms.form_marca import MarcaForm
 
 
-
-
-def listar_marca(request):
-    data = {
-        "titulo": "Listar Marcas",
-        "Marcas": Marca.objects.all()
-    }
-    return render(request, 'marca/marca.html', data)
-
-
 class marcaListView(ListView):
     model = Marca
     template_name ='modulos/marca/marca.html'
     
-    # @method_decorator(login_required)
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
        return super().dispatch(request, *args, **kwargs)
@@ -38,6 +27,7 @@ class marcaListView(ListView):
         context['crear_url'] = reverse_lazy('mi_app:marca_crear')
         context['entidad'] = 'Marca'  
         return context
+
     
 class marcaCreateView(CreateView):
     model = Marca
@@ -45,16 +35,41 @@ class marcaCreateView(CreateView):
     template_name = 'modulos/marca/crear_marca.html'
     success_url = reverse_lazy('mi_app:marca_lista')
     
+    def post(self, request, *args, **kwargs):
+        """Sobrescribir post para manejar archivos explícitamente"""
+        self.object = None
+        form = self.get_form()
+        
+        # Imprimir para debug
+        print("POST data:", request.POST)
+        print("FILES data:", request.FILES)
+        
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            print("Form errors:", form.errors)
+            return self.form_invalid(form)
+    
     def form_valid(self, form):
+        # Guardar el formulario con los archivos
+        self.object = form.save(commit=False)
+        
+        # Manejar el logo si existe
+        if 'logo_marca' in self.request.FILES:
+            self.object.logo_marca = self.request.FILES['logo_marca']
+            print(f"Guardando logo: {self.request.FILES['logo_marca']}")
+        
+        self.object.save()
         messages.success(self.request, "Marca creada correctamente")
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context ['titulo'] = 'Crear marca'
-        context ['entidad'] = 'Marcas'
-        context ['listar_url'] = reverse_lazy('mi_app:marca_lista')
+        context['titulo'] = 'Crear marca'
+        context['entidad'] = 'Marcas'
+        context['listar_url'] = reverse_lazy('mi_app:marca_lista')
         return context
+
     
 class marcaupdateView(UpdateView):
     model = Marca
@@ -62,8 +77,32 @@ class marcaupdateView(UpdateView):
     template_name = 'modulos/marca/crear_marca.html'
     success_url = reverse_lazy('mi_app:marca_lista')
     
+    def post(self, request, *args, **kwargs):
+        """Sobrescribir post para manejar archivos explícitamente"""
+        self.object = self.get_object()
+        form = self.get_form()
+        
+        # Debug
+        print("POST data:", request.POST)
+        print("FILES data:", request.FILES)
+        
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            print("Form errors:", form.errors)
+            return self.form_invalid(form)
+    
     def form_valid(self, form):
-        messages.success(self.request, "marca actualizado correctamente")
+        # Guardar el formulario con los archivos
+        self.object = form.save(commit=False)
+        
+        # Manejar el logo si existe un nuevo archivo
+        if 'logo_marca' in self.request.FILES:
+            self.object.logo_marca = self.request.FILES['logo_marca']
+            print(f"Actualizando logo: {self.request.FILES['logo_marca']}")
+        
+        self.object.save()
+        messages.success(self.request, "Marca actualizada correctamente")
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
@@ -73,15 +112,15 @@ class marcaupdateView(UpdateView):
         context['listar_url'] = reverse_lazy('mi_app:marca_lista')
         return context
 
+
 class marcaDeleteView(DeleteView):
     model = Marca
     template_name = 'modulos/marca/eliminar_marca.html'
     success_url = reverse_lazy('mi_app:marca_lista')
     
     def form_valid(self, form):
-        messages.success(self.request, "marca eliminada correctamente")
+        messages.success(self.request, "Marca eliminada correctamente")
         return super().form_valid(form)
-
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,6 +1,9 @@
 from django import forms
 from django.forms import ModelForm, TextInput, Select, Textarea
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 from mi_app.models import Proveedor
+import re
 
 class ProveedorForm(ModelForm):
     # Opciones para tipo de documento
@@ -8,19 +11,31 @@ class ProveedorForm(ModelForm):
         ('', 'Seleccione tipo de documento'),
         ('CC', 'Cédula de Ciudadanía'),
         ('TI', 'Tarjeta de Identidad'),
+        ('CE', 'Cédula de Extranjería'),
         ('NIT', 'Número de Identificación Tributaria (NIT)'),
-        
-        
-   
-   
     ]
+    
+    # Validadores
+    nombre_validator = RegexValidator(
+        regex=r'^[a-záéíóúñA-ZÁÉÍÓÚÑ\s.&,-]+$',
+        message='El nombre solo debe contener letras, espacios y caracteres válidos (. , - &)'
+    )
+    
+    telefono_validator = RegexValidator(
+        regex=r'^3\d{9}$',
+        message='El teléfono debe tener 10 dígitos y comenzar con 3'
+    )
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['nombre_completo'].widget.attrs['autofocus'] = True
         
-        # Agregar choices al campo tipo_documento
-        self.fields['tipo_documento'].widget = Select(choices=self.TIPO_DOCUMENTO_CHOICES)
+        # Agregar validadores
+        self.fields['nombre_completo'].validators.append(self.nombre_validator)
+        self.fields['numero_telefonico'].validators.append(self.telefono_validator)
+        
+        # Configurar choices para tipo_documento
+        self.fields['tipo_documento'].widget.choices = self.TIPO_DOCUMENTO_CHOICES
     
     class Meta:
         model = Proveedor
@@ -28,7 +43,8 @@ class ProveedorForm(ModelForm):
         widgets = {
             'nombre_completo': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese el nombre completo del proveedor',
+                    'placeholder': 'Ingrese el nombre completo del proveedor o empresa',
+                    'maxlength': '150',
                     'class': 'form-control'
                 }
             ),
@@ -40,47 +56,168 @@ class ProveedorForm(ModelForm):
             'numero_documento_nit': TextInput(
                 attrs={
                     'placeholder': 'Ingrese el número de documento o NIT',
+                    'maxlength': '15',
                     'class': 'form-control'
                 }
             ),
             'direccion_empresa': TextInput(
                 attrs={
                     'placeholder': 'Ingrese la dirección de la empresa',
+                    'maxlength': '200',
                     'class': 'form-control'
                 }
             ),
             'numero_telefonico': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese el número telefónico',
+                    'placeholder': 'Ej: 3001234567',
+                    'maxlength': '10',
                     'class': 'form-control'
                 }
             ),
             'descripcion': Textarea(
                 attrs={
-                    'placeholder': 'Ingrese una descripción del proveedor',
+                    'placeholder': 'Ingrese una descripción del proveedor (productos, servicios, etc.)',
                     'class': 'form-control',
-                    'rows': 3
+                    'rows': 4,
+                    'maxlength': '500'
                 }
             ),
         }
     
+    def clean_nombre_completo(self):
+        nombre = self.cleaned_data.get('nombre_completo', '').strip()
+        
+        if not nombre:
+            raise ValidationError('El nombre completo es obligatorio')
+        
+        if len(nombre) < 3:
+            raise ValidationError('El nombre completo debe tener al menos 3 caracteres')
+        
+        if len(nombre) > 150:
+            raise ValidationError('El nombre completo no puede exceder los 150 caracteres')
+        
+        # Validar caracteres permitidos (letras, espacios, puntos, comas, guiones, &)
+        if not re.match(r'^[a-záéíóúñA-ZÁÉÍÓÚÑ\s.&,-]+$', nombre):
+            raise ValidationError('El nombre solo debe contener letras, espacios y caracteres válidos (. , - &)')
+        
+        return nombre
+    
+    def clean_tipo_documento(self):
+        tipo_doc = self.cleaned_data.get('tipo_documento', '').strip()
+        
+        if not tipo_doc:
+            raise ValidationError('Debe seleccionar un tipo de documento')
+        
+        tipos_validos = [choice[0] for choice in self.TIPO_DOCUMENTO_CHOICES if choice[0]]
+        if tipo_doc not in tipos_validos:
+            raise ValidationError('Tipo de documento inválido')
+        
+        return tipo_doc
+    
     def clean_numero_documento_nit(self):
-        """Validación personalizada para el número de documento/NIT"""
-        numero = self.cleaned_data['numero_documento_nit']
-        tipo_doc = self.cleaned_data.get('tipo_documento')
+        numero = self.cleaned_data.get('numero_documento_nit', '').strip()
+        tipo_doc = self.cleaned_data.get('tipo_documento', '').strip()
+        
+        if not numero:
+            raise ValidationError('El número de documento es obligatorio')
+        
+        # Eliminar espacios y guiones
+        numero = numero.replace(' ', '').replace('-', '')
         
         # Validaciones específicas según el tipo de documento
         if tipo_doc == 'NIT':
-            if len(numero) < 9:
-                raise forms.ValidationError("El NIT debe tener al menos 9 dígitos")
+            # NIT: 9-10 dígitos, puede tener guión y dígito de verificación
+            if not re.match(r'^\d{9,10}$', numero):
+                raise ValidationError('El NIT debe tener entre 9 y 10 dígitos')
+        
         elif tipo_doc == 'CC':
+            # Cédula de Ciudadanía: 6-10 dígitos
             if not numero.isdigit():
-                raise forms.ValidationError("La cédula de ciudadanía debe contener solo números")
+                raise ValidationError('La cédula de ciudadanía debe contener solo números')
+            if len(numero) < 6 or len(numero) > 10:
+                raise ValidationError('La cédula debe tener entre 6 y 10 dígitos')
+        
+        elif tipo_doc == 'TI':
+            # Tarjeta de Identidad: 10-11 dígitos
+            if not numero.isdigit():
+                raise ValidationError('La tarjeta de identidad debe contener solo números')
+            if len(numero) < 10 or len(numero) > 11:
+                raise ValidationError('La tarjeta de identidad debe tener entre 10 y 11 dígitos')
+        
         elif tipo_doc == 'CE':
-            if len(numero) < 6:
-                raise forms.ValidationError("La cédula de extranjería debe tener al menos 6 caracteres")
+            # Cédula de Extranjería: alfanumérico, 6-15 caracteres
+            if not re.match(r'^[a-zA-Z0-9]+$', numero):
+                raise ValidationError('La cédula de extranjería debe ser alfanumérica')
+            if len(numero) < 6 or len(numero) > 15:
+                raise ValidationError('La cédula de extranjería debe tener entre 6 y 15 caracteres')
+        
+        # Validar que no exista duplicado (excepto en edición)
+        if self.instance.pk:  # Si es edición
+            if Proveedor.objects.exclude(pk=self.instance.pk).filter(
+                tipo_documento=tipo_doc,
+                numero_documento_nit=numero
+            ).exists():
+                raise ValidationError(f'Ya existe un proveedor con este {dict(self.TIPO_DOCUMENTO_CHOICES).get(tipo_doc)}')
+        else:  # Si es creación
+            if Proveedor.objects.filter(
+                tipo_documento=tipo_doc,
+                numero_documento_nit=numero
+            ).exists():
+                raise ValidationError(f'Ya existe un proveedor con este {dict(self.TIPO_DOCUMENTO_CHOICES).get(tipo_doc)}')
         
         return numero
+    
+    def clean_direccion_empresa(self):
+        direccion = self.cleaned_data.get('direccion_empresa', '').strip()
+        
+        if not direccion:
+            raise ValidationError('La dirección es obligatoria')
+        
+        if len(direccion) < 5:
+            raise ValidationError('La dirección debe tener al menos 5 caracteres')
+        
+        if len(direccion) > 200:
+            raise ValidationError('La dirección no puede exceder los 200 caracteres')
+        
+        # Validar caracteres permitidos
+        if not re.match(r'^[a-záéíóúñA-ZÁÉÍÓÚÑ0-9\s.#,\-]+$', direccion):
+            raise ValidationError('La dirección contiene caracteres no válidos')
+        
+        return direccion
+    
+    def clean_numero_telefonico(self):
+        telefono = self.cleaned_data.get('numero_telefonico', '').strip()
+        
+        if not telefono:
+            raise ValidationError('El número telefónico es obligatorio')
+        
+        # Eliminar espacios y guiones
+        telefono = telefono.replace(' ', '').replace('-', '')
+        
+        if not telefono.isdigit():
+            raise ValidationError('El teléfono solo debe contener números')
+        
+        if len(telefono) != 10:
+            raise ValidationError('El teléfono debe tener exactamente 10 dígitos')
+        
+        # Validar que comience con 3 (celulares en Colombia)
+        if not telefono.startswith('3'):
+            raise ValidationError('El teléfono celular debe comenzar con 3')
+        
+        return telefono
+    
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data.get('descripcion', '').strip()
+        
+        # La descripción puede ser opcional, pero si se proporciona debe tener un mínimo
+        if descripcion:
+            if len(descripcion) < 1:
+                raise ValidationError('La descripción debe tener al menos 1 caracteres')
+            
+            if len(descripcion) > 500:
+                raise ValidationError('La descripción no puede exceder los 500 caracteres')
+        
+        return descripcion
     
     def clean(self):
         """Validación general del formulario"""
@@ -88,10 +225,9 @@ class ProveedorForm(ModelForm):
         tipo_documento = cleaned_data.get('tipo_documento')
         numero_documento = cleaned_data.get('numero_documento_nit')
         
-        if not tipo_documento:
-            raise forms.ValidationError("Debe seleccionar un tipo de documento")
-        
-        if not numero_documento:
-            raise forms.ValidationError("Debe ingresar el número de documento")
+        # Validación adicional de consistencia entre tipo y número de documento
+        if tipo_documento and numero_documento:
+            # Aquí puedes agregar validaciones cruzadas adicionales si es necesario
+            pass
         
         return cleaned_data
