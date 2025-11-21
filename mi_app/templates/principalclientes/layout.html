@@ -1,0 +1,34 @@
+{%load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+      <!--link para los estilos de la pagina-->
+   <link rel="stylesheet" href="{% static 'css/stilospagClientes.css' %}">
+   <link rel="stylesheet" href="{% static 'css/listar_producto.css' %}">
+   <!--link para los iconos de bootstrap-->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <meta charset="UTF-8">    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="{% static 'img/logosara.png' %}">
+  <title>Mi Tienda</title>
+
+<style>
+  .titulo {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 2em;
+    color: #333;
+  }
+</style>
+ 
+</head>
+<body>
+{%include "principalclientes/header.html"%}
+
+{%block body %}{%endblock%}
+
+{%include "principalclientes/footer.html"%}
+  <script src="{% static 'js/scrippagClientes.js' %}"></script>
+
+</body>
+</html>

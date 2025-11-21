@@ -23,8 +23,9 @@ app_name = 'mi_app'
 urlpatterns = [
    #path('index.html', vista, name='index'),
    path('principal', principal, name='principal'),
-   path('', pagina_clientes, name='principralclientes'),
-   
+   path('', pagina_clientes, name='contenido_cliente'),
+   path('productos', listar_productos_clientes, name='productos_clientes'),
+
      
    #_________________________ Modulo de Administrador __________________________
     path('administradores/listar/', AdministradorListView.as_view(), name='administrador_lista'),

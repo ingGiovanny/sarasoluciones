@@ -71,7 +71,7 @@ class Presentacion(models.Model):
     color = models.CharField(max_length=25, verbose_name="Color")
     modelo = models.CharField(max_length=25, verbose_name="Modelo")
     funcion_principal = models.CharField(max_length=100, verbose_name="Función Principal")
-    descripcion = models.CharField(max_length=60, verbose_name="Descripción")
+    descripcion = models.CharField(max_length=65, verbose_name="Descripción")
     
     class Meta:
         verbose_name = "Tipo de Presentación"
@@ -84,7 +84,7 @@ class Presentacion(models.Model):
 class Categoria(models.Model):
     """Modelo para categorías de productos"""
     nombre_categoria = models.CharField(max_length=80, unique=True, verbose_name="Nombre Categoría")
-    descripcion = models.TextField(max_length=100, verbose_name="Descripción")
+    descripcion = models.TextField(max_length=110, verbose_name="Descripción")
     
     class Meta:
         verbose_name = "Categoría"

@@ -28,29 +28,33 @@
 {% block iterar %}
 
             {% for producto in object_list %}
-                    <tr>
-                        <td>{{ a.id }}</td>
-                        <td>{{ a.id_categoria }}</td>
-                        <td>{{ a.id_marca }}</td>
-                        <td>{{ a.id_presentacion }}</td>
-                        <td>{{ a.nombre_producto }}</td>
-                        <td>{{ a.cantidad_producto }}</td>
-                        <td>{{ a.valor_unitario }}</td>
-                        <td>{{ a.estado_producto }}</td>
-                        <td>{{ a.fecha_creacion }}</td>
-                        <td>{{ a.fecha_modificacion }}</td>
-                   
+<tr>
+    <td>{{ producto.id }}</td>
+    <td>{{ producto.id_categoria }}</td>
+    <td>{{ producto.id_marca }}</td>
+    <td>{{ producto.id_presentacion }}</td>
+    <td>{{ producto.nombre_producto }}</td>
+    <td>{{ producto.cantidad_producto }}</td>
+    <td>{{ producto.valor_unitario }}</td>
+    <td>{{ producto.estado_producto }}</td>
+    <td>{{ producto.fecha_creacion }}</td>
+    <td>{{ producto.fecha_modificacion }}</td>
 
-                        <td>
-                              <a href="{% url 'mi_app:producto_editar' a.id %}"class="btn btn-warning btn-sm"data-bs-toggle="tooltip"title="Editar"><i class="bi bi-pen-fill"></i></a>
-                              <a href="{% url 'mi_app:producto_eliminar' a.id %}"class="btn btn-danger btn-sm"data-bs-toggle="tooltip"title="Eliminar"><i class="bi bi-trash3-fill"></i></a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                      <td colspan="11">No hay productos registrados.</td>
-                    </tr>
-                    {% endfor %}
+    <td>
+        <a href="{% url 'mi_app:producto_editar' producto.id %}" class="btn btn-warning btn-sm" title="Editar">
+            <i class="bi bi-pen-fill"></i>
+        </a>
+
+        <a href="{% url 'mi_app:producto_eliminar' producto.id %}" class="btn btn-danger btn-sm" title="Eliminar">
+            <i class="bi bi-trash3-fill"></i>
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="11">No hay productos registrados.</td>
+</tr>
+{% endfor %}
 
 <!-- Mensajes con SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

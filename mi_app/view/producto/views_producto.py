@@ -14,7 +14,7 @@ from mi_app.forms.form_producto import ProductoForm
 def listar_producto(request):
     data = {
         "titulo": "Gestión de Productos",
-        "Producto": Producto.objects.all()
+        "producto": Producto.objects.all()
     }
     return render(request, 'producto/producto.html', data)
 
@@ -36,7 +36,7 @@ class productoListView(ListView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Gestión de Productos'
         context['crear_url'] = reverse_lazy('mi_app:producto_crear')
-        context['entidad'] = 'producto'  
+        context['entidad'] = 'Producto'  
         return context
     
 class productoCreateView(CreateView):
@@ -52,7 +52,7 @@ class productoCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context ['titulo'] = 'Crear producto'
-        context ['entidad'] = 'prpoducto'
+        context ['entidad'] = 'Producto'
         context ['listar_url'] = reverse_lazy('mi_app:producto_lista')
         return context
     
@@ -69,7 +69,7 @@ class productoupdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar producto'
-        context['entidad'] = 'producto'
+        context['entidad'] = 'Producto'
         context['listar_url'] = reverse_lazy('mi_app:producto_lista')
         return context
 
@@ -86,6 +86,15 @@ class productoDeleteView(DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Eliminar producto'
-        context['entidad'] = 'producto'
+        context['entidad'] = 'Producto'
         context['listar_url'] = reverse_lazy('mi_app:producto_lista')
         return context
+    
+def listar_productos_clientes(request):
+    """Vista para listar productos disponibles para clientes"""
+    producto = Producto.objects.all().order_by('-fecha_creacion')
+    
+    data = {
+        'productos': producto,
+    }
+    return render(request, 'principalclientes/listar/listarproductos.html', data)
