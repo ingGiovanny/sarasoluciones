@@ -1,0 +1,19 @@
+
+CAMBIAR DISEÑO
+
+{% load i18n %}{% autoescape off %}
+{% blocktrans %}Hola,{% endblocktrans %}
+
+{% blocktrans %}Has solicitado el restablecimiento de contraseña para tu cuenta en {{ site_name }}.{% endblocktrans %}
+
+{% blocktrans %}Haz clic en el siguiente enlace para restablecer tu contraseña:{% endblocktrans %}
+{{ protocol }}://{{ domain }}{% url 'login:password_reset_confirm' uidb64=uid token=token %}
+
+{% blocktrans %}Si no solicitaste este restablecimiento, puedes ignorar este correo electrónico de forma segura.{% endblocktrans %}
+
+{% endautoescape %}
+
+{% blocktrans %}Gracias por usar nuestro sitio.{% endblocktrans %}
+
+{% blocktrans %}El equipo de {{ site_name }}.{% endblocktrans %}
+

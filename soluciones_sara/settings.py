@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mi_app',
     'widget_tweaks',
+    'login',
 ]
 
 MIDDLEWARE = [
@@ -128,11 +129,29 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'mi_app', 'static'),
+    BASE_DIR / 'static',  # Carpeta static en la raíz del proyecto
+    BASE_DIR / 'mi_app' / 'static',  # Carpeta static de tu app
+    #os.path.join(BASE_DIR, 'mi_app', 'static'),
 ]
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'login:login'
+LOGIN_REDIRECT_URL = 'apy:login'
+LOGOUT_REDIRECT_URL = ''
+
+# -----------------------------------------------------
+# ✅ CONFIGURACIÓN DE CORREO CORREGIDA Y FINAL
+# -----------------------------------------------------
+# Asegúrate de que esta línea esté presente:
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
+# Si usas Gmail (lo más común):
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sarasoluciones55@gmail.com'
+EMAIL_HOST_PASSWORD = 'photrckrwbepernf'
