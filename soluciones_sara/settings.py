@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',  # Solo para desarrollo
     'mi_app',
     'widget_tweaks',
     'login',
@@ -140,9 +141,15 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'login:login'
-LOGIN_REDIRECT_URL = 'apy:login'
-LOGOUT_REDIRECT_URL = ''
+# ✅ DESPUÉS (CORRECTO):
+LOGIN_URL = 'login:login'  # Namespace correcto
+LOGIN_REDIRECT_URL = 'mi_app:principal'  # ← Usar el nombre correcto
+LOGOUT_REDIRECT_URL = 'login:login'  # Redirigir al login
+
+# Autenticación backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # -----------------------------------------------------
 # ✅ CONFIGURACIÓN DE CORREO CORREGIDA Y FINAL

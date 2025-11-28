@@ -1,6 +1,7 @@
 from django.urls import path
 # importa las views reales según tus carpetas
 from mi_app.views import *
+from . import views
 from mi_app.view.administrador.views_administrador import *
 from mi_app.view.cliente.views_cliente import *
 from mi_app.view.proveedor.views_proveedor import *
@@ -22,7 +23,7 @@ from mi_app.view.compra.views_compra import CompraListView, CompraCreateView, Co
 app_name = 'mi_app'
 urlpatterns = [
    #path('index.html', vista, name='index'),
-   path('principal', principal, name='principal'),
+   path('principal/', principal, name='principal'),
    path('', pagina_clientes, name='principralclientes'),
    
      
