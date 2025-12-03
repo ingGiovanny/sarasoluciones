@@ -17,6 +17,7 @@
                         <th>ID Marca</th>
                         <th>ID Presentación</th>
                          <th>Nombre Producto</th>
+                         <th>visualizacion</th>
                         <th>Cantidad Producto</th>
                         <th>Valor Unitario</th>
                         <th>Estado Producto</th>
@@ -34,6 +35,12 @@
     <td>{{ producto.id_marca }}</td>
     <td>{{ producto.id_presentacion }}</td>
     <td>{{ producto.nombre_producto }}</td>
+    <td>
+        {% if producto.logo_producto %}
+            <img src="{{ producto.logo_producto.url }}" alt="Logo {{ producto.nombre_producto }}" width="100">
+        {% else %}
+            Sin logo
+        {% endif %}
     <td>{{ producto.cantidad_producto }}</td>
     <td>{{ producto.valor_unitario }}</td>
     <td>{{ producto.estado_producto }}</td>

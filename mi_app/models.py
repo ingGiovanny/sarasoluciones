@@ -117,6 +117,7 @@ class Producto(models.Model):
     
     # Campos del producto
     nombre_producto = models.CharField(max_length=100, verbose_name="Nombre Producto")
+    logo_producto = models.ImageField(upload_to='producto/', blank=True, null=True, verbose_name="Logo producto")
     cantidad_producto = models.IntegerField(validators=[MinValueValidator(0)], verbose_name="Cantidad Producto")
     valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Decimal('0.01'))], verbose_name="Valor Unitario")
     estado_producto = models.CharField(max_length=30, verbose_name="Estado Producto")

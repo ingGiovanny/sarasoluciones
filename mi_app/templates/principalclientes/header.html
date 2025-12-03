@@ -4,9 +4,9 @@
 
 
     <ul class="navbar-menu">
-      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="{% url 'mi_app:contenido_cliente' %}" class="navbar-logo">Inicio</a></li>
       <li><a href="{% url 'mi_app:productos_clientes' %}">Productos</a></li>
-      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="{% url 'mi_app:listar_servicios' %}">Servicios</a></li>
       <li>  <a href="https://wa.me/573125338803?text=Hola,%20me%20gustaría%20más%20información%20sobre%20el%20producto%20A" 
           class="text-decoration-none">Contactanos</a>.</li>
     </ul>
