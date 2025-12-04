@@ -1,0 +1,91 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="producto-container">
+    <div class="producto-grid">
+        <!-- Columna Izquierda - Imagen -->
+        <div class="imagen-producto">
+            <span class="badge-categoria">Capacitación</span>
+            <img src="{% static 'img/epp1.jpg' %}" alt="Curso EPP" loading="eager">
+        </div>
+        
+        <!-- Columna Derecha - Información -->
+        <div class="info-producto">
+            <h1 class="titulo-curso">
+                Curso del Uso Correcto de los Elementos de Protección Personal "EPP"
+            </h1>
+            
+            <div class="rating">
+                <div class="estrellas">
+                    ★★★★★
+                </div>
+                <span class="valoraciones">(4.8) 127 valoraciones</span>
+            </div>
+            
+            <div class="precio-box">
+                <p class="precio">
+                    $149.900
+                    <span class="precio-anterior">$249.900</span>
+                    <span class="descuento">40% OFF</span>
+                </p>
+            </div>
+            
+            <p class="descripcion-corta">
+                Aprende a utilizar correctamente los elementos de protección personal en tu entorno laboral. 
+                Este curso te proporcionará las competencias necesarias para identificar, seleccionar y usar 
+                adecuadamente los EPP según los riesgos de tu área de trabajo.
+            </p>
+            
+            <ul class="caracteristicas">
+                <li>
+                    <i class="fas fa-clock"></i>
+                    <strong>Duración:</strong> 8 horas (4 sesiones de 2 horas)
+                </li>
+                <li>
+                    <i class="fas fa-certificate"></i>
+                    <strong>Certificado:</strong> Incluido al finalizar
+                </li>
+                <li>
+                    <i class="fas fa-users"></i>
+                    <strong>Modalidad:</strong> Virtual en vivo
+                </li>
+                <li>
+                    <i class="fas fa-book"></i>
+                    <strong>Material:</strong> Descargable incluido
+                </li>
+                <li>
+                    <i class="fas fa-infinity"></i>
+                    <strong>Acceso:</strong> De por vida a grabaciones
+                </li>
+            </ul>
+            
+            <div class="botones-accion">
+                <button class="btn-inscribir">
+                    <i class="fas fa-shopping-cart"></i> Inscribirse Ahora
+                </button>
+                <button class="btn-info">
+                    <i class="fas fa-info-circle"></i> Más Información
+                </button>
+            </div>
+            
+            <div class="info-adicional">
+                <div class="info-item">
+                    <i class="fas fa-truck"></i>
+                    <span>Inicio inmediato</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Garantía de satisfacción</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-headset"></i>
+                    <span>Soporte 24/7</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

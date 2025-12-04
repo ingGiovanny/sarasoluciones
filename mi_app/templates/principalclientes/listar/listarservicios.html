@@ -1,0 +1,60 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/servicios.css' %}">
+<h1  class="titulo">Capacitaciones</h1>
+
+  <section class="servicios">
+<a href="{% url 'mi_app:listar_epp' %}" class="servicioss">
+    <div class="servicio">
+      <img src="{% static 'img/epp1.jpg' %}" alt="servicio 1">
+      <h3>uso correcto de los elementos de proteccion personal "EPP"</h3>
+    </div>
+    </a>
+    <a href="{% url 'mi_app:listar_extintores' %}" class="servicioss">
+    <div class="servicio">
+      <img src="{% static 'img/extintor.jpg' %}" alt="servicio 2">
+      <h3>Manejo de extintores</h3>
+      <p></p>
+    </div>
+    </a>
+        <div class="servicio">
+      <img src="{% static 'img/brigada.jpg' %}" alt="servicio 3">
+      <h3>Brigada de emergencias</h3>
+      <p></p>
+    </div>
+        <div class="servicio">
+      <img src="{% static 'img/tunelcarpiano.jpeg' %}" alt="servicio 2">
+      <h3>Cuidado de las manos </h3>
+      <p></p>
+    </div>
+  </section>
+
+
+  <br><br>
+
+   <section class="servicios">
+    <div class="servicio">
+      <img src="{% static 'img/auxilios.png' %}" alt="servicio 1">
+      <h3>Primeros auxilios</h3>
+      <p></p>
+    </div>
+    <div class="servicio">
+      <img src="{% static 'img/saludable.jpg' %}" alt="servicio 2">
+      <h3>Estilo de vida saludable</h3>
+      <p></p>
+    </div>
+        <div class="servicio">
+      <img src="{% static 'img/emergenciaNatural.jpg' %}" alt="servicio 3">
+      <h3>Plan de Emergencias</h3>
+      <p></p>
+    </div>
+        <div class="servicio">
+      <img src="{% static 'img/energiasPeligrosas.jpg' %}" alt="servicio 2">
+      <h3>Energias peligrosas</h3>
+      <p></p>
+    </div>
+
+  </section>
+{% endblock %}
