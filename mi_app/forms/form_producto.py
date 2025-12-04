@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import ModelForm, TextInput, NumberInput, Select
+from django.forms import ModelForm, TextInput, NumberInput, Select ,  ClearableFileInput
 from mi_app.models import Producto
 
 class ProductoForm(ModelForm):
@@ -10,7 +10,7 @@ class ProductoForm(ModelForm):
     class Meta:
         model = Producto
         fields = ['id_categoria', 'id_marca', 'id_presentacion', 'nombre_producto', 
-                 'cantidad_producto', 'valor_unitario', 'estado_producto']
+                 'cantidad_producto', 'valor_unitario', 'estado_producto', 'logo_producto']
         widgets = {
             'id_categoria': Select(
                 attrs={
@@ -30,6 +30,12 @@ class ProductoForm(ModelForm):
             'nombre_producto': TextInput(
                 attrs={
                     'placeholder': 'Ingrese el nombre del producto',
+                }
+            ),
+             'logo_producto': ClearableFileInput(
+                attrs={
+                    'class': 'form-control',
+                    'accept': 'image/*'
                 }
             ),
             'cantidad_producto': NumberInput(
