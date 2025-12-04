@@ -18,6 +18,7 @@ from mi_app.view.principal.views_principal import principal
 from mi_app.view.principalcliente.views_principal_cliente import pagina_clientes
 from mi_app.view.listarservicios.listarservicios import listar_servicios
 from mi_app.view.contentservicios.epp import listar_epp
+from mi_app.view.contentservicios.extintores import listar_manejo_extintores
 from mi_app.view.compra.views_compra import CompraListView, CompraCreateView, CompraUpdateView, CompraDeleteView
 
 
@@ -29,6 +30,8 @@ urlpatterns = [
    path('productos', listar_productos_clientes, name='productos_clientes'),
     path('servicios', listar_servicios, name='listar_servicios'),
      path('epp', listar_epp, name='listar_epp'),
+        path('manejo_Extintor', listar_manejo_extintores , name='listar_extintores'),
+     
     
 
      
