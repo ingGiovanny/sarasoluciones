@@ -21,65 +21,60 @@
     <div id="slideshow-background">
         </div>
     <div class="login-box">
-      <div class="card">
-        <div class="login-logo">
-          <a data-bs-theme="dark" ><b>Sara Soluciones</b></a>
+    <div class="card">
+        <div class="login-logo py-3"> 
+            <a href="#"><b>LOGIN</b></a>
         </div>
+        
         <div class="card-body login-card-body">
-          <p class="login-box-msg">Iniciar sesión</p>
+            
+            <p class="login-box-msg">Iniciar sesión</p>
 
-          <form method="post">
-          {% csrf_token %} 
-            <div class="input-group mb-3">
-              {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su Usuario' }}
-              <div class="input-group-text">
-                <span class="fas fa-user"></span> 
-              </div>
-            </div>
-            
-            <div class="input-group mb-3">
-              {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su Contraseña' }}
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
-              </div>
-            </div>
-            
-            <div class="row">
-              <div class="col-8">
-              </div>
-              <div class="col-4">
-                <div class="d-grid gap-2">
-                  <button type="submit" class="btn btn-primary">Iniciar sesion</button>
+            <form method="post">
+                {% csrf_token %} 
+                
+                <div class="input-group mb-3">
+                    {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su Usuario' }}
+                    <div class="input-group-text">
+                        <span class="fas fa-user"></span> 
+                    </div>
                 </div>
-              </div>
-              </div>
+                
+                <div class="input-group mb-3">
+                    {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su Contraseña' }}
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <div class="icheck-primary"> 
+                            <input type="checkbox" id="remember">
+                            <label for="remember">
+                                Recordarme
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mb-3">
+                    <button type="submit" class="btn btn-block btn-primary btn-lg">LOGIN</button>
+                </div>
             </form>
 
-          <script type="application/javascript">
-            {% if form.errors %}
-            var errors = '';
-            {% for field in form %}
-            {% for error in field.errors %}
-            errors += '{{ error }}\n';
-            {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-            errors += '{{ error }}\n';
-            {% endfor %}
-            Swal.fire({
-                title: 'Error!',
-                text: errors,
-                icon: 'error'
-            });
-            {% endif %}
-          </script>
-
-          <p class="mb-1">
-            <a href="{% url 'login:password_reset' %}">Olvide Mi Contraseña</a>
-          </p>
-        </div>
+            <p class="mb-1 text-center">
+                <a href="{% url 'login:password_reset' %}">Olvidé Mi Contraseña</a>
+            </p>
         </div>
     </div>
+</div>
+
+<script type="application/javascript">
+    {% if form.errors %}
+    // ... Tu lógica de Swal.fire (SweetAlert2)
+    {% endif %}
+</script>
 </div>
 <script src="{% static 'lib/datatables-1.10.20/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>

@@ -4,6 +4,7 @@ from django.urls import path , include
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
+    path('mi_app/', include(('mi_app.urls', 'mi_app'), namespace='mi_app')),
     path('', include(('login.urls', 'login'), namespace='login')),
     path('admin/', admin.site.urls),
 ]

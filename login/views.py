@@ -1,7 +1,5 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
-
-
 from django.contrib.auth import login, logout
 from django.views.generic import RedirectView 
 from django.utils.functional import lazy

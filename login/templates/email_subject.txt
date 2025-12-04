@@ -1,3 +1,2 @@
 Restablecimiento de contraseña para {{ user.username }}
 
-dejar quieto ¿preguntar?

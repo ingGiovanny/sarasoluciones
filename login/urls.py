@@ -16,20 +16,20 @@ urlpatterns = [
 
     # 2. Correo enviado
     path('olvide-contrasena/enviado/', auth_views.PasswordResetDoneView.as_view(
-        # ✅ RUTA SIMPLIFICADA
+        # RUTA SIMPLIFICADA
         template_name='recuperar_email_enviado.html'
     ), name='password_reset_done'),
 
     # 3. Restablecer contraseña (link del email)
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
-        # ✅ RUTA SIMPLIFICADA
+        # RUTA SIMPLIFICADA
         template_name='recuperar_confirmar_nueva.html',
         success_url='/reset/done/',
     ), name='password_reset_confirm'),
 
     # 4. Finalizado
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
-        # ✅ RUTA SIMPLIFICADA
+        # RUTA SIMPLIFICADA
         template_name='recuperar_finalizado.html'
     ), name='password_reset_complete'),
     
@@ -40,7 +40,7 @@ urlpatterns = [
         subject_template_name='email_subject.txt', 
         success_url='/olvide-contrasena/enviado/',
         
-        # 🚨 CAMBIO CLAVE: Usar la forma personalizada
+        # CAMBIO CLAVE: Usar la forma personalizada
         form_class=CustomPasswordResetForm 
         
     ), name='password_reset'),

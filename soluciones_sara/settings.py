@@ -141,7 +141,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login:login'
-LOGIN_REDIRECT_URL = 'apy:login'
+LOGIN_REDIRECT_URL = 'mi_app:principal'
 LOGOUT_REDIRECT_URL = ''
 
 # -----------------------------------------------------
