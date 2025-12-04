@@ -2,6 +2,7 @@ from django.shortcuts import render
 from mi_app.templates import *  
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.decorators import login_required
 
 
 def vista(request):
@@ -16,3 +17,4 @@ def vista2(request):
 
 def vista3(request):
     return render(request, 'modulos/prueba.html')
+

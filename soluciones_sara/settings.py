@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',  # Solo para desarrollo
     'mi_app',
     'widget_tweaks',
     'login',

@@ -2,24 +2,21 @@
 {% load widget_tweaks %}
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <title>Sara Soluciones</title>
-    
+    <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}" />
     <link rel="stylesheet" href="{% static 'AdminLTE/dist/css/adminlte.css' %}" />
     <link rel="stylesheet" href="{% static 'AdminLTE/dist/css/bootstrap.css' %}" />
-
     <link rel="stylesheet" href="{% static 'login/css/custom.css' %}" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
-    </head>
-  <body class="login-page"> 
+</head>
+<body class="login-page"> 
     
-    <div id="slideshow-background">
-        </div>
+    <div id="slideshow-background"></div>
     <div class="login-box">
     <div class="card">
         <div class="login-logo py-3"> 
@@ -82,15 +79,19 @@
 <script src="{% static 'AdminLTE/dist/js/bootstrap.js' %}"></script>
 <script src="{% static 'AdminLTE/dist/js/adminlte.js' %}"></script>
 
-<div style="display:none">
-    <img src="{% static 'login/css/img/background1.jpg' %}">
-    <img src="{% static 'login/css/img/background2.jpg' %}">
-    <img src="{% static 'login/css/img/background3.jpg' %}">
-    <img src="{% static 'login/css/img/background4.jpg' %}">
-    <img src="{% static 'login/css/img/background5.jpg' %}">
-</div>
+    <script src="{% static 'lib/datatables-1.10.20/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'AdminLTE/dist/js/popper.js' %}"></script>
+    <script src="{% static 'AdminLTE/dist/js/bootstrap.js' %}"></script>
+    <script src="{% static 'AdminLTE/dist/js/adminlte.js' %}"></script>
 
-  </body>
+    <div style="display:none">
+        <img src="{% static 'login/css/img/background1.jpg' %}">
+        <img src="{% static 'login/css/img/background2.jpg' %}">
+        <img src="{% static 'login/css/img/background3.jpg' %}">
+        <img src="{% static 'login/css/img/background4.jpg' %}">
+        <img src="{% static 'login/css/img/background5.jpg' %}">
+    </div>
+
+</body>
 </html>
-  </body>
-  </html>
