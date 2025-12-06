@@ -1,12 +1,12 @@
 from django.urls import path
-# importa las views reales según tus carpetas
+#importa las views reales según tus carpetas
 from mi_app.views import *
 from . import views
 from mi_app.view.administrador.views_administrador import *
 from mi_app.view.cliente.views_cliente import *
 from mi_app.view.proveedor.views_proveedor import *
 from mi_app.view.marca.views_marca import *
-# Presentación: importar el módulo correcto
+#Presentación: importar el módulo correcto
 from mi_app.view.presentacion.views_presentacion import *
 from mi_app.view.categoria.views_categoria import *
 from mi_app.view.producto.views_producto import *
@@ -15,26 +15,28 @@ from mi_app.view.pedido.views_pedido import *
 from mi_app.view.factura.views_factura import *
 from mi_app.view.ventas.views_ventas import *
 from mi_app.view.garantia.views_garantia import *
-from mi_app.view.principal.views_principal import principal
-from mi_app.view.principalcliente.views_principal_cliente import pagina_clientes
-from mi_app.view.listarservicios.listarservicios import listar_servicios
-from mi_app.view.contentservicios.epp import listar_epp
-from mi_app.view.contentservicios.extintores import listar_manejo_extintores
+from mi_app.view.principal.views_principal import *
+from mi_app.view.principalcliente.views_principal_cliente import *
+from mi_app.view.listarservicios.listarservicios import *
+from mi_app.view.contentservicios.epp import *
+from mi_app.view.contentservicios.extintores import *
 from mi_app.view.compra.views_compra import CompraListView, CompraCreateView, CompraUpdateView, CompraDeleteView
 
 
 app_name = 'mi_app'
 urlpatterns = [
-   #path('index.html', vista, name='index'),
+#path('index.html', vista, name='index'),
    path('principal/', principal, name='principal'),
-  # path('cli', pagina_clientes, name='principralclientes'),
+   path('ayuda/', ayuda, name='ayuda'),
+
+# path('cli', pagina_clientes, name='principralclientes'),
    path('cli', pagina_clientes, name='contenido_cliente'),
    path('productos', listar_productos_clientes, name='productos_clientes'),
     path('servicios', listar_servicios, name='listar_servicios'),
-     path('epp', listar_epp, name='listar_epp'),
-        path('manejo_Extintor', listar_manejo_extintores , name='listar_extintores'),
+    path('epp', listar_epp, name='listar_epp'),
+    path('manejo_Extintor', listar_manejo_extintores , name='listar_extintores'),
       
-   #_________________________ Modulo de Administrador __________________________
+#_________________________ Modulo de Administrador __________________________
     path('administradores/listar/', AdministradorListView.as_view(), name='administrador_lista'),
     path('administradores/crear/', AdministradorCreateView.as_view(), name='administrador_crear'),
     path('administradores/editar/<int:pk>/', AdministradorUpdateView.as_view(), name='administrador_editar'),
@@ -76,49 +78,55 @@ urlpatterns = [
     
 #--------------------------------modulo producto ---------------------------------------
 
-       path('producto/listar/', productoListView.as_view(), name='producto_lista'),
-       path('producto/crear/', productoCreateView.as_view(), name='producto_crear'),
-       path('producto/editar/<int:pk>/', productoupdateView.as_view(), name='producto_editar'),
-       path('producto/eliminar/<int:pk>/', productoDeleteView.as_view(), name='producto_eliminar'),
+    path('producto/listar/', productoListView.as_view(), name='producto_lista'),
+    path('producto/crear/', productoCreateView.as_view(), name='producto_crear'),
+    path('producto/editar/<int:pk>/', productoupdateView.as_view(), name='producto_editar'),
+    path('producto/eliminar/<int:pk>/', productoDeleteView.as_view(), name='producto_eliminar'),
            
 #--------------------------------modulo gestion servicio ---------------------------------------
-       path('gestionservicio/listar/', servicioListView.as_view(), name='gestionservicio_lista'),
-       path('gestionservicio/crear/', servicioCreateView.as_view(), name='gestionservicio_crear'),
-       path('gestionservicio/editar/<int:pk>/', serviciopdateView.as_view(), name='gestionservicio_editar'),
-       path('gestionservicio/eliminar/<int:pk>/', servicioDeleteView.as_view(), name='gestionservicio_eliminar'),  
+    path('gestionservicio/listar/', servicioListView.as_view(), name='gestionservicio_lista'),
+    path('gestionservicio/crear/', servicioCreateView.as_view(), name='gestionservicio_crear'),
+    path('gestionservicio/editar/<int:pk>/', serviciopdateView.as_view(), name='gestionservicio_editar'),
+    path('gestionservicio/eliminar/<int:pk>/', servicioDeleteView.as_view(), name='gestionservicio_eliminar'),  
  
  
  #--------------------------------modulo garantia ---------------------------------------
-       path('garantia/listar/', GarantiaListView.as_view(), name='garantia_lista'),
-       path('garantia/crear/', GarantiaCreateView.as_view(), name='garantia_crear'),
-       path('garantia/editar/<int:pk>/', GarantiaupdateView.as_view(), name='garantia_editar'),
-       path('garantia/eliminar/<int:pk>/', GarantiaDeleteView.as_view(), name='garantia_eliminar'),  
+    path('garantia/listar/', GarantiaListView.as_view(), name='garantia_lista'),
+    path('garantia/crear/', GarantiaCreateView.as_view(), name='garantia_crear'),
+    path('garantia/editar/<int:pk>/', GarantiaupdateView.as_view(), name='garantia_editar'),
+    path('garantia/eliminar/<int:pk>/', GarantiaDeleteView.as_view(), name='garantia_eliminar'),  
      
 #--------------------------------modulo pedido ---------------------------------------
-        path('pedido/listar/', pedidoListView.as_view(), name='pedido_lista'),   
-        path('pedido/crear/', pedidoCreateView.as_view(), name='pedido_crear'),
-        path('pedido/editar/<int:pk>/', pedidoUpdateView.as_view(), name='pedido_editar'),
-        path('pedido/eliminar/<int:pk>/', pedidoDeleteView.as_view(), name='pedido_eliminar'),
+    path('pedido/listar/', pedidoListView.as_view(), name='pedido_lista'),   
+    path('pedido/crear/', pedidoCreateView.as_view(), name='pedido_crear'),
+    path('pedido/editar/<int:pk>/', pedidoUpdateView.as_view(), name='pedido_editar'),
+    path('pedido/eliminar/<int:pk>/', pedidoDeleteView.as_view(), name='pedido_eliminar'),
       
       
 #--------------------------------modulo facturacion ---------------------------------------
-        path('factura/listar/', FacturaListView.as_view(), name='factura_lista'),   
-        path('factura/crear/', FacturaCreateView.as_view(), name='factura_crear'),
-        path('factura/editar/<int:pk>/', FacturaUpdateView.as_view(), name='factura_editar'),
-        path('factura/eliminar/<int:pk>/', facturaDeleteView.as_view(), name='factura_eliminar'),      
+    path('factura/listar/', FacturaListView.as_view(), name='factura_lista'),   
+    path('factura/crear/', FacturaCreateView.as_view(), name='factura_crear'),
+    path('factura/editar/<int:pk>/', FacturaUpdateView.as_view(), name='factura_editar'),
+    path('factura/eliminar/<int:pk>/', facturaDeleteView.as_view(), name='factura_eliminar'),      
             
 
 #--------------------------------modulo ventas ---------------------------------------
-        path('ventas/listar/', ventasListView.as_view(), name='ventas_lista'),
-        path('ventas/crear/', ventasCreateView.as_view(), name='ventas_crear'),
-        path('ventas/editar/<int:pk>/', ventasUpdateView.as_view(), name='ventas_editar'),
-        path('ventas/eliminar/<int:pk>/', ventasDeleteView.as_view(), name='ventas_eliminar'),
+    path('ventas/listar/', ventasListView.as_view(), name='ventas_lista'),
+    path('ventas/crear/', ventasCreateView.as_view(), name='ventas_crear'),
+    path('ventas/editar/<int:pk>/', ventasUpdateView.as_view(), name='ventas_editar'),
+    path('ventas/eliminar/<int:pk>/', ventasDeleteView.as_view(), name='ventas_eliminar'),
         
 #--------------------------------modulo compras ---------------------------------------
-        path('compras/listar/', CompraListView.as_view(), name='compras_lista'),
-        path('compras/crear/', CompraCreateView.as_view(), name='compras_crear'),
-        path('compras/editar/<int:pk>/', CompraUpdateView.as_view(), name='compras_editar'),
-        path('compras/eliminar/<int:pk>/', CompraDeleteView.as_view(), name='compras_eliminar'),        
-                  
+    path('compras/listar/', CompraListView.as_view(), name='compras_lista'),
+    path('compras/crear/', CompraCreateView.as_view(), name='compras_crear'),
+    path('compras/editar/<int:pk>/', CompraUpdateView.as_view(), name='compras_editar'),
+    path('compras/eliminar/<int:pk>/', CompraDeleteView.as_view(), name='compras_eliminar'),        
+
+#--------------------------------modulo ayuda ---------------------------------------
+    path('compras/listar/', CompraListView.as_view(), name='compras_lista'),
+    path('compras/crear/', CompraCreateView.as_view(), name='compras_crear'),
+    path('compras/editar/<int:pk>/', CompraUpdateView.as_view(), name='compras_editar'),
+    path('compras/eliminar/<int:pk>/', CompraDeleteView.as_view(), name='compras_eliminar'),   
+
 ]
 

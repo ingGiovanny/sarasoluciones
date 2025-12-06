@@ -18,3 +18,6 @@ def vista2(request):
 def vista3(request):
     return render(request, 'modulos/prueba.html')
 
+def ayuda(request):
+    return render(request, 'ayuda.html')
+
