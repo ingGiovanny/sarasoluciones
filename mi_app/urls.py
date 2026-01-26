@@ -18,8 +18,13 @@ from mi_app.view.garantia.views_garantia import *
 from mi_app.view.principal.views_principal import *
 from mi_app.view.principalcliente.views_principal_cliente import *
 from mi_app.view.listarservicios.listarservicios import *
-from mi_app.view.contentservicios.epp import *
+from mi_app.view.contentservicios.brigada import *
 from mi_app.view.contentservicios.extintores import *
+from mi_app.view.contentservicios.manos import *
+from mi_app.view.contentservicios.firts_aid import *
+from mi_app.view.contentservicios.vida_saludable import *
+from mi_app.view.contentservicios.emergency_plan import *
+from mi_app.view.contentservicios.energias_peligrosas import *
 from mi_app.view.compra.views_compra import CompraListView, CompraCreateView, CompraUpdateView, CompraDeleteView
 
 
@@ -33,8 +38,15 @@ urlpatterns = [
    path('cli', pagina_clientes, name='contenido_cliente'),
    path('productos', listar_productos_clientes, name='productos_clientes'),
     path('servicios', listar_servicios, name='listar_servicios'),
-    path('epp', listar_epp, name='listar_epp'),
+    path('brigada', listar_brigada, name='listar_brigada'),
     path('manejo_Extintor', listar_manejo_extintores , name='listar_extintores'),
+    path("salud_manos", listar_manos, name='listar_manos'),
+    path("primeros_auxilios", listar_first_aid, name='listar_first_aid'),
+    path("vida_saludable", listar_vida_saludable, name='listar_vida_saludable'),
+    path("plan_emergencias", listar_emergency_plan, name='listar_emergency_plan'),
+    path("energias_peligrosas", listar_energias_peligrosas, name='listar_energias_peligrosas'),
+    
+    
       
 #_________________________ Modulo de Administrador __________________________
     path('administradores/listar/', AdministradorListView.as_view(), name='administrador_lista'),
