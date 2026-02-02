@@ -2,6 +2,14 @@
 {% load static %}
 {% block content %}
 
+<style>
+    .producto-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+ }
+</style>
 
 <div class="productos-container">
     <!-- resto del código -->
@@ -40,9 +48,13 @@
              data-precio="{{ producto.valor_unitario }}"
              data-cantidad="{{ producto.cantidad_producto }}">
             
-            <div class="producto-imagen">
-                <div class="producto-imagen-icon">📦</div>
-            </div>
+          <div class="producto-imagen">
+    {% if producto.logo_producto %}
+        <img src="{{ producto.logo_producto.url }}" alt="{{ producto.nombre_producto }}">
+    {% else %}
+        <div class="producto-imagen-icon">📦</div>
+    {% endif %}
+</div>
             
             <div class="producto-info">
                 <div>
