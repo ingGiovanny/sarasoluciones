@@ -5,11 +5,11 @@ from mi_app.models import Producto
 class ProductoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['nombre_producto'].widget.attrs['autofocus'] = True
+        self.fields['id_presentacion'].widget.attrs['autofocus'] = True
     
     class Meta:
         model = Producto
-        fields = ['id_categoria', 'id_marca', 'id_presentacion', 'nombre_producto', 
+        fields = ['id_categoria', 'id_marca', 'id_presentacion',  
                  'cantidad_producto', 'valor_unitario', 'estado_producto', 'logo_producto']
         widgets = {
             'id_categoria': Select(
@@ -27,11 +27,7 @@ class ProductoForm(ModelForm):
                     'class': 'form-control',
                 }
             ),
-            'nombre_producto': TextInput(
-                attrs={
-                    'placeholder': 'Ingrese el nombre del producto',
-                }
-            ),
+           
              'logo_producto': ClearableFileInput(
                 attrs={
                     'class': 'form-control',

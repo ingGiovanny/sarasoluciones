@@ -25,6 +25,8 @@ from mi_app.view.contentservicios.firts_aid import *
 from mi_app.view.contentservicios.vida_saludable import *
 from mi_app.view.contentservicios.emergency_plan import *
 from mi_app.view.contentservicios.energias_peligrosas import *
+#from mi_app.view.detalle_producto.detalle_producto_views import *
+from mi_app.view.detalle_producto.detalle_producto_views import detalle_producto
 from mi_app.view.compra.views_compra import CompraListView, CompraCreateView, CompraUpdateView, CompraDeleteView
 
 
@@ -45,6 +47,9 @@ urlpatterns = [
     path("vida_saludable", listar_vida_saludable, name='listar_vida_saludable'),
     path("plan_emergencias", listar_emergency_plan, name='listar_emergency_plan'),
     path("energias_peligrosas", listar_energias_peligrosas, name='listar_energias_peligrosas'),
+    
+    #detalle producto
+    path('producto/<int:pk>/', detalle_producto, name='detalle_producto'),
     
     
       

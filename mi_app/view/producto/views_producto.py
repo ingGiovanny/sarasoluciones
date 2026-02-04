@@ -138,10 +138,6 @@ class productoDeleteView(DeleteView):
 
     
 def listar_productos_clientes(request):
-    """Vista para listar productos disponibles para clientes"""
-    producto = Producto.objects.all().order_by('-fecha_creacion')
-    
-    data = {
-        'productos': producto,
-    }
-    return render(request, 'principalclientes/listar/listarproductos.html', data)
+    # Usar select_related es VITAL cuando quitaste el nombre del modelo principal
+    productos = Producto.objects.select_related('id_presentacion').all().order_by('-fecha_creacion')
+    return render(request, 'principalclientes/listar/listarproductos.html', {'productos': productos})

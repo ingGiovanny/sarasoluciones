@@ -9,6 +9,16 @@
     object-fit: cover;
     border-radius: 8px;
  }
+ .producto-enlace-contenedor {
+    text-decoration: none !important; /* Quita el subrayado */
+    color: inherit;                  /* Mantiene los colores originales de tu texto */
+    display: block;                  /* Hace que todo el espacio sea clicable */
+    transition: transform 0.2s;      /* Un pequeño efecto visual opcional */
+}
+
+.producto-enlace-contenedor:hover {
+    transform: translateY(-5px);    /* Levanta un poco la tarjeta al pasar el mouse */
+}
 </style>
 
 <div class="productos-container">
@@ -42,19 +52,21 @@
     </div>
 
     <div class="productos-grid" id="productosGrid">
-        {% for producto in productos %}
+    {% for producto in productos %}
+    <a href="{% url 'mi_app:detalle_producto' producto.id %}" class="producto-enlace-contenedor">
+        
         <div class="producto-card" 
-             data-nombre="{{ producto.nombre_producto|lower }}"
+             data-nombre="{{ producto.id_presentacion.nombre|lower }}"
              data-precio="{{ producto.valor_unitario }}"
              data-cantidad="{{ producto.cantidad_producto }}">
             
-          <div class="producto-imagen">
-    {% if producto.logo_producto %}
-        <img src="{{ producto.logo_producto.url }}" alt="{{ producto.nombre_producto }}">
-    {% else %}
-        <div class="producto-imagen-icon">📦</div>
-    {% endif %}
-</div>
+            <div class="producto-imagen">
+                {% if producto.logo_producto %}
+                    <img src="{{ producto.logo_producto.url }}" alt="{{ producto.id_presentacion.nombre }}">
+                {% else %}
+                    <div class="producto-imagen-icon">📦</div>
+                {% endif %}
+            </div>
             
             <div class="producto-info">
                 <div>
@@ -65,7 +77,7 @@
                 </div>
                 
                 <div class="producto-nombre">
-                    {{ producto.nombre_producto }}
+                     {{ producto.id_presentacion.nombre }}
                 </div>
                 
                 {% if producto.cantidad_producto > 0 %}
@@ -89,77 +101,48 @@
                 {% endif %}
             </div>
         </div>
-        {% empty %}
-        <div class="sin-productos" style="grid-column: 1/-1;">
-            <div class="sin-productos-icon">📦</div>
-            <h3>No hay productos disponibles</h3>
-            <p>Vuelve pronto para ver nuestras novedades</p>
-        </div>
-        {% endfor %}
+    </a>
+{% empty %}
+    <div class="sin-productos" style="grid-column: 1/-1;">
+        <div class="sin-productos-icon">📦</div>
+        <h3>No hay productos disponibles</h3>
+        <p>Vuelve pronto para ver nuestras novedades</p>
+    </div>
+{% endfor %}
     </div>
 </div>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const buscador = document.getElementById('buscarProducto');
-    const ordenar = document.getElementById('ordenarProductos');
-    const productosGrid = document.getElementById('productosGrid');
-    const contadorProductos = document.getElementById('contadorProductos');
-    let productos = Array.from(document.querySelectorAll('.producto-card'));
+     document.addEventListener('DOMContentLoaded', function() {
+       const buscador = document.getElementById('buscarProducto');
+       const ordenar = document.getElementById('ordenarProductos');
+       const productosGrid = document.getElementById('productosGrid');
+       const contadorProductos = document.getElementById('contadorProductos');
+    
+    // CAMBIO AQUÍ: Ahora seleccionamos el contenedor del enlace
+      let productos = Array.from(document.querySelectorAll('.producto-enlace-contenedor'));
 
-    // Función de búsqueda
+    // Función de búsqueda (Se mantiene casi igual, pero ahora 'producto' es el enlace)
     buscador.addEventListener('input', function() {
         const termino = this.value.toLowerCase().trim();
         let contadorVisibles = 0;
 
         productos.forEach(producto => {
-            const nombre = producto.dataset.nombre;
+            // Buscamos el dataset-nombre dentro de la tarjeta que está adentro del enlace
+            const tarjeta = producto.querySelector('.producto-card');
+            const nombre = tarjeta.dataset.nombre;
+
             if (nombre.includes(termino)) {
-                producto.style.display = 'flex';
+                producto.style.display = 'block'; // Mostramos el enlace completo
                 contadorVisibles++;
             } else {
-                producto.style.display = 'none';
+                producto.style.display = 'none'; // Ocultamos el enlace completo
             }
         });
 
         actualizarContador(contadorVisibles);
     });
 
-    // Función de ordenamiento
-    ordenar.addEventListener('change', function() {
-        const criterio = this.value;
-        
-        productos.sort((a, b) => {
-            switch(criterio) {
-                case 'precio-asc':
-                    return parseFloat(a.dataset.precio) - parseFloat(b.dataset.precio);
-                case 'precio-desc':
-                    return parseFloat(b.dataset.precio) - parseFloat(a.dataset.precio);
-                case 'nombre':
-                    return a.dataset.nombre.localeCompare(b.dataset.nombre);
-                default:
-                    return 0;
-            }
-        });
-
-        productos.forEach(producto => productosGrid.appendChild(producto));
-    });
-
-    // Actualizar contador
-    function actualizarContador(cantidad) {
-        const texto = cantidad === 1 ? 'resultado' : 'resultados';
-        contadorProductos.textContent = `${cantidad} ${texto}`;
-    }
-
-    // Click en producto (puedes agregar navegación aquí)
-    productos.forEach(producto => {
-        producto.addEventListener('click', function() {
-            // Aquí puedes agregar la navegación a la página de detalle
-            console.log('Producto clickeado:', this.dataset.nombre);
-            // Por ejemplo: window.location.href = `/producto/${id}`;
-        });
-    });
+    // ... el resto de tus funciones (ordenar y actualizarContador) se mantienen igual ...
 });
 </script>
-
 {% endblock %}

@@ -116,7 +116,6 @@ class Producto(models.Model):
     id_presentacion = models.ForeignKey(Presentacion, on_delete=models.CASCADE, related_name='productos_presentacion')
     
     # Campos del producto
-    nombre_producto = models.CharField(max_length=100, verbose_name="Nombre Producto")
     logo_producto = models.ImageField(upload_to='producto/', blank=True, null=True, verbose_name="Logo producto")
     cantidad_producto = models.IntegerField(validators=[MinValueValidator(0)], verbose_name="Cantidad Producto")
     valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Decimal('0.01'))], verbose_name="Valor Unitario")
@@ -131,7 +130,8 @@ class Producto(models.Model):
         verbose_name_plural = "Productos"
         
     def __str__(self):
-        return f"{self.nombre_producto} - {self.id_marca.nombre_marca}"
+    # Usamos el nombre que viene de la relación id_presentacion
+     return f"{self.id_presentacion.nombre} - {self.id_marca.nombre_marca}"
 
 
 class Factura(models.Model):
