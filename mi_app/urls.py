@@ -25,8 +25,9 @@ from mi_app.view.contentservicios.firts_aid import *
 from mi_app.view.contentservicios.vida_saludable import *
 from mi_app.view.contentservicios.emergency_plan import *
 from mi_app.view.contentservicios.energias_peligrosas import *
-#from mi_app.view.detalle_producto.detalle_producto_views import *
 from mi_app.view.detalle_producto.detalle_producto_views import detalle_producto
+from mi_app.view.producto.views_producto import eliminar_imagen_galeria
+from mi_app.view.carrito_compras.views_carrito import *
 from mi_app.view.compra.views_compra import CompraListView, CompraCreateView, CompraUpdateView, CompraDeleteView
 
 
@@ -50,6 +51,12 @@ urlpatterns = [
     
     #detalle producto
     path('producto/<int:pk>/', detalle_producto, name='detalle_producto'),
+    #borrar imagen de galeria
+    path('producto/eliminar-imagen/<int:pk>/', eliminar_imagen_galeria, name='eliminar_imagen_galeria'),
+    #carrito de compras 
+    path('carrito/', ver_carrito, name='ver_carrito'),
+    path('carrito/agregar/<int:producto_id>/', agregar_al_carrito, name='agregar_carrito'),
+    path('carrito/modificar/<int:producto_id>/<str:accion>/', modificar_cantidad, name='modificar_carrito'),
     
     
       

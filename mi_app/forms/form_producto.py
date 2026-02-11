@@ -1,6 +1,6 @@
 from django import forms
-from django.forms import ModelForm, TextInput, NumberInput, Select ,  ClearableFileInput
-from mi_app.models import Producto
+from django.forms import ModelForm, TextInput, NumberInput, Select ,  ClearableFileInput, inlineformset_factory
+from mi_app.models import Producto, ImagenProducto
 
 class ProductoForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -58,4 +58,6 @@ class ProductoForm(ModelForm):
                     'class': 'form-control',
                 }
             ),
+            
+    
         }

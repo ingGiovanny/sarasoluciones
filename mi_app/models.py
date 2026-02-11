@@ -237,3 +237,16 @@ class Ventas(models.Model):
         
     def __str__(self):
         return f"Venta #{self.id} - {self.fecha_venta}"
+    
+    
+class ImagenProducto(models.Model):
+     producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='imagenes')
+     imagen = models.ImageField(upload_to='productos/galeria/', verbose_name="Imagen")
+     fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+     class Meta:
+        verbose_name = "Imagen de Producto"
+        verbose_name_plural = "Imágenes de Productos"
+
+     def __str__(self):
+        return f"Imagen de {self.producto.id_presentacion.nombre}"

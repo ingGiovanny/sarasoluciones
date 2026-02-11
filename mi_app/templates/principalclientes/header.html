@@ -1,18 +1,50 @@
- <nav class="navbar">
-    
-  <a href="{% url 'mi_app:contenido_cliente' %}" class="navbar-logo">Soluciones sara</a>
+<style>
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+}
 
+.cart-icon-wrapper {
+    position: relative;
+    font-size: 1.5rem;
+    color: #2d3436;
+    text-decoration: none;
+}
+
+.cart-icon-wrapper .badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background-color: #ff3838; /* Rojo vibrante */
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: bold;
+    min-width: 18px;
+    text-align: center;
+}
+</style>
+<nav class="navbar">
+    <a href="{% url 'mi_app:contenido_cliente' %}" class="navbar-logo">Soluciones Sara</a>
 
     <ul class="navbar-menu">
-      <li><a href="{% url 'mi_app:contenido_cliente' %}" class="navbar-logo">Inicio</a></li>
-      <li><a href="{% url 'mi_app:productos_clientes' %}">Productos</a></li>
-      <li><a href="{% url 'mi_app:listar_servicios' %}">Servicios</a></li>
-      <li>  <a href="https://wa.me/573125338803?text=Hola,%20me%20gustaría%20más%20información%20sobre%20el%20producto%20A" 
-          class="text-decoration-none">Contactanos</a>.</li>
+        <li><a href="{% url 'mi_app:contenido_cliente' %}">Inicio</a></li>
+        <li><a href="{% url 'mi_app:productos_clientes' %}">Productos</a></li>
+        <li><a href="{% url 'mi_app:listar_servicios' %}">Servicios</a></li>
+        <li>
+            <a href="https://wa.me/573125338803?text=Hola,%20Soluciones%20Sara..." target="_blank">
+                Contactanos
+            </a>
+        </li>
     </ul>
-    
-    <i class="bi bi-cart-fill"></i>
 
-
-    
-  </nav>
+    <div class="navbar-actions">
+        <a href="{% url 'mi_app:ver_carrito' %}" class="cart-icon-wrapper">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge" id="cart-count">
+                {{ request.session.carrito|length|default:0 }}
+            </span>
+        </a>
+    </div>
+</nav>

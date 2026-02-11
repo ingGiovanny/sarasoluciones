@@ -1,129 +1,29 @@
 {% extends 'principalclientes/body.html' %}
 {% block content %}
 
+{% csrf_token %}
+
 <style>
-    /* Contenedor Principal */
-    .detalle-producto-container {
-        max-width: 1200px;
-        margin: 40px auto;
-        padding: 20px;
-        background: #fff;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    }
-
-    .producto-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        gap: 50px;
-        align-items: start;
-    }
-
-    /* Sección de Imagen */
-    .producto-galeria {
-        position: sticky;
-        top: 20px;
-    }
-
-    .imagen-principal-wrapper {
-        width: 100%;
-        height: 500px; /* Altura fija para evitar que ocupe toda la pantalla */
-        border-radius: 12px;
-        overflow: hidden;
-        background-color: #f8f9fa;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid #eee;
-    }
-
-    .imagen-principal-wrapper img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain; /* Para que la imagen no se deforme ni se corte */
-        transition: transform 0.3s ease;
-    }
-
-    .imagen-principal-wrapper img:hover {
-        transform: scale(1.05);
-    }
-
-    /* Sección de Información */
-    .producto-detalles-header {
-        border-bottom: 2px solid #f1f1f1;
-        padding-bottom: 20px;
-        margin-bottom: 20px;
-    }
-
-    .marca-badge {
-        background: #e9ecef;
-        color: #495057;
-        padding: 5px 12px;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-
-    .producto-titulo {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: #2d3436;
-        margin-top: 15px;
-    }
-
-    .producto-precio-detalle {
-        font-size: 2rem;
-        color: #27ae60;
-        font-weight: 700;
-        margin: 20px 0;
-    }
-
-    .descripcion-texto {
-        line-height: 1.6;
-        color: #636e72;
-        font-size: 1.1rem;
-    }
-
-    /* Controles de Compra */
-    .compra-box {
-        background: #f8f9fa;
-        padding: 25px;
-        border-radius: 12px;
-        margin-top: 30px;
-    }
-
-    .selector-cantidad {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .btn-carrito {
-        background: #0984e3;
-        color: white;
-        border: none;
-        padding: 15px 30px;
-        border-radius: 8px;
-        font-weight: 600;
-        width: 100%;
-        transition: background 0.2s;
-    }
-
-    .btn-carrito:hover {
-        background: #074b81;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .producto-grid {
-            grid-template-columns: 1fr;
-        }
-        .imagen-principal-wrapper {
-            height: 350px;
-        }
-    }
+    /* ... (Tus estilos CSS déjalos igual, no cambian) ... */
+    .detalle-producto-container { max-width: 1200px; margin: 40px auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .producto-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 50px; align-items: start; }
+    .producto-galeria { position: sticky; top: 20px; }
+    .imagen-principal-wrapper { width: 100%; height: 500px; border-radius: 12px; overflow: hidden; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; }
+    .imagen-principal-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease; }
+    .imagen-principal-wrapper img:hover { transform: scale(1.05); }
+    .producto-detalles-header { border-bottom: 2px solid #f1f1f1; padding-bottom: 20px; margin-bottom: 20px; }
+    .marca-badge { background: #e9ecef; color: #495057; padding: 5px 12px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
+    .producto-titulo { font-size: 2.5rem; font-weight: 800; color: #2d3436; margin-top: 15px; }
+    .producto-precio-detalle { font-size: 2rem; color: #27ae60; font-weight: 700; margin: 20px 0; }
+    .descripcion-texto { line-height: 1.6; color: #636e72; font-size: 1.1rem; }
+    .compra-box { background: #f8f9fa; padding: 25px; border-radius: 12px; margin-top: 30px; }
+    .selector-cantidad { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+    .btn-carrito { background: #0984e3; color: white; border: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; width: 100%; transition: background 0.2s; }
+    .btn-carrito:hover { background: #074b81; }
+    .miniaturas-container { display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px; }
+    .miniatura-item { width: 80px; height: 80px; border-radius: 8px; border: 2px solid #eee; cursor: pointer; object-fit: cover; transition: all 0.2s; }
+    .miniatura-item:hover, .miniatura-item.active { border-color: #0984e3; transform: translateY(-2px); }
+    @media (max-width: 768px) { .producto-grid { grid-template-columns: 1fr; } .imagen-principal-wrapper { height: 350px; } }
 </style>
 
 <div class="detalle-producto-container">
@@ -132,12 +32,20 @@
         <div class="producto-galeria">
             <div class="imagen-principal-wrapper">
                 {% if producto.logo_producto %}
-                    <img src="{{ producto.logo_producto.url }}" alt="{{ producto.id_presentacion.nombre }}">
+                    <img id="img-principal" src="{{ producto.logo_producto.url }}" alt="{{ producto.id_presentacion.nombre }}">
                 {% else %}
                     <div style="font-size: 4rem;">📦</div>
                 {% endif %}
             </div>
+            <div class="miniaturas-container">
+                {% if producto.logo_producto %}
+                    <img src="{{ producto.logo_producto.url }}" class="miniatura-item active" onclick="cambiarImagen(this.src, this)">
+                {% endif %}
+                {% for img in producto.imagenes.all %}
+                    <img src="{{ img.imagen.url }}" class="miniatura-item" onclick="cambiarImagen(this.src, this)">
+                {% endfor %}
             </div>
+        </div>
 
         <div class="producto-info-col">
             <div class="producto-detalles-header">
@@ -159,17 +67,100 @@
             </div>
 
             <div class="compra-box">
+                <div class="stock-info mb-2">
+                    {% if producto.cantidad_producto > 0 %}
+                        <span class="badge bg-success-soft text-success">
+                            <i class="fas fa-check-circle me-1"></i> 
+                            {{ producto.cantidad_producto }} unidades disponibles
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger-soft text-danger">
+                            <i class="fas fa-times-circle me-1"></i> Agotado
+                        </span>
+                    {% endif %}
+                </div>
+
                 <div class="selector-cantidad">
                     <span>Cantidad:</span>
-                    <input type="number" value="1" min="1" max="{{ producto.cantidad_producto }}" class="form-control" style="width: 100px;">
-                    <small class="text-muted">({{ producto.cantidad_producto }} disponibles)</small>
+                    <input type="number" id="cantidad-input" 
+                           value="1" min="1" 
+                           max="{{ producto.cantidad_producto }}" 
+                           class="form-control" style="width: 100px;">
                 </div>
-                <button class="btn-carrito">
-                    <i class="fas fa-shopping-cart"></i> Añadir al carrito
+                
+                <button type="button" class="btn-carrito" 
+                        {% if producto.cantidad_producto <= 0 %} disabled style="background: #ccc;" {% endif %}
+                        onclick="agregarAlCarrito('{{ producto.id }}')">
+                    <i class="fas fa-shopping-cart"></i> 
+                    {% if producto.cantidad_producto > 0 %} Añadir al carrito {% else %} Sin Stock {% endif %}
                 </button>
             </div>
         </div>
-
     </div>
 </div>
+
+<script>
+    function cambiarImagen(url, elemento) {
+        document.getElementById('img-principal').src = url;
+        document.querySelectorAll('.miniatura-item').forEach(m => m.classList.remove('active'));
+        elemento.classList.add('active');
+    }
+
+    // --- FUNCIÓN CORREGIDA Y BLINDADA ---
+    function agregarAlCarrito(productoId) {
+        // 1. Buscamos el input con seguridad
+        const input = document.getElementById('cantidad-input');
+        if (!input) {
+            console.error("Error: No se encuentra el input de cantidad");
+            return;
+        }
+        const cantidad = input.value;
+
+        // 2. Buscamos el token CSRF que pusimos arriba en el HTML
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!csrfInput) {
+            Swal.fire('Error', 'Falta el token de seguridad CSRF en la página', 'error');
+            return;
+        }
+        const csrftoken = csrfInput.value;
+
+        fetch(`/mi_app/carrito/agregar/${productoId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `cantidad=${cantidad}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Añadido!',
+                    text: 'El producto se agregó a tu carrito correctamente',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+
+                const cartCount = document.getElementById('cart-count');
+                if(cartCount) cartCount.innerText = data.carrito_total;
+
+            } else {
+                // Aquí capturamos el mensaje de stock insuficiente
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Stock Límite',
+                    text: data.message // Mostrará "Ya tienes todo el stock..."
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+        });
+    }
+</script>
 {% endblock %}

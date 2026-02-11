@@ -1,3 +1,4 @@
+from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from mi_app.models import *
@@ -6,7 +7,12 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
-from mi_app.forms.form_producto import ProductoForm
+from mi_app.forms.form_producto import ProductoForm 
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
+
+
+
 
 def listar_producto(request):
     data = {
@@ -41,84 +47,44 @@ class productoCreateView(CreateView):
     form_class = ProductoForm
     template_name = 'modulos/producto/crear_producto.html'
     success_url = reverse_lazy('mi_app:producto_lista')
-    
-    def post(self, request, *args, **kwargs):
-        """Sobrescribir post para manejar archivos explícitamente"""
-        self.object = None
-        form = self.get_form()
-        
-        # Imprimir para debug
-        print("POST data:", request.POST)
-        print("FILES data:", request.FILES)
-        
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            print("Form errors:", form.errors)
-            return self.form_invalid(form)
-    
-    def form_valid(self, form):
-        # Guardar el formulario con los archivos
-        self.object = form.save(commit=False)
-        
-        # Manejar la imagen si existe
-        if 'imagen' in self.request.FILES:
-            self.object.imagen = self.request.FILES['imagen']
-            print(f"Guardando imagen: {self.request.FILES['imagen']}")
-        
-        self.object.save()
-        messages.success(self.request, "Producto creado correctamente")
-        return super().form_valid(form)
-    
+
+    # ELIMINAMOS get_context_data porque ya no hay FormSet que cargar
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Crear producto'
+        context['titulo'] = 'Crear Producto'
         context['entidad'] = 'Producto'
-        context['listar_url'] = reverse_lazy('mi_app:producto_lista')
         return context
 
+    def form_valid(self, form):
+         self.object = form.save()
+    # Este nombre debe coincidir con el id_galeria_real del HTML
+         archivos = self.request.FILES.getlist('imagenes_multiple')
+         for f in archivos:
+            ImagenProducto.objects.create(producto=self.object, imagen=f)
+            return super().form_valid(form)
     
 class productoupdateView(UpdateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'modulos/producto/crear_producto.html'
     success_url = reverse_lazy('mi_app:producto_lista')
-    
-    def post(self, request, *args, **kwargs):
-        """Sobrescribir post para manejar archivos explícitamente"""
-        self.object = self.get_object()
-        form = self.get_form()
-        
-        # Debug
-        print("POST data:", request.POST)
-        print("FILES data:", request.FILES)
-        
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            print("Form errors:", form.errors)
-            return self.form_invalid(form)
-    
-    def form_valid(self, form):
-        # Guardar el formulario con los archivos
-        self.object = form.save(commit=False)
-        
-        # Manejar la imagen si existe un nuevo archivo
-        if 'imagen' in self.request.FILES:
-            self.object.imagen = self.request.FILES['imagen']
-            print(f"Actualizando imagen: {self.request.FILES['imagen']}")
-        
-        self.object.save()
-        messages.success(self.request, "Producto actualizado correctamente")
-        return super().form_valid(form)
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar producto'
-        context['entidad'] = 'Producto'
-        context['listar_url'] = reverse_lazy('mi_app:producto_lista')
+        context['titulo'] = 'Editar Producto'
+        # IMPORTANTE: Aquí traemos las fotos que ya existen
+        context['imagenes_actuales'] = self.object.imagenes.all() 
         return context
 
+    def form_valid(self, form):
+        self.object = form.save()
+        # Capturamos las NUEVAS fotos que se arrastren en la edición
+        archivos = self.request.FILES.getlist('imagenes_multiple')
+        for f in archivos:
+            ImagenProducto.objects.create(producto=self.object, imagen=f)
+            
+        messages.success(self.request, "Producto actualizado con éxito")
+        return super().form_valid(form)
 
 class productoDeleteView(DeleteView):
     model = Producto
@@ -141,3 +107,11 @@ def listar_productos_clientes(request):
     # Usar select_related es VITAL cuando quitaste el nombre del modelo principal
     productos = Producto.objects.select_related('id_presentacion').all().order_by('-fecha_creacion')
     return render(request, 'principalclientes/listar/listarproductos.html', {'productos': productos})
+
+
+
+@require_POST
+def eliminar_imagen_galeria(request, pk):
+    imagen = get_object_or_404(ImagenProducto, pk=pk)
+    imagen.delete() # Esto borra el registro y Django se encarga del archivo si está configurado
+    return JsonResponse({'status': 'ok'})
