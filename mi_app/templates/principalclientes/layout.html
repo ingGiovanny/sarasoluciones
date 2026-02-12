@@ -12,11 +12,19 @@
    <link rel="stylesheet" href="{% static 'css/contenidoServicio.css' %}">
    <!--stilos de carro de compras-->
    <link rel="stylesheet" href="{% static 'css/carrito_compras.css' %}">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <meta charset="UTF-8">    
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="{% static 'img/logosara.png' %}">
   <!--swet alerta para los mensajes-->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!--ruta que tiene el widget de acceseibilidad-->
+      <link rel="stylesheet" href="{% static 'css/widget_custom.css' %}">
+      <!--iconos del widgets-->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--ruta para scrip de el sidebar o menu lateral-->
+       <script src="{% static 'js/sidebar.js' %}"></script> 
   <title>Mi Tienda</title>
 
 <style>
@@ -58,4 +66,7 @@ body {
   <script src="{% static 'js/scrippagClientes.js' %}"></script>
 
 </body>
+ <!--Scrip para el widget de acceseibilidad-->
+     <script src="{% static 'js/siena_widgte_accesibilidad.js' %}"></script>
+   <script src="{% static 'js/siena-config.js' %}"></script>
 </html>

@@ -2,29 +2,399 @@
   .navbar-actions {
     display: flex;
     align-items: center;
-}
+    gap: 15px;
+    margin-left: 20px;
+  }
 
-.cart-icon-wrapper {
+  .cart-icon-wrapper {
     position: relative;
-    font-size: 1.5rem;
-    color: #2d3436;
+    display: inline-block;
+    color: #ffffff; 
+    font-size: 22px;
     text-decoration: none;
+    transition: transform 0.2s;
+  }
+
+  .cart-icon-wrapper:hover {
+    transform: scale(1.1);
+    color: #0984e3;
+  }
+
+  .cart-icon-wrapper .badge {
+    position: absolute;
+    top: -10px;
+    right: -12px;
+    background-color: #ff3838;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    font-family: Arial, sans-serif;
+  }
+
+  /* BOTÓN MODO OSCURO */
+  .dark-mode-toggle {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    background: linear-gradient(145deg, #2c3e50, #34495e);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 
+      0 4px 15px rgba(0,0,0,0.3),
+      inset 0 2px 4px rgba(255,255,255,0.1);
+    overflow: hidden;
+  }
+
+  .dark-mode-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 
+      0 6px 20px rgba(0,0,0,0.4),
+      inset 0 2px 4px rgba(255,255,255,0.15);
+  }
+
+  .dark-mode-toggle:active {
+    transform: scale(0.95);
+  }
+
+  .toggle-slider {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(145deg, #f39c12, #f1c40f);
+    border-radius: 50%;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 
+      0 2px 8px rgba(243, 156, 18, 0.5),
+      inset 0 1px 2px rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toggle-slider i {
+    font-size: 12px;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+
+  .dark-mode-toggle.active {
+    background: linear-gradient(145deg, #6c5ce7, #a29bfe);
+  }
+
+  .dark-mode-toggle.active .toggle-slider {
+    left: 33px;
+    background: linear-gradient(145deg, #74b9ff, #a29bfe);
+    box-shadow: 
+      0 2px 8px rgba(116, 185, 255, 0.5),
+      inset 0 1px 2px rgba(255,255,255,0.3);
+  }
+
+  .dark-mode-toggle::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(2px 2px at 20% 30%, white, transparent),
+      radial-gradient(2px 2px at 60% 70%, white, transparent),
+      radial-gradient(1px 1px at 50% 50%, white, transparent),
+      radial-gradient(1px 1px at 80% 10%, white, transparent),
+      radial-gradient(2px 2px at 90% 60%, white, transparent);
+    background-size: 100% 100%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .dark-mode-toggle.active::before {
+    opacity: 1;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    50% {
+      box-shadow: 0 4px 20px rgba(116, 185, 255, 0.6);
+    }
+  }
+
+  .dark-mode-toggle.active {
+    animation: pulse 2s infinite;
+  }
+
+  /* ========== MODO OSCURO ========== */
+  
+  /* Transiciones suaves */
+  body {
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  /* Fondo principal oscuro */
+  body.dark-mode {
+    background-color: #1a1a2e !important;
+    color: #eee !important;
+  }
+
+  /* Navbar */
+  body.dark-mode .navbar {
+    background-color: #16213e !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  body.dark-mode .navbar-menu a {
+    color: #eee !important;
+  }
+
+  body.dark-mode .navbar-menu a:hover {
+    color: #74b9ff !important;
+  }
+
+  /* Títulos - SIEMPRE BLANCOS */
+  body.dark-mode h1,
+  body.dark-mode h2,
+  body.dark-mode h3,
+  body.dark-mode h4,
+  body.dark-mode h5,
+  body.dark-mode h6 {
+    color: #fff !important;
+  }
+
+  /* Textos generales */
+  body.dark-mode p,
+  body.dark-mode li,
+  body.dark-mode label {
+    color: #eee !important;
+  }
+
+  /* Links */
+  body.dark-mode a {
+    color: #74b9ff !important;
+  }
+
+  body.dark-mode a:hover {
+    color: #a29bfe !important;
+  }
+
+  /* Contenedores con FONDO OSCURO */
+  body.dark-mode .card,
+  body.dark-mode .producto-container,
+  body.dark-mode .main-content,
+  body.dark-mode .info-producto {
+    background-color: #0f3460 !important;
+    color: #eee !important;
+  }
+
+  /* SERVICIOS - Fondos CLAROS con texto OSCURO */
+  body.dark-mode .servicio {
+    background-color: #f8f9fa !important;
+  }
+
+  body.dark-mode .servicio h3,
+  body.dark-mode .servicio p,
+  body.dark-mode .servicio span {
+    color: #2c3e50 !important;
+  }
+
+  /* Precio VERDE visible */
+  body.dark-mode .precio {
+    color: #28a745 !important;
+    background-color: transparent !important;
+  }
+
+  body.dark-mode .precio-anterior {
+    color: #999 !important;
+  }
+
+  body.dark-mode .descuento {
+    background: #28a745 !important;
+    color: white !important;
+  }
+
+  /* Precio box - fondo claro */
+  body.dark-mode .precio-box {
+    background-color: #f8f9fa !important;
+  }
+
+  body.dark-mode .precio-box * {
+    color: #2c3e50 !important;
+  }
+
+  body.dark-mode .precio-box .precio {
+    color: #28a745 !important;
+  }
+
+  /* Botones mantienen colores */
+  body.dark-mode .btn-inscribir {
+    background: #ff6b6b !important;
+    color: white !important;
+  }
+
+  body.dark-mode .btn-info {
+    color: #ff6b6b !important;
+    border-color: #ff6b6b !important;
+  }
+
+  body.dark-mode .badge {
+    color: white !important;
+  }
+
+  /* Tablas */
+  body.dark-mode table,
+  body.dark-mode td,
+  body.dark-mode th {
+    background-color: #0f3460 !important;
+    color: #eee !important;
+  }
+
+  /* Inputs */
+  body.dark-mode input,
+  body.dark-mode textarea,
+  body.dark-mode select {
+    background-color: #0f3460 !important;
+    color: #eee !important;
+    border-color: #444 !important;
+  }
+
+  /* Imágenes - ajuste de brillo */
+  body.dark-mode img, 
+  body.dark-mode .imagen-principal-wrapper,
+  body.dark-mode .navbar-logo {
+    filter: brightness(0.9);
+  }
+  /* ========== DETALLE DE PRODUCTO EN MODO OSCURO ========== */
+
+/* Contenedor principal del detalle */
+body.dark-mode .detalle-producto-container {
+    background-color: #0f3460 !important;
+    color: #eee !important;
 }
 
-.cart-icon-wrapper .badge {
-    position: absolute;
-    top: -8px;
-    right: -10px;
-    background-color: #ff3838; /* Rojo vibrante */
-    color: white;
-    font-size: 0.7rem;
-    padding: 2px 6px;
-    border-radius: 50%;
-    font-weight: bold;
-    min-width: 18px;
-    text-align: center;
+/* Información del producto */
+body.dark-mode .producto-info-col,
+body.dark-mode .producto-detalles-header {
+    color: #eee !important;
+}
+
+/* Título del producto */
+body.dark-mode .producto-titulo {
+    color: #fff !important;
+}
+
+/* Textos descriptivos */
+body.dark-mode .descripcion-texto,
+body.dark-mode .descripcion-texto p,
+body.dark-mode .descripcion-texto li {
+    color: #eee !important;
+}
+
+/* Badge de marca */
+body.dark-mode .marca-badge {
+    background-color: #1a1a2e !important;
+    color: #74b9ff !important;
+}
+
+/* Caja de compra */
+body.dark-mode .compra-box {
+    background-color: #1a1a2e !important;
+}
+
+/* Selector de cantidad */
+body.dark-mode .selector-cantidad,
+body.dark-mode .selector-cantidad span {
+    color: #eee !important;
+}
+
+/* Stock info */
+body.dark-mode .stock-info {
+    color: #eee !important;
+}
+
+/* Badges de stock */
+body.dark-mode .badge.bg-success-soft {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+body.dark-mode .badge.bg-danger-soft {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+/* Precio - mantener verde */
+body.dark-mode .producto-precio-detalle {
+    color: #27ae60 !important;
+}
+
+/* ========== POPUP DE INFORMACIÓN ========== */
+
+body.dark-mode .popup,
+body.dark-mode #info-popup {
+    background-color: #0f3460 !important;
+    border: 2px solid #1a1a2e !important;
+}
+
+body.dark-mode .popup-header {
+    background-color: #1a1a2e !important;
+    color: #fff !important;
+    border-bottom: 1px solid #444 !important;
+}
+
+body.dark-mode .popup-body {
+    background-color: #0f3460 !important;
+}
+
+body.dark-mode .popup-body p {
+    color: #eee !important;
+}
+
+body.dark-mode .close-btn {
+    color: #fff !important;
+    background-color: transparent !important;
+}
+
+body.dark-mode .close-btn:hover {
+    background-color: #ff6b6b !important;
+    color: white !important;
+}
+
+/* ========== CUADROS/CARDS BLANCOS GENERALES ========== */
+
+/* Para cualquier contenedor con fondo blanco que se vea mal */
+body.dark-mode .bg-white,
+body.dark-mode [style*="background: #fff"],
+body.dark-mode [style*="background-color: #fff"] {
+    background-color: #0f3460 !important;
+    color: #eee !important;
+}
+
+/* Galería de imágenes */
+body.dark-mode .imagen-principal-wrapper {
+    background-color: #1a1a2e !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .miniatura-item {
+    border-color: #444 !important;
+}
+
+body.dark-mode .miniatura-item:hover,
+body.dark-mode .miniatura-item.active {
+    border-color: #0984e3 !important;
 }
 </style>
+
 <nav class="navbar">
     <a href="{% url 'mi_app:contenido_cliente' %}" class="navbar-logo">Soluciones Sara</a>
 
@@ -40,6 +410,13 @@
     </ul>
 
     <div class="navbar-actions">
+        <!-- BOTÓN ULTRA MEGA MEJORADO -->
+        <button onclick="toggleDarkMode()" class="dark-mode-toggle" id="darkModeBtn" aria-label="Cambiar modo oscuro">
+            <span class="toggle-slider">
+                <i class="fas fa-sun" id="themeIcon"></i>
+            </span>
+        </button>
+
         <a href="{% url 'mi_app:ver_carrito' %}" class="cart-icon-wrapper">
             <i class="fas fa-shopping-cart"></i>
             <span class="badge" id="cart-count">
@@ -48,3 +425,41 @@
         </a>
     </div>
 </nav>
+
+<script>
+    // Función mejorada con guardado de preferencia
+    function toggleDarkMode() {
+        const body = document.body;
+        const button = document.getElementById('darkModeBtn');
+        const icon = document.getElementById('themeIcon');
+        
+        // Toggle del modo oscuro
+        body.classList.toggle('dark-mode');
+        button.classList.toggle('active');
+        
+        // Cambiar ícono con animación
+        if (body.classList.contains('dark-mode')) {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    }
+
+    // Cargar preferencia guardada al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+        const darkMode = localStorage.getItem('darkMode');
+        const button = document.getElementById('darkModeBtn');
+        const icon = document.getElementById('themeIcon');
+        
+        if (darkMode === 'enabled') {
+            document.body.classList.add('dark-mode');
+            button.classList.add('active');
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        }
+    });
+</script>

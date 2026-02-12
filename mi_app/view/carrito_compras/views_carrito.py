@@ -72,31 +72,41 @@ def modificar_cantidad(request, producto_id, accion):
     
     # Obtener cantidad actual en el carrito
     cantidad_en_carrito = carrito.carrito.get(id_str, {}).get('cantidad', 0)
+    mensaje = "" # Inicializamos mensaje vacío
     
     if accion == "sumar":
-        # VALIDACIÓN: ¿La cantidad en carrito es menor al stock real?
         if cantidad_en_carrito < producto.cantidad_producto:
             carrito.agregar(producto, cantidad=1)
             status = 'ok'
-            mensaje = ""
         else:
             status = 'error'
             mensaje = f"Solo hay {producto.cantidad_producto} unidades disponibles."
             
     elif accion == "restar":
-        carrito.restar(producto)
-        status = 'ok'
-        mensaje = ""
+        # --- AQUÍ ESTÁ EL CAMBIO ---
+        if cantidad_en_carrito > 1:
+            carrito.restar(producto)
+            status = 'ok'
+        else:
+            # Si es 1, no hacemos nada y avisamos
+            status = 'error' 
+            mensaje = "La cantidad mínima es 1. Si no lo deseas, elimínalo."
         
     elif accion == "eliminar":
         carrito.eliminar(producto)
         status = 'ok'
-        mensaje = ""
+    
+    # Obtener el subtotal del producto después de los cambios
+    item_actual = carrito.carrito.get(id_str, {})
+    subtotal = item_actual.get('total', 0) if item_actual else 0
         
+  # En views_carrito.py, al final de modificar_cantidad:
     return JsonResponse({
-        'status': status,
-        'message': mensaje,
-        'nuevo_total': carrito.total_carrito,
-        'cantidad_item': carrito.carrito.get(id_str, {}).get('cantidad', 0),
-        'carrito_vacio': len(carrito.carrito) == 0
-    })
+    'status': status,
+    'message': mensaje,
+    'nuevo_total': carrito.total_carrito,
+    'cantidad_item': item_actual.get('cantidad', 0),
+    'subtotal_item': subtotal,
+    'carrito_vacio': len(carrito.carrito) == 0,
+    'total_items': len(carrito.carrito) # <--- IMPORTANTE: Esto es para el icono
+})

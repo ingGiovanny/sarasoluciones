@@ -4,75 +4,370 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
-    .cart-container { max-width: 1100px; margin: 40px auto; padding: 0 15px; }
-    .cart-card { border: none; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); overflow: hidden; }
-    .table thead { background-color: #f8f9fa; }
-    .img-cart { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; }
-    
-    .summary-card {
-        background: #1a1c20;
-        color: white;
-        border-radius: 15px;
-        padding: 30px;
-        position: sticky;
-        top: 20px;
+    .cart-container { 
+        max-width: 1200px; 
+        margin: 60px auto; 
+        padding: 0 20px; 
     }
-    .btn-whatsapp {
-        background-color: #25d366;
+    
+    .cart-header {
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 3px solid #f0f0f0;
+    }
+    
+    .cart-header h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+    
+    .cart-items-count {
+        color: #7f8c8d;
+        font-size: 1rem;
+    }
+    
+    .cart-card { 
+        border: none; 
+        border-radius: 20px; 
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+        background: white;
+    }
+    
+    .table thead { 
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .table thead th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        border: none;
+        padding: 20px 15px;
+    }
+    
+    .table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: scale(1.01);
+    }
+    
+    .img-cart { 
+        width: 100px; 
+        height: 100px; 
+        object-fit: cover; 
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .img-cart:hover {
+        transform: scale(1.1);
+    }
+    
+    .product-name {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+    
+    .product-price {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #27ae60;
+    }
+    
+    .quantity-control {
+        display: inline-flex;
+        align-items: center;
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 50px;
+        padding: 5px 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .quantity-control:hover {
+        border-color: #667eea;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+    
+    .quantity-control button {
+        background: none;
+        border: none;
+        color: #667eea;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 5px 10px;
+        transition: all 0.2s ease;
+    }
+    
+    .quantity-control button:hover {
+        color: #764ba2;
+        transform: scale(1.2);
+    }
+    
+    .quantity-control button:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+    
+    .quantity-number {
+        font-weight: 700;
+        font-size: 1.1rem;
+        min-width: 30px;
+        text-align: center;
+        color: #2c3e50;
+    }
+    
+    .btn-delete {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
         color: white;
         border: none;
-        font-weight: bold;
-        padding: 15px;
-        width: 100%;
-        border-radius: 10px;
-        transition: 0.3s;
+        padding: 10px 20px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
     }
-    .btn-whatsapp:hover { background-color: #128c7e; color: white; transform: translateY(-2px); }
     
-    @media (max-width: 991px) { .summary-card { margin-top: 30px; position: static; } }
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        background: linear-gradient(135deg, #ee5a6f 0%, #ff6b6b 100%);
+    }
+    
+    .summary-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 35px;
+        position: sticky;
+        top: 20px;
+        box-shadow: 0 15px 50px rgba(102, 126, 234, 0.4);
+    }
+    
+    .summary-card h4 {
+        font-weight: 800;
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+    }
+    
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .summary-row:last-of-type {
+        border-bottom: none;
+        padding-top: 15px;
+        border-top: 2px solid rgba(255,255,255,0.3);
+        margin-top: 20px;
+    }
+    
+    .summary-label {
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+    
+    .summary-value {
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    
+    .summary-total {
+        font-size: 2rem !important;
+        color: #ffd700;
+    }
+    
+    .btn-whatsapp {
+        background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+        color: white;
+        border: none;
+        font-weight: 700;
+        padding: 18px;
+        width: 100%;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+        margin-top: 25px;
+    }
+    
+    .btn-whatsapp:hover { 
+        background: linear-gradient(135deg, #128c7e 0%, #25d366 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(37, 211, 102, 0.5);
+    }
+    
+    .empty-cart {
+        text-align: center;
+        padding: 100px 20px;
+    }
+    
+    .empty-cart i {
+        font-size: 8rem;
+        color: #e0e0e0;
+        margin-bottom: 30px;
+    }
+    
+    .empty-cart h3 {
+        color: #7f8c8d;
+        margin-bottom: 20px;
+    }
+    
+    .btn-shop {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .btn-shop:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* Modo oscuro */
+    body.dark-mode .cart-card,
+    body.dark-mode .table {
+        background-color: #0f3460 !important;
+    }
+    
+    body.dark-mode .cart-header h2,
+    body.dark-mode .product-name {
+        color: #fff !important;
+    }
+    
+    body.dark-mode .cart-items-count {
+        color: #aaa !important;
+    }
+    
+    body.dark-mode .table tbody tr {
+        border-bottom-color: #1a1a2e !important;
+    }
+    
+    body.dark-mode .table tbody tr:hover {
+        background-color: #1a1a2e !important;
+    }
+    
+    body.dark-mode .quantity-control {
+        background-color: #1a1a2e !important;
+        border-color: #444 !important;
+    }
+    
+    body.dark-mode .quantity-number {
+        color: #eee !important;
+    }
+    
+    @media (max-width: 991px) { 
+        .summary-card { 
+            margin-top: 40px; 
+            position: static; 
+        }
+        
+        .cart-header h2 {
+            font-size: 2rem;
+        }
+        
+        .img-cart {
+            width: 70px;
+            height: 70px;
+        }
+    }
 </style>
 
 <div class="cart-container">
-    <h2 class="mb-4 fw-bold">Tu Carrito de Compras</h2>
+    <div class="cart-header">
+        <h2><i class="fas fa-shopping-cart me-3"></i>Mi Carrito</h2>
+        {% if request.session.carrito %}
+        <p class="cart-items-count">
+            <i class="fas fa-box me-2"></i>
+            {{ request.session.carrito|length }} producto{{ request.session.carrito|length|pluralize }}
+        </p>
+        {% endif %}
+    </div>
 
     {% if request.session.carrito %}
     <div class="row">
         <div class="col-lg-8">
             <div class="card cart-card">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table align-middle mb-0">
                         <thead>
                             <tr>
                                 <th class="p-3">Producto</th>
                                 <th class="p-3">Precio</th>
-                                <th class="p-3 text-center">Cant.</th>
+                                <th class="p-3 text-center">Cantidad</th>
+                                <th class="p-3 text-center">Subtotal</th>
                                 <th class="p-3 text-center">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for key, value in request.session.carrito.items %}
-                            <tr>
-                                <td class="p-3">
+                            <tr data-producto-id="{{ value.producto_id }}">
+                                <td class="p-4">
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ value.imagen }}" class="img-cart me-3 shadow-sm">
-                                        <h6 class="mb-0 fw-bold">{{ value.nombre }}</h6>
+                                        <img src="{{ value.imagen }}" class="img-cart me-4">
+                                        <div>
+                                            <div class="product-name">{{ value.nombre }}</div>
+                                            <small class="text-muted">ID: #{{ value.producto_id }}</small>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="p-3">$ {{ value.precio|floatformat:0 }}</td>
-                                <td class="p-3">
-                                    <div class="d-flex align-items-center justify-content-center border rounded-pill p-1 bg-white shadow-sm" style="width: 110px; margin: auto;">
-                                        <button class="btn btn-sm btn-link text-dark p-0 px-2" onclick="peticionCarrito('{{ value.producto_id }}', 'restar')">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <span class="fw-bold px-2 item-cantidad-{{ value.producto_id }}">{{ value.cantidad }}</span>
-                                        <button class="btn btn-sm btn-link text-dark p-0 px-2" onclick="peticionCarrito('{{ value.producto_id }}', 'sumar')">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
+                                <td class="p-4">
+                                    <span class="product-price">$ {{ value.precio|floatformat:0 }}</span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="quantity-control">
+    <div class="input-group input-group-sm" style="width: 100px;">
+    <button class="btn btn-outline-secondary" type="button" 
+            id="btn-restar-{{ value.producto_id }}"
+            onclick="modificarCantidad('{{ value.producto_id }}', 'restar')"
+            {% if value.cantidad <= 1 %} disabled style="opacity: 0.5; pointer-events: none;" {% endif %}>
+        <i class="fas fa-minus"></i>
+    </button>
+
+    <span class="form-control text-center px-0 item-cantidad-{{ value.producto_id }}">
+        {{ value.cantidad }}
+    </span>
+
+    <button class="btn btn-outline-secondary" type="button" 
+            onclick="modificarCantidad('{{ value.producto_id }}', 'sumar')">
+        <i class="fas fa-plus"></i>
+    </button>
+</div>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="p-3 text-center">
-                                    <button class="btn btn-outline-danger btn-sm border-0" onclick="peticionCarrito('{{ value.producto_id }}', 'eliminar')">
-                                        <i class="fas fa-trash-alt"></i>
+                           <!-- Cambiar la línea del subtotal -->
+                                    <td class="p-4 text-center">
+                                     <span class="product-price subtotal-{{ value.producto_id }}">
+                                    $ {{ value.total|floatformat:0 }}
+                                   </span>
+                                 </td>
+                                <td class="p-4 text-center">
+                                    <button class="btn-delete" onclick="confirmarEliminar('{{ value.producto_id }}', '{{ value.nombre }}')">
+                                        <i class="fas fa-trash-alt me-2"></i>Eliminar
                                     </button>
                                 </td>
                             </tr>
@@ -84,36 +379,58 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="summary-card shadow-lg">
-                <h4 class="mb-4">Resumen</h4>
-                <div class="d-flex justify-content-between mb-3">
-                    <span class="opacity-75">Subtotal:</span>
-                    <span class="total-compra-span fw-bold">$ {{ total_compra|floatformat:0 }}</span>
+            <div class="summary-card">
+                <h4><i class="fas fa-receipt me-2"></i>Resumen del Pedido</h4>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Productos:</span>
+                    <span class="summary-value">{{ request.session.carrito|length }}</span>
                 </div>
-                <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
-                <div class="d-flex justify-content-between mb-4">
-                    <span class="h5 mb-0">Total:</span>
-                    <span class="h5 mb-0 total-compra-span fw-bold text-info">$ {{ total_compra|floatformat:0 }}</span>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal:</span>
+                    <span class="summary-value total-compra-span">$ {{ total_compra|floatformat:0 }}</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label h5 mb-0">Total a Pagar:</span>
+                    <span class="summary-value summary-total total-compra-span">$ {{ total_compra|floatformat:0 }}</span>
                 </div>
                 
                 {% csrf_token %}
-                <button onclick="enviarWhatsApp()" class="btn-whatsapp shadow-sm">
+                <button onclick="enviarWhatsApp()" class="btn-whatsapp">
                     <i class="fab fa-whatsapp me-2"></i> Confirmar Pedido
                 </button>
+                
+                <div class="text-center mt-3">
+                    <small style="opacity: 0.8;">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Compra 100% Segura
+                    </small>
+                </div>
             </div>
         </div>
     </div>
-    {% else %}
-    <div class="text-center py-5">
-        <i class="fas fa-shopping-basket fa-5x text-muted opacity-25 mb-4"></i>
-        <h3>Tu carrito está vacío</h3>
-        <a href="{% url 'mi_app:productos_clientes' %}" class="btn btn-primary rounded-pill mt-3">Ver Productos</a>
-    </div>
-    {% endif %}
+  {% else %}
+<div class="empty-cart">
+    <i class="fas fa-shopping-basket"></i>
+    <h3>Tu carrito está vacío</h3>
+    <p class="text-muted mb-4">¡Agrega productos y comienza a comprar!</p>
+    <br>
+    <br>
+    <br>
+
+    <a href="{% url 'mi_app:productos_clientes' %}" class="btn-shop">
+        Explorar Productos  <!-- SIN ÍCONO -->
+    </a>
+</div>
+{% endif %}
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-function peticionCarrito(id, accion) {
+
+function modificarCantidad(id, accion) {
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     
     fetch(`/mi_app/carrito/modificar/${id}/${accion}/`, {
@@ -123,27 +440,111 @@ function peticionCarrito(id, accion) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'ok') {
-            if (data.carrito_vacio || accion === 'eliminar' || (accion === 'restar' && data.cantidad_item === 0)) {
-                location.reload();
-            } else {
-                const spanCantidad = document.querySelector(`.item-cantidad-${id}`);
-                if (spanCantidad) spanCantidad.innerText = data.cantidad_item;
-                
-                document.querySelectorAll('.total-compra-span').forEach(el => {
-                    el.innerText = `$ ${data.nuevo_total}`;
-                });
+            
+            // 1. Actualizar el número de cantidad (el del medio)
+            const spanCantidad = document.querySelector(`.item-cantidad-${id}`);
+            if (spanCantidad) spanCantidad.innerText = data.cantidad_item;
+            
+            // 2. Actualizar precios (Subtotal y Total)
+            const subtotalSpan = document.querySelector(`.subtotal-${id}`);
+            if (subtotalSpan) subtotalSpan.innerText = `$ ${Number(data.subtotal_item).toLocaleString('es-CO')}`;
+            
+            document.querySelectorAll('.total-compra-span').forEach(el => {
+                el.innerText = `$ ${Number(data.nuevo_total).toLocaleString('es-CO')}`;
+            });
+
+            // 3. ACTUALIZAR EL ICONO DEL CARRITO (Arriba)
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                // Actualizamos el número dentro del círculo rojo
+                cartCount.innerText = data.total_items; 
             }
+
+            // 4. LÓGICA DEL BOTÓN RESTAR (Bloquear/Desbloquear)
+            const btnRestar = document.getElementById(`btn-restar-${id}`);
+            if (btnRestar) {
+                if (data.cantidad_item <= 1) {
+                    // Si es 1, lo apagamos
+                    btnRestar.disabled = true;
+                    btnRestar.style.opacity = "0.5";
+                    btnRestar.style.pointerEvents = "none";
+                } else {
+                    // Si es 2 o más, lo prendemos
+                    btnRestar.disabled = false;
+                    btnRestar.style.opacity = "1";
+                    btnRestar.style.pointerEvents = "auto";
+                }
+            }
+
+        } else if (data.status === 'error') {
+            // Error de stock (solo al sumar)
+            Swal.fire({
+                icon: 'warning',
+                title: 'Límite alcanzado',
+                text: data.message,
+                toast: true,
+                position: 'top-end',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+// Las demás funciones (confirmarEliminar, eliminarProducto, enviarWhatsApp) se mantienen igual
+function confirmarEliminar(id, nombre) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        html: `Se eliminará <strong>${nombre}</strong> de tu carrito`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ff6b6b',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            eliminarProducto(id);
         }
     });
 }
 
+function eliminarProducto(id) {
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    fetch(`/mi_app/carrito/modificar/${id}/eliminar/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            location.reload();
+        }
+    });
+}
+// Función para enviar a WhatsApp
+
 function enviarWhatsApp() {
-    let mensaje = "Hola Soluciones Sara, me gustaría pedir:%0A";
-    {% for key, value in request.session.carrito.items %}
-        mensaje += "- {{ value.nombre }} (x{{ value.cantidad }})%0A";
-    {% endfor %}
-    mensaje += "%0A*Total: ${{ total_compra|floatformat:0 }}*";
-    window.open(`https://wa.me/573125338803?text=${mensaje}`, '_blank');
+    Swal.fire({
+        title: '¿Confirmar pedido?',
+        text: 'Serás redirigido a WhatsApp para completar tu compra',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#25d366',
+        cancelButtonColor: '#95a5a6',
+        confirmButtonText: '<i class="fab fa-whatsapp me-2"></i>Ir a WhatsApp',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let mensaje = "🛒 *Nuevo Pedido - Soluciones Sara*%0A%0A";
+            {% for key, value in request.session.carrito.items %}
+                mensaje += "✅ {{ value.nombre }}%0A   Cantidad: {{ value.cantidad }}%0A   Precio: ${{ value.precio|floatformat:0 }}%0A%0A";
+            {% endfor %}
+            mensaje += "💰 *TOTAL: ${{ total_compra|floatformat:0 }}*";
+            window.open(`https://wa.me/573125338803?text=${mensaje}`, '_blank');
+        }
+    });
 }
 </script>
 {% endblock %}
