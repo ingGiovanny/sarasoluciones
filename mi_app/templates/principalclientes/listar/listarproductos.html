@@ -1,28 +1,247 @@
 {% extends 'principalclientes/body.html' %}
 {% load static %}
+
 {% block content %}
 
 <style>
+    /* ================= ESTILOS DE PRODUCTOS (Optimizados) ================= */
+    
+    .productos-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    /* Encabezado */
+    .header-productos {
+        margin-bottom: 30px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 20px;
+    }
+
+    .header-productos h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 5px;
+    }
+
+    .resultados-info {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    /* Barra de Herramientas (Buscador y Filtros) */
+    .filtros-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+    .buscador {
+        flex: 1;
+        min-width: 280px;
+        position: relative;
+    }
+
+    .buscador input {
+        width: 100%;
+        padding: 12px 40px 12px 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background-color: var(--bg-card);
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .buscador input:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
+        outline: none;
+    }
+
+    .buscador-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        pointer-events: none;
+    }
+
+    .ordenar-select {
+        padding: 12px 35px 12px 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background-color: var(--bg-card);
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23777' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        min-width: 180px;
+    }
+
+    /* Grid de Productos */
+    .productos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Responsivo automático */
+        gap: 25px;
+    }
+
+    /* Tarjeta de Producto */
+    .producto-enlace-contenedor {
+        text-decoration: none !important;
+        color: inherit;
+        display: block;
+        transition: transform 0.2s ease;
+    }
+
+    .producto-enlace-contenedor:hover {
+        transform: translateY(-5px);
+    }
+
+    .producto-card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .producto-enlace-contenedor:hover .producto-card {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border-color: var(--border-color); /* O puedes poner var(--accent-color) si quieres borde azul */
+    }
+
+  /* Imagen del Producto */
+    .producto-imagen {
+        height: 220px;
+        width: 100%;
+        /* Aseguramos que el fondo sea BLANCO puro para tapar el morado si la imagen falla */
+        background-color: #ffffff !important; 
+        border-bottom: 1px solid var(--border-color);
+        display: block; /* Cambiamos de flex a block para que ocupe todo */
+        overflow: hidden;
+        position: relative;
+        padding: 0; /* QUITAMOS el padding para que llegue al borde */
+    }
+
     .producto-imagen img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
- }
- .producto-enlace-contenedor {
-    text-decoration: none !important; /* Quita el subrayado */
-    color: inherit;                  /* Mantiene los colores originales de tu texto */
-    display: block;                  /* Hace que todo el espacio sea clicable */
-    transition: transform 0.2s;      /* Un pequeño efecto visual opcional */
-}
+        width: 100%;
+        height: 100%;
+        /* CAMBIO CLAVE: 'cover' hace que la imagen rellene todo el espacio */
+        object-fit: cover; 
+        object-position: center; /* Centra la imagen para que el recorte sea equilibrado */
+        transition: transform 0.5s ease;
+        display: block; /* Elimina espacios fantasma debajo de la imagen */
+    }
 
-.producto-enlace-contenedor:hover {
-    transform: translateY(-5px);    /* Levanta un poco la tarjeta al pasar el mouse */
-}
+    /* Efecto Zoom suave al pasar el mouse */
+    .producto-enlace-contenedor:hover .producto-imagen img {
+        transform: scale(1.1);
+    }
+
+    /* Ajuste para MODO OSCURO */
+    /* En modo oscuro, bajamos un poco el brillo para que no lastime la vista */
+    body.dark-mode .producto-imagen img {
+        filter: brightness(0.85);
+    }
+    
+    /* Si la imagen no tiene fondo (PNG transparente), el fondo será el de la tarjeta en modo oscuro */
+    body.dark-mode .producto-imagen {
+        background-color: var(--bg-card) !important; 
+        border-bottom-color: var(--border-color);
+    }
+
+    /* Información del Producto */
+    .producto-info {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        gap: 10px;
+    }
+
+    .producto-precio {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: baseline;
+    }
+
+    .producto-precio-simbolo {
+        font-size: 0.9rem;
+        margin-right: 2px;
+        font-weight: 400;
+    }
+
+    .producto-nombre {
+        font-size: 1rem;
+        color: var(--text-primary); /* Se adapta al modo oscuro */
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Limita a 2 líneas */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        flex-grow: 1; /* Empuja lo de abajo hacia el fondo */
+    }
+
+    /* Etiquetas de Envío y Stock */
+    .producto-envio {
+        color: #00a650; /* Verde MercadoLibre */
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-top: 5px;
+    }
+
+    .producto-stock {
+        font-size: 0.8rem;
+        margin-top: 5px;
+        display: inline-block;
+    }
+
+    .stock-bajo { color: #ff9f43; font-weight: 600; }
+    .stock-agotado { color: var(--text-secondary); background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; }
+    .stock-disponible { color: var(--text-secondary); }
+
+    /* Estado Vacío */
+    .sin-productos {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 80px 20px;
+        background-color: var(--bg-card);
+        border-radius: 12px;
+        border: 1px dashed var(--border-color);
+    }
+
+    .sin-productos-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    /* Modo oscuro específico para elementos que necesitan ajuste */
+    body.dark-mode .producto-imagen {
+        background-color: #fff; /* Las fotos de producto suelen tener fondo blanco, mejor mantenerlo */
+        border-bottom-color: var(--border-color);
+    }
+    
+    /* Si prefieres que el fondo de la imagen se oscurezca (solo si son PNGs transparentes) */
+    /* body.dark-mode .producto-imagen {
+        background-color: var(--bg-secondary);
+    } 
+    */
+
 </style>
-
-<div class="productos-container">
-    <!-- resto del código -->
 
 <div class="productos-container">
     <div class="header-productos">
@@ -37,10 +256,10 @@
             <input 
                 type="text" 
                 id="buscarProducto" 
-                placeholder="Buscar productos..."
+                placeholder="Buscar productos (marca, nombre...)"
                 autocomplete="off"
             >
-            <span class="buscador-icon">🔍</span>
+            <span class="buscador-icon"><i class="fas fa-search"></i></span>
         </div>
         
         <select class="ordenar-select" id="ordenarProductos">
@@ -52,97 +271,129 @@
     </div>
 
     <div class="productos-grid" id="productosGrid">
-    {% for producto in productos %}
-    <a href="{% url 'mi_app:detalle_producto' producto.id %}" class="producto-enlace-contenedor">
-        
-        <div class="producto-card" 
-             data-nombre="{{ producto.id_presentacion.nombre|lower }}"
-             data-precio="{{ producto.valor_unitario }}"
-             data-cantidad="{{ producto.cantidad_producto }}">
+        {% for producto in productos %}
+        <a href="{% url 'mi_app:detalle_producto' producto.id %}" class="producto-enlace-contenedor">
             
-            <div class="producto-imagen">
-                {% if producto.logo_producto %}
-                    <img src="{{ producto.logo_producto.url }}" alt="{{ producto.id_presentacion.nombre }}">
-                {% else %}
-                    <div class="producto-imagen-icon">📦</div>
-                {% endif %}
-            </div>
-            
-            <div class="producto-info">
-                <div>
-                    <span class="producto-precio">
-                        <span class="producto-precio-simbolo">$</span>
-                        {{ producto.valor_unitario|floatformat:0 }}
-                    </span>
+            <div class="producto-card" 
+                 data-nombre="{{ producto.id_presentacion.nombre|lower }}"
+                 data-precio="{{ producto.valor_unitario }}"
+                 data-cantidad="{{ producto.cantidad_producto }}">
+                
+                <div class="producto-imagen">
+                    {% if producto.logo_producto %}
+                        <img src="{{ producto.logo_producto.url }}" alt="{{ producto.id_presentacion.nombre }}">
+                    {% else %}
+                        <div class="producto-imagen-icon">📦</div>
+                    {% endif %}
                 </div>
                 
-                <div class="producto-nombre">
-                     {{ producto.id_presentacion.nombre }}
-                </div>
-                
-                {% if producto.cantidad_producto > 0 %}
-                    <div class="producto-envio">
-                        <span>🚚</span> Envío disponible
+                <div class="producto-info">
+                    <div>
+                        <span class="producto-precio">
+                            <span class="producto-precio-simbolo">$</span>
+                            {{ producto.valor_unitario|floatformat:0 }}
+                        </span>
                     </div>
                     
-                    {% if producto.cantidad_producto <= 5 %}
-                        <span class="producto-stock stock-bajo">
-                            ¡Últimas {{ producto.cantidad_producto }} unidades!
-                        </span>
+                    <div class="producto-nombre">
+                         {{ producto.id_presentacion.nombre }}
+                    </div>
+                    
+                    {% if producto.cantidad_producto > 0 %}
+                        <div class="producto-envio">
+                            <i class="fas fa-truck me-1"></i> Envío disponible
+                        </div>
+                        
+                        {% if producto.cantidad_producto <= 5 %}
+                            <span class="producto-stock stock-bajo">
+                                ¡Últimas {{ producto.cantidad_producto }} unidades!
+                            </span>
+                        {% endif %}
                     {% else %}
-                        <span class="producto-stock stock-disponible">
-                            Stock disponible
+                        <span class="producto-stock stock-agotado">
+                            Sin stock
                         </span>
                     {% endif %}
-                {% else %}
-                    <span class="producto-stock stock-agotado">
-                        Sin stock
-                    </span>
-                {% endif %}
+                </div>
             </div>
+        </a>
+        {% empty %}
+        <div class="sin-productos">
+            <div class="sin-productos-icon">📦</div>
+            <h3>No hay productos disponibles</h3>
+            <p>Vuelve pronto para ver nuestras novedades</p>
         </div>
-    </a>
-{% empty %}
-    <div class="sin-productos" style="grid-column: 1/-1;">
-        <div class="sin-productos-icon">📦</div>
-        <h3>No hay productos disponibles</h3>
-        <p>Vuelve pronto para ver nuestras novedades</p>
-    </div>
-{% endfor %}
+        {% endfor %}
     </div>
 </div>
-<script>
-     document.addEventListener('DOMContentLoaded', function() {
-       const buscador = document.getElementById('buscarProducto');
-       const ordenar = document.getElementById('ordenarProductos');
-       const productosGrid = document.getElementById('productosGrid');
-       const contadorProductos = document.getElementById('contadorProductos');
-    
-    // CAMBIO AQUÍ: Ahora seleccionamos el contenedor del enlace
-      let productos = Array.from(document.querySelectorAll('.producto-enlace-contenedor'));
 
-    // Función de búsqueda (Se mantiene casi igual, pero ahora 'producto' es el enlace)
-    buscador.addEventListener('input', function() {
-        const termino = this.value.toLowerCase().trim();
-        let contadorVisibles = 0;
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buscador = document.getElementById('buscarProducto');
+    const ordenarSelect = document.getElementById('ordenarProductos');
+    const productosGrid = document.getElementById('productosGrid');
+    const contadorProductos = document.getElementById('contadorProductos');
+    
+    // Obtenemos los elementos una sola vez (Cache)
+    // Convertimos a Array para poder ordenarlos después
+    let productos = Array.from(document.querySelectorAll('.producto-enlace-contenedor'));
+
+    // 1. BUSCADOR EN TIEMPO REAL
+    buscador.addEventListener('input', function(e) {
+        const termino = e.target.value.toLowerCase().trim();
+        let visibles = 0;
 
         productos.forEach(producto => {
-            // Buscamos el dataset-nombre dentro de la tarjeta que está adentro del enlace
-            const tarjeta = producto.querySelector('.producto-card');
-            const nombre = tarjeta.dataset.nombre;
-
+            const card = producto.querySelector('.producto-card');
+            const nombre = card.dataset.nombre;
+            
+            // Buscamos coincidencia en el nombre
             if (nombre.includes(termino)) {
-                producto.style.display = 'block'; // Mostramos el enlace completo
-                contadorVisibles++;
+                producto.style.display = ''; // Usamos vacío para restaurar el display original
+                visibles++;
             } else {
-                producto.style.display = 'none'; // Ocultamos el enlace completo
+                producto.style.display = 'none';
             }
         });
 
-        actualizarContador(contadorVisibles);
+        actualizarContador(visibles);
     });
 
-    // ... el resto de tus funciones (ordenar y actualizarContador) se mantienen igual ...
+    // 2. ORDENAMIENTO (Optimizada)
+    ordenarSelect.addEventListener('change', function() {
+        const criterio = this.value;
+        
+        // Clonamos el array para ordenarlo
+        const productosOrdenados = [...productos].sort((a, b) => {
+            const cardA = a.querySelector('.producto-card');
+            const cardB = b.querySelector('.producto-card');
+
+            const precioA = parseFloat(cardA.dataset.precio);
+            const precioB = parseFloat(cardB.dataset.precio);
+            const nombreA = cardA.dataset.nombre;
+            const nombreB = cardB.dataset.nombre;
+
+            switch(criterio) {
+                case 'precio-asc':
+                    return precioA - precioB;
+                case 'precio-desc':
+                    return precioB - precioA;
+                case 'nombre':
+                    return nombreA.localeCompare(nombreB);
+                default: // Relevancia (asumimos orden original del HTML)
+                    return 0; 
+            }
+        });
+
+        // Reinsertamos los elementos ordenados en el DOM
+        // (Esto mueve los nodos, no los duplica, muy eficiente)
+        productosOrdenados.forEach(producto => productosGrid.appendChild(producto));
+    });
+
+    function actualizarContador(cantidad) {
+        contadorProductos.textContent = `${cantidad} resultado${cantidad !== 1 ? 's' : ''}`;
+    }
 });
 </script>
+
 {% endblock %}

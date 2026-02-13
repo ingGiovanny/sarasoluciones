@@ -1,0 +1,110 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* Estilos del catálogo (puedes moverlos a tu CSS principal) */
+    .servicios-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .servicio-card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        overflow: hidden;
+        text-decoration: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        color: inherit; /* Heredar color de texto */
+    }
+
+    .servicio-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border-color: var(--accent-color);
+    }
+
+    .servicio-img-wrapper {
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .servicio-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .servicio-card:hover img { transform: scale(1.1); }
+
+    .servicio-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+    
+    .badge-cat {
+        background-color: var(--accent-color);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        align-self: flex-start;
+        margin-bottom: 10px;
+    }
+
+    .servicio-precio {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #27ae60;
+        margin-top: auto; /* Empuja el precio al fondo */
+        padding-top: 15px;
+    }
+</style>
+
+<h1 class="titulo text-center my-5">Nuestras Capacitaciones</h1>
+
+<section class="servicios-container">
+    {% for s in servicios %}
+    <a href="{% url 'mi_app:detalle_servicio_cliente' s.pk %}" class="servicio-card">
+        <div class="servicio-img-wrapper">
+            <span class="badge-cat" style="position: absolute; top: 10px; left: 10px; z-index: 2;">
+                {{ s.categoria }}
+            </span>
+            
+            {% if s.imagen %}
+                <img src="{{ s.imagen.url }}" alt="{{ s.nombre_servicio }}">
+            {% else %}
+                <div style="width:100%; height:100%; background:#eee; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-image fa-3x text-muted"></i>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="servicio-content">
+            <h3 class="fw-bold mb-2" style="font-size: 1.1rem;">{{ s.nombre_servicio }}</h3>
+            <p class="text-muted small mb-3">
+                {{ s.descripcion_detallada|striptags|truncatechars:100 }}
+            </p>
+            
+            <div class="servicio-precio">
+                $ {{ s.valor|floatformat:0 }}
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <h3>No hay servicios disponibles en este momento.</h3>
+    </div>
+    {% endfor %}
+</section>
+
+{% endblock %}

@@ -23,7 +23,7 @@ class Proveedor(models.Model):
     nombre_completo = models.CharField(max_length=100)
     tipo_documento = models.CharField(max_length=50)
     numero_documento_nit = models.CharField(max_length=15, unique=True)
-    direccion_empresa = models.CharField(max_length=30)
+    direccion_empresa = models.CharField(max_length=150)
     numero_telefonico = models.CharField(max_length=15)
     descripcion = models.TextField(max_length=100)
     
@@ -94,18 +94,47 @@ class Categoria(models.Model):
         return self.nombre_categoria
 
 
+from django.db import models
+
 class GestionServicio(models.Model):
-    """Modelo para gestión de servicios"""
-    nombre_servicio = models.CharField(max_length=50, verbose_name="Nombre Servicio")
-    descripcion = models.TextField(max_length=100, verbose_name="Descripción")
-    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor")
+    """Modelo profesional para gestión de servicios"""
     
+    # Información Principal
+    nombre_servicio = models.CharField(max_length=100, verbose_name="Nombre del Servicio")
+    categoria = models.CharField(max_length=50, default="Capacitación", verbose_name="Categoría (Badge)")
+    imagen = models.ImageField(upload_to='servicios/', verbose_name="Imagen Principal")
+    
+    # Precios y Ofertas
+    valor = models.DecimalField(max_digits=10, decimal_places=0, verbose_name="Precio Actual")
+    valor_anterior = models.DecimalField(max_digits=10, decimal_places=0, null=True, blank=True, verbose_name="Precio Antes (Opcional)")
+    descuento = models.IntegerField(default=0, verbose_name="Porcentaje OFF (Opcional)")
+    
+    # Descripciones
+    descripcion_breve = models.TextField(max_length=300, verbose_name="Descripción Corta (Para tarjetas)")
+    descripcion_detallada = models.TextField(verbose_name="Descripción Completa (Detalle)")
+    
+    # Características Específicas (Iconos)
+    duracion = models.CharField(max_length=50, verbose_name="Duración (Ej: 8 horas)")
+    modalidad = models.CharField(max_length=50, default="Virtual en vivo", verbose_name="Modalidad")
+    incluye_certificado = models.BooleanField(default=True, verbose_name="¿Incluye Certificado?")
+    
+    # Control del Sistema
+    activo = models.BooleanField(default=True, verbose_name="¿Servicio Activo?")
+    destacado = models.BooleanField(default=False, verbose_name="¿Mostrar en inicio?")
+    created_at = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         verbose_name = "Servicio"
         verbose_name_plural = "Servicios"
+        ordering = ['-created_at'] # Los más nuevos primero
         
     def __str__(self):
         return self.nombre_servicio
+
+    # Método helper para calcular si hay oferta
+    @property
+    def tiene_descuento(self):
+        return self.valor_anterior and self.valor < self.valor_anterior
 
 
 class Producto(models.Model):

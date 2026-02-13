@@ -1,91 +1,40 @@
-from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from mi_app.models import *
-from django.http import JsonResponse
-from django.contrib import messages
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
-from mi_app.forms.form_gestionservicio import GestionServicioForm
+from mi_app.models import GestionServicio
+from mi_app.forms.servicio import ServicioForm
 
-
-
-
-def listar_gestionservicio(request):
-    data = {
-        "titulo": "Gestión de servicios",
-        "gestion servicios" : GestionServicio.objects.all()
-    }
-    return render(request, 'gestionservicio/gestionservicio.html', data)
-
-
-class servicioListView(ListView):
+# 1. LISTAR
+class ServicioListView(ListView):
     model = GestionServicio
-    template_name ='modulos/gestionservicio/gestionservicio.html'
-    
-    # @method_decorator(login_required)
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-       return super().dispatch(request, *args, **kwargs)
-    
-    def post(self, request, *args, **kwargs):
-        nombre = {'nombre' : 'GestionServicio'}
-        return JsonResponse(nombre)
-    
+    template_name = 'modulos/servicios/servicio.html'
+    context_object_name = 'object_list'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Gestión de servicios'
-        context['crear_url'] = reverse_lazy('mi_app:gestionservicio_crear')
-        context['entidad'] = 'servicios'  
-        return context
-    
-class servicioCreateView(CreateView):
-    model = GestionServicio
-    form_class = GestionServicioForm
-    template_name = 'modulos/gestionservicio/crear_gestionservicio.html'
-    success_url = reverse_lazy('mi_app:gestionservicio_lista')
-    
-    def form_valid(self, form):
-        messages.success(self.request, "servicio creado correctamente")
-        return super().form_valid(form)
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context ['titulo'] = 'Crear servicio'
-        context ['entidad'] = 'servicios'
-        context ['listar_url'] = reverse_lazy('mi_app:gestionservicio_lista')
-        return context
-    
-class serviciopdateView(UpdateView):
-    model = GestionServicio
-    form_class = GestionServicioForm
-    template_name = 'modulos/gestionservicio/crear_gestionservicio.html'
-    success_url = reverse_lazy('mi_app:gestionservicio_lista')
-    
-    def form_valid(self, form):
-        messages.success(self.request, "servicio actualizado correctamente")
-        return super().form_valid(form)
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar servicio'
-        context['entidad'] = 'servicios'
-        context['listar_url'] = reverse_lazy('mi_app:gestionservicios_lista')
+        context['crear_url'] = reverse_lazy('mi_app:servicio_crear')
         return context
 
-class servicioDeleteView(DeleteView):
+# 2. CREAR
+class ServicioCreateView(CreateView):
     model = GestionServicio
-    template_name = 'modulos/gestionservicio/eliminar_gestionservicio.html'
-    success_url = reverse_lazy('mi_app:gestionservicio_lista')
-    
-    def form_valid(self, form):
-        messages.success(self.request, "servicio eliminado correctamente")
-        return super().form_valid(form)
+    form_class = ServicioForm
+    template_name = 'modulos/servicios/crear_servicio.html'
+    success_url = reverse_lazy('mi_app:servicio_lista')
 
-    
+# 3. EDITAR
+class ServicioUpdateView(UpdateView):
+    model = GestionServicio
+    form_class = ServicioForm
+    template_name = 'modulos/servicios/crear_servicio.html' # Reutilizamos el de crear
+    success_url = reverse_lazy('mi_app:servicio_lista')
+
+# 4. ELIMINAR
+class ServicioDeleteView(DeleteView):
+    model = GestionServicio
+    template_name = 'modulos/servicios/eliminar_servicio.html'
+    success_url = reverse_lazy('mi_app:servicio_lista')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar servicio'
-        context['entidad'] = 'servicios'
-        context['listar_url'] = reverse_lazy('mi_app:gestionservicio_lista')
+        context['listar_url'] = reverse_lazy('mi_app:servicio_lista')
         return context

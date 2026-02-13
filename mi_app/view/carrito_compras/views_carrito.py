@@ -109,4 +109,8 @@ def modificar_cantidad(request, producto_id, accion):
     'subtotal_item': subtotal,
     'carrito_vacio': len(carrito.carrito) == 0,
     'total_items': len(carrito.carrito) # <--- IMPORTANTE: Esto es para el icono
+
+
+
 })
+    

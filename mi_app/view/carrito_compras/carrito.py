@@ -48,3 +48,4 @@ class Carrito:
         if id in self.carrito.keys():
             del self.carrito[id]
             self.guardar_carrito()
+    
