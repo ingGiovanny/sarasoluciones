@@ -9,6 +9,7 @@ urlpatterns = [
 
     path('', Login_view.as_view(), name="login"),
     path('logout/', logout_redirect.as_view(), name="logout"),
+
     
     # ----------------------------------------------------
     # FLUJO DE RESTABLECIMIENTO DE CONTRASEÑA (4 Pasos)
