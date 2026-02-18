@@ -1,67 +1,58 @@
 {% extends 'principalclientes/body.html' %}
-{%load static %}
-{%block content%}
+{% load static %}
+{% block content %}
 
 
-  <!-- ======== CARRUSEL DE IMÁGENES ======== -->
 <div class="carrusel-container">
-    <div class="carrusel-slides">
-      <!-- Slide 1 -->
-      <div class="slide">
-        <img src="{% static 'img/capacitaciones.png' %}" alt="banner 1" loading="eager">
-        <div class="slide-content">
-          <h1>BLACK DAYS EN MI TIENDA</h1>
-          <p>Hasta 55% de descuento en productos seleccionados</p>
+    <div class="carrusel-slides" id="slides-wrapper">
+        <div class="slide">
+            <img src="{% static 'img/capacitaciones.png' %}" alt="banner 1">
+            <div class="slide-content">
+                <h1>BLACK DAYS</h1>
+                <p>Hasta 55% de descuento en capacitaciones</p>
+            </div>
         </div>
-      </div>
-      
-      <!-- Slide 2 -->
-      <div class="slide">
-        <img src="{% static 'img/altura.jpg' %}" alt="banner 2" loading="eager">
-        <div class="slide-content">
-          <h1>NUEVA COLECCIÓN</h1>
-          <p>Descubre las últimas tendencias en moda</p>
+        
+        <div class="slide">
+            <img src="{% static 'img/altura.jpg' %}" alt="banner 2">
+            <div class="slide-content">
+                <h1>ALTURAS</h1>
+                <p>Certifícate con los expertos</p>
+            </div>
         </div>
-      </div>
-      
-      <!-- Slide 3 -->
-      <div class="slide">
-        <img src="{% static 'img/ocupacional.jpg' %}" alt="Banner 3" loading="eager">
-        <div class="slide-content">
-          <h1>ENVÍO GRATIS</h1>
-          <p>En compras superiores a $100.000</p>
+        
+        <div class="slide">
+            <img src="{% static 'img/ocupacional.jpg' %}" alt="Banner 3">
+            <div class="slide-content">
+                <h1>SEGURIDAD</h1>
+                <p>Todo en dotación ocupacional</p>
+            </div>
         </div>
-      </div>
     </div>
     
-    <!-- Botones de navegación -->
-    <button class="carrusel-btn prev" onclick="cambiarSlide(-1)">&#10094;</button>
-    <button class="carrusel-btn next" onclick="cambiarSlide(1)">&#10095;</button>
-    
-    <!-- Indicadores -->
-    <div class="carrusel-indicators">
-      <span class="indicator active" onclick="irASlide(0)"></span>
-      <span class="indicator" onclick="irASlide(1)"></span>
-      <span class="indicator" onclick="irASlide(2)"></span>
-    </div>
-  </div>
+    <button class="carrusel-btn prev" onclick="moverSlide(-1)">&#10094;</button>
+    <button class="carrusel-btn next" onclick="moverSlide(1)">&#10095;</button>
+</div>
   
-  <!-- ======== SECCIÓN DE PRODUCTOS ======== -->
- <h1  class="titulo">Te ofrecemos </h1>
+<h1 class="titulo">Te ofrecemos</h1>
 
-  <section class="productos">
-    <div class="producto">
-      <img src="{% static 'img/ocupacional.jpg' %}" alt="producto 1">
-      <h3>Productos</h3>
-      <p>Desde $80.000</p>
-    </div>
-    <div class="producto">
-      <img src="{% static 'img/capacitaconimg.png' %}" alt="producto 2">
-      <h3>Servicios</h3>
-      <p>Desde $20.000</p>
-    </div>
+<section class="productos">
+    <a href="{% url 'mi_app:productos_clientes' %}" class="card-link">
+        <div class="producto">
+            <img src="{% static 'img/ocupacional.jpg' %}" alt="Ver Productos">
+            <h3>Productos</h3>
+            <p>Ver Catálogo <i class="fas fa-arrow-right ms-2"></i></p>
+        </div>
+    </a>
 
-  </section>
+    <a href="{% url 'mi_app:catalogo_servicios' %}" class="card-link">
+        <div class="producto">
+            <img src="{% static 'img/capacitaconimg.png' %}" alt="Ver Servicios">
+            <h3>Servicios</h3>
+            <p>Ver Cursos <i class="fas fa-arrow-right ms-2"></i></p>
+        </div>
+    </a>
+</section>
 
-  <br><br>
-{%endblock%}
+<br><br>
+{% endblock %}

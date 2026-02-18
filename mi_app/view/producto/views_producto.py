@@ -8,8 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_producto import ProductoForm 
-from django.views.decorators.http import require_POST
-from django.shortcuts import get_object_or_404
+
 
 
 
@@ -103,15 +102,3 @@ class productoDeleteView(DeleteView):
         return context
 
     
-def listar_productos_clientes(request):
-    # Usar select_related es VITAL cuando quitaste el nombre del modelo principal
-    productos = Producto.objects.select_related('id_presentacion').all().order_by('-fecha_creacion')
-    return render(request, 'principalclientes/listar/listarproductos.html', {'productos': productos})
-
-
-
-@require_POST
-def eliminar_imagen_galeria(request, pk):
-    imagen = get_object_or_404(ImagenProducto, pk=pk)
-    imagen.delete() # Esto borra el registro y Django se encarga del archivo si está configurado
-    return JsonResponse({'status': 'ok'})
