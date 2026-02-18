@@ -1,4 +1,16 @@
 /* ================= 1. VARIABLES ================= */
+/* === REGLA DE ORO: CORRECCIÓN DE ANCHO === */
+* {
+    box-sizing: border-box; /* El padding no aumenta el ancho de los elementos */
+}
+
+html, body {
+    width: 100%;
+    max-width: 100vw;       /* Asegura que nada sea más ancho que la ventana */
+    overflow-x: hidden;     /* Corta cualquier desbordamiento horizontal */
+    margin: 0;
+    padding: 0;
+}
 :root {
     /* MODO CLARO */
     --bg-body: #f8f9fa;
@@ -154,9 +166,9 @@ h1.titulo, h2, h3 { color: var(--text-primary) !important; }
 
 .productos {
     display: grid;
-    /* RESPONSIVE: Ajustamos el minmax a 280px para que quepa en celulares */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 40px;
+    /* Bajamos a 260px para que quepan en celulares pequeños sin romper la pantalla */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
     max-width: 1200px;
     margin: 0 auto 80px auto;
     padding: 0 20px;
@@ -215,30 +227,30 @@ h1.titulo, h2, h3 { color: var(--text-primary) !important; }
 }
 
 /* ================= 5. MEDIA QUERIES (RESPONSIVE) ================= */
+/* AJUSTE PARA MÓVILES */
 @media (max-width: 768px) {
-    /* 1. Carrusel más pequeño en altura */
-    .carrusel-container { height: 350px; }
-
-    /* 2. Textos más pequeños para que quepan */
-    .slide h1 { font-size: 2rem; }
-    .slide p { font-size: 1rem; }
-    
-    /* 3. Botones más pequeños y pegados al borde */
-    .carrusel-btn {
-        width: 35px;
-        height: 35px;
-        font-size: 1rem;
+    .navbar {
+        flex-direction: column; /* Apilar elementos */
+        padding: 15px 15px;     /* Reducir padding lateral (De 40px a 15px) */
+        width: 100vw;           /* Forzar ancho completo de ventana */
     }
-    .carrusel-btn.prev { left: 10px; }
-    .carrusel-btn.next { right: 10px; }
 
-    /* 4. Títulos y Márgenes generales */
-    .titulo { 
-        font-size: 2rem; 
-        margin: 40px 0 20px 0;
+    .navbar-menu {
+        flex-wrap: wrap;        /* Permitir que los enlaces bajen si no caben */
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
     }
-    
-    .productos {
-        gap: 20px; /* Menos espacio entre tarjetas */
+
+    .navbar-actions {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    /* Ajuste del Footer para que no se corte */
+    footer {
+        width: 100vw;
+        padding: 30px 15px;
     }
 }
