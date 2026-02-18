@@ -9,6 +9,6 @@ urlpatterns = [
     path('', include(('login.urls', 'login'), namespace='login')),
     path('admin/', admin.site.urls),
     path('', include('mi_app.urls')),  # ✅ AGREGAR ESTA LÍNEA
-]
+    path('registro/', include('registro.urls', namespace='registro')),    ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

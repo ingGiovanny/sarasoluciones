@@ -129,9 +129,12 @@ body.dark-mode .toggle-slider {
                 Contactanos
             </a>
         </li>
+        <li><a href="{% url 'login:login' %}">Iniciar Sesión</a></li>
+        <li><a href="{% url 'registro:registro' %}">Registro</a></li>
     </ul>
 
     <div class="navbar-actions">
+        
         <!-- BOTÓN ULTRA MEGA MEJORADO -->
         <button onclick="toggleDarkMode()" class="dark-mode-toggle" id="darkModeBtn" aria-label="Cambiar modo oscuro">
             <span class="toggle-slider">
