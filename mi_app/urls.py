@@ -7,30 +7,21 @@ from mi_app.view.administrador.views_administrador import *
 from mi_app.view.cliente.views_cliente import *
 from mi_app.view.proveedor.views_proveedor import *
 from mi_app.view.marca.views_marca import *
-#Presentación: importar el módulo correcto
 from mi_app.view.presentacion.views_presentacion import *
 from mi_app.view.categoria.views_categoria import *
 from mi_app.view.producto.views_producto import *
 from mi_app.view.servicio.views_gestionservicio import *
-from mi_app.view.servicio.detalle_servicio import catalogo_servicios, detalle_servicio_cliente
 from mi_app.view.pedido.views_pedido import *
 from mi_app.view.factura.views_factura import *
 from mi_app.view.ventas.views_ventas import *
 from mi_app.view.garantia.views_garantia import *
 from mi_app.view.principal.views_principal import *
-from mi_app.view.principalcliente.views_principal_cliente import *
-
-#from mi_app.view.contentservicios.brigada import *
-#from mi_app.view.contentservicios.extintores import *
-#from mi_app.view.contentservicios.manos import *
-#from mi_app.view.contentservicios.firts_aid import *
-#from mi_app.view.contentservicios.vida_saludable import *
-#from mi_app.view.contentservicios.emergency_plan import *
-#from mi_app.view.contentservicios.energias_peligrosas import *
-from mi_app.view.detalle_producto.detalle_producto_views import detalle_producto
-from mi_app.view.producto.views_producto import eliminar_imagen_galeria
-from mi_app.view.carrito_compras.views_carrito import *
-from mi_app.view.carrito_compras.check import *
+from mi_app.view.A_todo_cliente.productoscli.views_productoscli import *
+from mi_app.view.A_todo_cliente.servicio_cli.detalle_servicio import catalogo_servicios, detalle_servicio_cliente
+from mi_app.view.A_todo_cliente.principalcliente.views_principal_cliente import *
+from mi_app.view.A_todo_cliente.detalle_producto.detalle_producto_views import detalle_producto
+from mi_app.view.A_todo_cliente.carrito_compras.views_carrito import *
+from mi_app.view.A_todo_cliente.carrito_compras.check import *
 from mi_app.view.compra.views_compra import CompraListView, CompraCreateView, CompraUpdateView, CompraDeleteView
 
 
@@ -40,17 +31,9 @@ urlpatterns = [
    path('principal/', principal, name='principal'),
    path('ayuda/', ayuda, name='ayuda'),
 
-# path('cli', pagina_clientes, name='principralclientes'),
+
    path('cli', pagina_clientes, name='contenido_cliente'),
-   path('productos', listar_productos_clientes, name='productos_clientes'),
-   # path('servicios', listar_servicios, name='listar_servicios'),
-   # path('brigada', listar_brigada, name='listar_brigada'),
-   # path('manejo_Extintor', listar_manejo_extintores , name='listar_extintores'),
-   # path("salud_manos", listar_manos, name='listar_manos'),
-    #path("primeros_auxilios", listar_first_aid, name='listar_first_aid'),
-    #path("vida_saludable", listar_vida_saludable, name='listar_vida_saludable'),
-    #path("plan_emergencias", listar_emergency_plan, name='listar_emergency_plan'),
-    #path("energias_peligrosas", listar_energias_peligrosas, name='listar_energias_peligrosas'),
+   path('productos', listar_productos_publicos, name='productos_clientes'),
     
     #detalle producto
     path('producto/<int:pk>/', detalle_producto, name='detalle_producto'),

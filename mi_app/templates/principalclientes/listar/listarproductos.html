@@ -4,396 +4,466 @@
 {% block content %}
 
 <style>
-    /* ================= ESTILOS DE PRODUCTOS (Optimizados) ================= */
-    
-    .productos-container {
-        max-width: 1200px;
+    /* ================= 1. LAYOUT PRINCIPAL (Dos Columnas) ================= */
+    .shop-layout {
+        display: grid;
+        grid-template-columns: 260px 1fr; /* Sidebar fijo 260px, resto flexible */
+        gap: 40px;
+        max-width: 1300px;
         margin: 40px auto;
         padding: 0 20px;
+        animation: fadeIn 0.5s ease-out;
     }
 
-    /* Encabezado */
-    .header-productos {
-        margin-bottom: 30px;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 20px;
+    /* Título principal fuera del grid para que abarque todo */
+    .shop-title-container {
+        max-width: 1300px;
+        margin: 30px auto 10px;
+        padding: 0 20px;
     }
-
-    .header-productos h1 {
-        font-size: 1.8rem;
-        font-weight: 700;
+    
+    .shop-title {
+        font-size: 2rem;
+        font-weight: 800;
         color: var(--text-primary);
-        margin-bottom: 5px;
+        letter-spacing: -0.5px;
+        margin: 0;
     }
 
-    .resultados-info {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
+    /* ================= 2. SIDEBAR DE FILTROS ================= */
+    .filtros-sidebar {
+        align-self: start; 
+        position: sticky;
+        top: 100px; /* Se queda fijo al bajar */
+        padding-right: 20px;
+        border-right: 1px solid var(--border-color); /* Línea divisoria sutil */
     }
 
-    /* Barra de Herramientas (Buscador y Filtros) */
-    .filtros-container {
-        display: flex;
-        gap: 15px;
+    .filtro-bloque {
         margin-bottom: 30px;
-        flex-wrap: wrap;
     }
 
-    .buscador {
+    .filtro-titulo {
+        font-size: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-primary);
+        margin-bottom: 15px;
+    }
+
+    .filtro-lista {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .filtro-item {
+        margin-bottom: 8px;
+    }
+
+    .filtro-link {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s ease;
+        padding: 2px 0;
+    }
+
+    .filtro-link:hover {
+        color: var(--accent-color);
+        transform: translateX(5px);
+    }
+
+    .filtro-link.activo {
+        font-weight: 700;
+        color: var(--text-primary); /* Se destaca en negrita */
+    }
+
+    .filtro-cantidad {
+        font-size: 0.8rem;
+        color: #999;
+        background: var(--bg-secondary);
+        padding: 2px 8px;
+        border-radius: 10px;
+    }
+
+    .btn-limpiar {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #e74c3c;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid #e74c3c;
+        padding: 8px 15px;
+        border-radius: 20px;
+        transition: all 0.3s;
+    }
+
+    .btn-limpiar:hover {
+        background: #e74c3c;
+        color: white;
+    }
+
+    /* ================= 3. AREA DE RESULTADOS (Derecha) ================= */
+    
+    /* Header (Buscador + Contador) */
+    .resultados-header {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: 30px;
+        background: var(--bg-card);
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+
+    .buscador-interno {
         flex: 1;
-        min-width: 280px;
         position: relative;
     }
 
-    .buscador input {
+    .buscador-interno input {
         width: 100%;
-        padding: 12px 40px 12px 15px;
-        border: 1px solid var(--border-color);
+        padding: 10px 40px 10px 15px;
         border-radius: 8px;
-        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        background: var(--bg-body);
         color: var(--text-primary);
-        font-size: 1rem;
-        transition: all 0.3s ease;
+        transition: all 0.3s;
     }
 
-    .buscador input:focus {
+    .buscador-interno input:focus {
         border-color: var(--accent-color);
-        box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
         outline: none;
+        box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
     }
 
-    .buscador-icon {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
+    .resultados-contador {
+        font-size: 0.9rem;
         color: var(--text-secondary);
-        pointer-events: none;
+        font-weight: 600;
+        white-space: nowrap;
     }
 
-    .ordenar-select {
-        padding: 12px 35px 12px 15px;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        background-color: var(--bg-card);
-        color: var(--text-primary);
-        font-size: 0.95rem;
-        cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23777' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 15px center;
-        min-width: 180px;
-    }
-
-    /* Grid de Productos */
+    /* ================= 4. GRILLA DE PRODUCTOS ================= */
     .productos-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Responsivo automático */
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 25px;
     }
 
-    /* Tarjeta de Producto */
+    /* Tarjeta */
     .producto-enlace-contenedor {
-        text-decoration: none !important;
+        text-decoration: none;
         color: inherit;
         display: block;
-        transition: transform 0.2s ease;
-    }
-
-    .producto-enlace-contenedor:hover {
-        transform: translateY(-5px);
     }
 
     .producto-card {
         background-color: var(--bg-card);
         border: 1px solid var(--border-color);
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
         height: 100%;
         display: flex;
         flex-direction: column;
-        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+        position: relative;
     }
 
     .producto-enlace-contenedor:hover .producto-card {
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        border-color: var(--border-color); /* O puedes poner var(--accent-color) si quieres borde azul */
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        border-color: var(--accent-color);
     }
 
-  /* Imagen del Producto */
+    /* Imagen */
     .producto-imagen {
-        height: 220px;
+        height: 240px;
         width: 100%;
-        /* Aseguramos que el fondo sea BLANCO puro para tapar el morado si la imagen falla */
-        background-color: #ffffff !important; 
-        border-bottom: 1px solid var(--border-color);
-        display: block; /* Cambiamos de flex a block para que ocupe todo */
-        overflow: hidden;
+        background-color: #ffffff; /* Siempre blanco para resaltar producto */
         position: relative;
-        padding: 0; /* QUITAMOS el padding para que llegue al borde */
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
     }
 
     .producto-imagen img {
-        width: 100%;
-        height: 100%;
-        /* CAMBIO CLAVE: 'cover' hace que la imagen rellene todo el espacio */
-        object-fit: cover; 
-        object-position: center; /* Centra la imagen para que el recorte sea equilibrado */
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain; /* Clave: No recorta la imagen, la ajusta */
         transition: transform 0.5s ease;
-        display: block; /* Elimina espacios fantasma debajo de la imagen */
     }
 
-    /* Efecto Zoom suave al pasar el mouse */
     .producto-enlace-contenedor:hover .producto-imagen img {
-        transform: scale(1.1);
+        transform: scale(1.08);
     }
 
-    /* Ajuste para MODO OSCURO */
-    /* En modo oscuro, bajamos un poco el brillo para que no lastime la vista */
-    body.dark-mode .producto-imagen img {
-        filter: brightness(0.85);
-    }
-    
-    /* Si la imagen no tiene fondo (PNG transparente), el fondo será el de la tarjeta en modo oscuro */
-    body.dark-mode .producto-imagen {
-        background-color: var(--bg-card) !important; 
-        border-bottom-color: var(--border-color);
+    .producto-imagen-icon {
+        font-size: 3rem;
+        color: #ddd;
     }
 
-    /* Información del Producto */
+    /* Info */
     .producto-info {
         padding: 20px;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        gap: 10px;
-    }
-
-    .producto-precio {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        display: flex;
-        align-items: baseline;
-    }
-
-    .producto-precio-simbolo {
-        font-size: 0.9rem;
-        margin-right: 2px;
-        font-weight: 400;
     }
 
     .producto-nombre {
         font-size: 1rem;
-        color: var(--text-primary); /* Se adapta al modo oscuro */
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 8px;
         line-height: 1.4;
+        /* Limitar texto a 2 líneas */
         display: -webkit-box;
-        -webkit-line-clamp: 2; /* Limita a 2 líneas */
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        flex-grow: 1; /* Empuja lo de abajo hacia el fondo */
     }
 
-    /* Etiquetas de Envío y Stock */
-    .producto-envio {
-        color: #00a650; /* Verde MercadoLibre */
-        font-size: 0.85rem;
-        font-weight: 600;
-        margin-top: 5px;
-    }
-
-    .producto-stock {
+    .producto-meta {
         font-size: 0.8rem;
-        margin-top: 5px;
-        display: inline-block;
+        color: var(--text-secondary);
+        margin-bottom: 10px;
     }
 
-    .stock-bajo { color: #ff9f43; font-weight: 600; }
-    .stock-agotado { color: var(--text-secondary); background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; }
-    .stock-disponible { color: var(--text-secondary); }
+    .producto-precio {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-top: auto; /* Empuja el precio hacia abajo si hay espacio */
+    }
+
+    .producto-precio span {
+        font-size: 0.9rem;
+        vertical-align: top;
+        margin-right: 2px;
+    }
+
+    /* Badges */
+    .badges-container {
+        margin-top: 10px;
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .badge-stock {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+
+    .stock-bajo { color: #d35400; background: rgba(230, 126, 34, 0.15); }
+    .stock-agotado { color: var(--text-secondary); background: var(--bg-secondary); }
 
     /* Estado Vacío */
     .sin-productos {
         grid-column: 1 / -1;
         text-align: center;
-        padding: 80px 20px;
-        background-color: var(--bg-card);
-        border-radius: 12px;
-        border: 1px dashed var(--border-color);
+        padding: 60px;
+        background: var(--bg-card);
+        border-radius: 16px;
+        border: 2px dashed var(--border-color);
+        color: var(--text-secondary);
     }
 
-    .sin-productos-icon {
-        font-size: 4rem;
-        margin-bottom: 20px;
-        opacity: 0.5;
+    /* Animaciones */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Modo oscuro específico para elementos que necesitan ajuste */
-    body.dark-mode .producto-imagen {
-        background-color: #fff; /* Las fotos de producto suelen tener fondo blanco, mejor mantenerlo */
-        border-bottom-color: var(--border-color);
+    /* ================= 5. RESPONSIVE ================= */
+    @media (max-width: 900px) {
+        .shop-layout {
+            grid-template-columns: 1fr; /* Una sola columna */
+            gap: 20px;
+        }
+        
+        .filtros-sidebar {
+            display: none; /* Ocultar sidebar en móvil (idealmente poner botón toggle) */
+        }
+        
+        /* Opcional: Mostrar filtros horizontalmente en móvil (avanzado) */
     }
     
-    /* Si prefieres que el fondo de la imagen se oscurezca (solo si son PNGs transparentes) */
-    /* body.dark-mode .producto-imagen {
-        background-color: var(--bg-secondary);
-    } 
-    */
-
+    /* Ajuste Modo Oscuro Específico */
+    body.dark-mode .producto-imagen {
+        filter: brightness(0.9); /* Atenuar brillo de fotos blancas */
+    }
 </style>
 
-<div class="productos-container">
-    <div class="header-productos">
-        <h1>Productos Disponibles</h1>
-        <p class="resultados-info" id="contadorProductos">
-            {{ productos|length }} resultado{% if productos|length != 1 %}s{% endif %}
-        </p>
-    </div>
-
-    <div class="filtros-container">
-        <div class="buscador">
-            <input 
-                type="text" 
-                id="buscarProducto" 
-                placeholder="Buscar productos (marca, nombre...)"
-                autocomplete="off"
-            >
-            <span class="buscador-icon"><i class="fas fa-search"></i></span>
-        </div>
-        
-        <select class="ordenar-select" id="ordenarProductos">
-            <option value="relevancia">Más relevantes</option>
-            <option value="precio-asc">Menor precio</option>
-            <option value="precio-desc">Mayor precio</option>
-            <option value="nombre">Nombre A-Z</option>
-        </select>
-    </div>
-
-    <div class="productos-grid" id="productosGrid">
-        {% for producto in productos %}
-        <a href="{% url 'mi_app:detalle_producto' producto.id %}" class="producto-enlace-contenedor">
-            
-            <div class="producto-card" 
-                 data-nombre="{{ producto.id_presentacion.nombre|lower }}"
-                 data-precio="{{ producto.valor_unitario }}"
-                 data-cantidad="{{ producto.cantidad_producto }}">
-                
-                <div class="producto-imagen">
-                    {% if producto.logo_producto %}
-                        <img src="{{ producto.logo_producto.url }}" alt="{{ producto.id_presentacion.nombre }}">
-                    {% else %}
-                        <div class="producto-imagen-icon">📦</div>
-                    {% endif %}
-                </div>
-                
-                <div class="producto-info">
-                    <div>
-                        <span class="producto-precio">
-                            <span class="producto-precio-simbolo">$</span>
-                            {{ producto.valor_unitario|floatformat:0 }}
-                        </span>
-                    </div>
-                    
-                    <div class="producto-nombre">
-                         {{ producto.id_presentacion.nombre }}
-                    </div>
-                    
-                    {% if producto.cantidad_producto > 0 %}
-                        <div class="producto-envio">
-                            <i class="fas fa-truck me-1"></i> Envío disponible
-                        </div>
-                        
-                        {% if producto.cantidad_producto <= 5 %}
-                            <span class="producto-stock stock-bajo">
-                                ¡Últimas {{ producto.cantidad_producto }} unidades!
-                            </span>
-                        {% endif %}
-                    {% else %}
-                        <span class="producto-stock stock-agotado">
-                            Sin stock
-                        </span>
-                    {% endif %}
-                </div>
-            </div>
-        </a>
-        {% empty %}
-        <div class="sin-productos">
-            <div class="sin-productos-icon">📦</div>
-            <h3>No hay productos disponibles</h3>
-            <p>Vuelve pronto para ver nuestras novedades</p>
-        </div>
-        {% endfor %}
-    </div>
+<div class="shop-title-container">
+    <h1 class="shop-title">Catálogo de Productos</h1>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const buscador = document.getElementById('buscarProducto');
-    const ordenarSelect = document.getElementById('ordenarProductos');
-    const productosGrid = document.getElementById('productosGrid');
-    const contadorProductos = document.getElementById('contadorProductos');
-    
-    // Obtenemos los elementos una sola vez (Cache)
-    // Convertimos a Array para poder ordenarlos después
-    let productos = Array.from(document.querySelectorAll('.producto-enlace-contenedor'));
+<div class="shop-layout">
 
-    // 1. BUSCADOR EN TIEMPO REAL
-    buscador.addEventListener('input', function(e) {
-        const termino = e.target.value.toLowerCase().trim();
-        let visibles = 0;
-
-        productos.forEach(producto => {
-            const card = producto.querySelector('.producto-card');
-            const nombre = card.dataset.nombre;
-            
-            // Buscamos coincidencia en el nombre
-            if (nombre.includes(termino)) {
-                producto.style.display = ''; // Usamos vacío para restaurar el display original
-                visibles++;
-            } else {
-                producto.style.display = 'none';
-            }
-        });
-
-        actualizarContador(visibles);
-    });
-
-    // 2. ORDENAMIENTO (Optimizada)
-    ordenarSelect.addEventListener('change', function() {
-        const criterio = this.value;
+    <aside class="filtros-sidebar">
         
-        // Clonamos el array para ordenarlo
-        const productosOrdenados = [...productos].sort((a, b) => {
-            const cardA = a.querySelector('.producto-card');
-            const cardB = b.querySelector('.producto-card');
+        {% if request.GET %}
+            <a href="{% url 'mi_app:productos_clientes' %}" class="btn-limpiar">
+                <i class="fas fa-trash-alt me-1"></i> Limpiar Filtros
+            </a>
+        {% endif %}
 
-            const precioA = parseFloat(cardA.dataset.precio);
-            const precioB = parseFloat(cardB.dataset.precio);
-            const nombreA = cardA.dataset.nombre;
-            const nombreB = cardB.dataset.nombre;
+        <div class="filtro-bloque">
+            <h3 class="filtro-titulo">Categorías</h3>
+            <ul class="filtro-lista">
+                {% for cat in categorias %}
+                <li class="filtro-item">
+                    <a href="?categoria={{ cat.id }}&marca={{ request.GET.marca }}&estado={{ request.GET.estado }}&color={{ request.GET.color }}" 
+                       class="filtro-link {% if request.GET.categoria|add:"0" == cat.id %}activo{% endif %}">
+                        {{ cat.nombre_categoria }}
+                        <span class="filtro-cantidad">{{ cat.total }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
 
-            switch(criterio) {
-                case 'precio-asc':
-                    return precioA - precioB;
-                case 'precio-desc':
-                    return precioB - precioA;
-                case 'nombre':
-                    return nombreA.localeCompare(nombreB);
-                default: // Relevancia (asumimos orden original del HTML)
-                    return 0; 
-            }
-        });
+        <div class="filtro-bloque">
+            <h3 class="filtro-titulo">Marcas</h3>
+            <ul class="filtro-lista">
+                {% for marca in marcas %}
+                <li class="filtro-item">
+                    <a href="?marca={{ marca.id }}&categoria={{ request.GET.categoria }}&estado={{ request.GET.estado }}&color={{ request.GET.color }}" 
+                       class="filtro-link {% if request.GET.marca|add:"0" == marca.id %}activo{% endif %}">
+                        {{ marca.nombre_marca }}
+                        <span class="filtro-cantidad">{{ marca.total }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
 
-        // Reinsertamos los elementos ordenados en el DOM
-        // (Esto mueve los nodos, no los duplica, muy eficiente)
-        productosOrdenados.forEach(producto => productosGrid.appendChild(producto));
-    });
+        <div class="filtro-bloque">
+            <h3 class="filtro-titulo">Condición</h3>
+            <ul class="filtro-lista">
+                {% for est in estados %}
+                <li class="filtro-item">
+                    <a href="?estado={{ est }}&categoria={{ request.GET.categoria }}&marca={{ request.GET.marca }}&color={{ request.GET.color }}" 
+                       class="filtro-link {% if request.GET.estado == est %}activo{% endif %}">
+                        {{ est|title }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
 
-    function actualizarContador(cantidad) {
-        contadorProductos.textContent = `${cantidad} resultado${cantidad !== 1 ? 's' : ''}`;
-    }
-});
-</script>
+        <div class="filtro-bloque">
+            <h3 class="filtro-titulo">Color</h3>
+            <div class="d-flex flex-wrap gap-2">
+                {% for col in colores %}
+                    <a href="?color={{ col }}&categoria={{ request.GET.categoria }}&marca={{ request.GET.marca }}&estado={{ request.GET.estado }}" 
+                       class="badge bg-light text-dark border text-decoration-none p-2"
+                       style="border: {% if request.GET.color == col %}2px solid var(--accent-color){% else %}1px solid #ddd{% endif %} !important;">
+                        {{ col }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+    </aside>
+
+
+    <main>
+        
+        <div class="resultados-header">
+            <div class="buscador-interno">
+                <form action="" method="GET">
+                    <input type="hidden" name="categoria" value="{{ request.GET.categoria }}">
+                    <input type="hidden" name="marca" value="{{ request.GET.marca }}">
+                    <input type="hidden" name="estado" value="{{ request.GET.estado }}">
+                    <input type="hidden" name="color" value="{{ request.GET.color }}">
+                    
+                    <input type="text" name="q" id="buscarProductoLocal" 
+                           value="{{ busqueda_actual|default:'' }}" 
+                           placeholder="Buscar en estos resultados..." autocomplete="off">
+                    
+                    <button type="submit" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-secondary);">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="resultados-contador" id="contadorProductos">
+                {{ productos|length }} resultado{{ productos|length|pluralize }}
+            </div>
+        </div>
+
+        <div class="productos-grid" id="productosGrid">
+            {% for producto in productos %}
+            <a href="{% url 'mi_app:detalle_producto' producto.id %}" class="producto-enlace-contenedor">
+                <div class="producto-card"
+                     data-nombre="{{ producto.id_presentacion.nombre|lower }}"
+                     data-precio="{{ producto.valor_unitario }}">
+                    
+                    <div class="producto-imagen">
+                        {% if producto.logo_producto %}
+                            <img src="{{ producto.logo_producto.url }}" alt="{{ producto.id_presentacion.nombre }}">
+                        {% else %}
+                            <div class="producto-imagen-icon"><i class="fas fa-box-open"></i></div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="producto-info">
+                        <div class="producto-nombre">
+                             {{ producto.id_presentacion.nombre }}
+                        </div>
+
+                        <div class="producto-meta">
+                            {{ producto.id_presentacion.modelo }} | {{ producto.id_presentacion.color }}
+                        </div>
+
+                        <div class="producto-precio">
+                            <span>$</span>{{ producto.valor_unitario|floatformat:0 }}
+                        </div>
+                        
+                        <div class="badges-container">
+                            {% if producto.cantidad_producto <= 5 and producto.cantidad_producto > 0 %}
+                                <span class="badge-stock stock-bajo">
+                                    ¡Quedan {{ producto.cantidad_producto }}!
+                                </span>
+                            {% elif producto.cantidad_producto == 0 %}
+                                <span class="badge-stock stock-agotado">Agotado</span>
+                            {% endif %}
+                            
+                            {% if producto.estado_producto == 'Nuevo' %}
+                                <span class="badge bg-success" style="font-size: 0.7rem;">Nuevo</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="sin-productos">
+                <div style="font-size: 4rem; margin-bottom: 20px;">🤷‍♂️</div>
+                <h3>No encontramos productos</h3>
+                <p>Intenta limpiar los filtros o buscar con otra palabra.</p>
+                <a href="{% url 'mi_app:productos_clientes' %}" class="btn btn-outline-primary mt-3">Ver Todo</a>
+            </div>
+            {% endfor %}
+        </div>
+
+    </main>
+</div>
+
+
 
 {% endblock %}
