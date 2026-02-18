@@ -1,0 +1,376 @@
+/* ============================================
+   ESTILOS PARA CARRITO DE COMPRAS
+   ============================================ */
+
+/* Variables CSS para fácil personalización */
+:root {
+    --primary-color: #4f46e5;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --dark-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --light-bg: #f8fafc;
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Contenedor principal */
+.container.py-5 {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Título principal */
+h2.mb-4.font-weight-bold {
+    color: #1e293b;
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+h2.mb-4.font-weight-bold::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+/* Card principal de la tabla */
+.col-lg-8 .card {
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.col-lg-8 .card:hover {
+    box-shadow: var(--shadow-xl);
+}
+
+/* Tabla de productos */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead {
+    background: linear-gradient(to right, #f8fafc, #f1f5f9);
+}
+
+.table thead th {
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8fafc;
+    transform: translateX(5px);
+}
+
+/* Imagen del producto */
+.table tbody td img {
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.table tbody td img:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+/* Nombre del producto */
+.table tbody td h6 {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+/* Precios */
+.table tbody td:nth-child(2),
+.table tbody td:nth-child(4) {
+    font-weight: 600;
+    color: #334155;
+    font-size: 1.05rem;
+}
+
+/* Cantidad */
+.table tbody td:nth-child(3) {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+/* Botón de eliminar */
+.table tbody td a.text-danger {
+    color: var(--danger-color);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.table tbody td a.text-danger:hover {
+    background-color: #fee2e2;
+    transform: scale(1.1);
+    color: #dc2626;
+}
+
+/* Card de resumen */
+.col-lg-4 .card {
+    border-radius: 20px;
+    background: var(--dark-bg);
+    position: sticky;
+    top: 20px;
+    box-shadow: var(--shadow-lg);
+}
+
+.col-lg-4 .card h4 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Líneas del resumen */
+.col-lg-4 .card .d-flex {
+    padding: 10px 0;
+}
+
+.col-lg-4 .card .d-flex span {
+    font-size: 1.1rem;
+}
+
+.col-lg-4 .card .d-flex.h5 {
+    padding: 15px 0;
+    margin-top: 10px;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Botón de WhatsApp */
+.btn-success.btn-block {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+}
+
+.btn-success.btn-block:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
+    background: linear-gradient(135deg, #128c7e 0%, #25d366 100%);
+}
+
+.btn-success.btn-block:active {
+    transform: translateY(-1px);
+}
+
+.btn-success.btn-block i {
+    font-size: 1.3rem;
+}
+
+/* Carrito vacío */
+.text-center.py-5 {
+    padding: 80px 20px !important;
+}
+
+.text-center.py-5 img {
+    opacity: 0.3;
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+}
+
+.text-center.py-5:hover img {
+    opacity: 0.5;
+    filter: grayscale(50%);
+    transform: scale(1.05);
+}
+
+.text-center.py-5 h3 {
+    color: #334155;
+    font-weight: 700;
+    margin-top: 2rem;
+    font-size: 2rem;
+}
+
+.text-center.py-5 p.text-muted {
+    color: #64748b;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.text-center.py-5 .btn-primary {
+    background: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+}
+
+.text-center.py-5 .btn-primary:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .col-lg-4 .card {
+        margin-top: 2rem;
+        position: static;
+    }
+    
+    h2.mb-4.font-weight-bold {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+    
+    .table tbody tr {
+        display: block;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .table tbody tr:hover {
+        transform: none;
+    }
+    
+    .table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0 !important;
+        border: none;
+    }
+    
+    .table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+    }
+    
+    .table tbody td:first-child {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .table tbody td:first-child::before {
+        margin-bottom: 10px;
+    }
+    
+    h2.mb-4.font-weight-bold {
+        font-size: 1.75rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Badges y etiquetas adicionales (opcional) */
+.badge-descuento {
+    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+/* Mejora visual del scroll */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+
+/* Mejora de la Card de Resumen (Efecto Moderno) */
+.col-lg-4 .card.bg-dark {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+}
+
+/* Alineación de precios en la tabla */
+.text-right-price {
+    text-align: right;
+    font-family: 'Courier New', Courier, monospace; /* Opcional para look contable */
+}
+
+/* Animación de entrada para los items */
+.table tbody tr {
+    animation: slideIn 0.3s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Estilo para los botones de acción en el carrito vacío */
+.btn-primary.px-5 {
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}

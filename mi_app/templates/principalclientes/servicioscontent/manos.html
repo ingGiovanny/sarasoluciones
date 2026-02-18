@@ -1,0 +1,90 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="producto-container">
+    <div class="producto-grid"> 
+        <!-- Columna Izquierda - Imagen -->
+        <div class="imagen-producto">
+            <span class="badge-categoria">Capacitación</span>
+            <img src="{% static 'img/tunelcarpiano.jpeg' %}" alt="Curso brigada" loading="eager">
+        </div>
+        
+        <!-- Columna Derecha - Información -->
+        <div class="info-producto">
+            <h1 class="titulo-curso">
+                Cuidado de las manos 
+            </h1>
+            
+            <div class="rating">
+                <div class="estrellas">
+                    ★★★★★
+                </div>
+                <span class="valoraciones">(4.8) 127 valoraciones</span>
+            </div>
+            
+            <div class="precio-box">
+                <p class="precio">
+                    $80.000
+                </p>
+            </div>
+            
+            <p class="descripcion-corta">
+                El curso de cuidado de manos a nivel muscular está diseñado para capacitar a trabajadores y profesionales en 
+                la prevención, detección y manejo de lesiones que afectan la fuerza, movilidad y salud de las manos.
+                 A lo largo de la formación se abordan los principales riesgos asociados al uso repetitivo de herramientas, 
+                 posturas forzadas y sobrecarga muscular, así como las patologías más comunes como tendinitis, síndrome del
+                  túnel carpiano y contracturas.
+            </p>
+            
+            <ul class="caracteristicas">
+                <li>
+                    <i class="fas fa-clock"></i>
+                    <strong>Duración:</strong> 8 horas (4 sesiones de 2 horas)
+                </li>
+                <li>
+                    <i class="fas fa-certificate"></i>
+                    <strong>Certificado:</strong> Incluido al finalizar
+                </li>
+                <li>
+                    <i class="fas fa-users"></i>
+                    <strong>Modalidad:</strong> Virtual en vivo
+                </li>
+                <li>
+                    <i class="fas fa-book"></i>
+                    <strong>Material:</strong> Descargable incluido
+                </li>
+                <li>
+                    <i class="fas fa-infinity"></i>
+                    <strong>Acceso:</strong> De por vida a grabaciones
+                </li>
+            </ul>
+            
+           <div class="botones-accion">
+    <a 
+       href="https://wa.me/573125338803?text=Quiero%20saber%20más%20sobre%20la%20capacitación"
+       class="btn-inscribir"
+       target="_blank"
+    >
+        <i class="fas fa-shopping-cart"></i> Inscribirse Ahora
+    </a>
+                  </div>
+
+            
+            <div class="info-adicional">
+             
+                <div class="info-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Garantía de satisfacción</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-headset"></i>
+                    <span>Soporte 24/7</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="producto-container">
+    <div class="producto-grid">
+        <!-- Columna Izquierda - Imagen -->
+        <div class="imagen-producto">
+            <span class="badge-categoria">Capacitación</span>
+            <img src="{% static 'img/energiasPeligrosas.jpg' %}" alt="Curso de estilo de vida saludable" loading="eager">
+        </div>
+        
+        <!-- Columna Derecha - Información -->
+        <div class="info-producto">
+            <h1 class="titulo-curso">
+                Curso de Energías Peligrosas
+            </h1>
+            
+            <div class="rating">
+                <div class="estrellas">
+                    ★★★★★
+                </div>
+                <span class="valoraciones">(4.8) 127 valoraciones</span>
+            </div>
+            
+            <div class="precio-box">
+                <p class="precio">
+                    $70.000
+                </p>
+            </div>
+            
+            <p class="descripcion-corta">
+       La seguridad es la mejor inversión, y este curso está diseñado para capacitar a trabajadores, supervisores y profesionales en la correcta identificación, control y neutralización de energías peligrosas presentes en los procesos industriales. A través de una metodología práctica y aplicada, los participantes aprenderán a implementar procedimientos de bloqueo y etiquetado (Lockout/Tagout – LOTO), garantizando la protección de las personas y la continuidad de las operaciones.
+Durante la formación se abordan los principales tipos de energías peligrosas —eléctrica, mecánica, hidráulica, neumática, térmica y química—, así como los riesgos asociados a cada una. Se enseñan técnicas de aislamiento seguro, verificación de ausencia de energía, uso de dispositivos de bloqueo y protocolos de comunicación entre equipos de trabajo. Además, se incluyen simulaciones y casos prácticos que permiten aplicar lo aprendido en escenarios reales.
+Al finalizar, los participantes estarán en capacidad de reconocer situaciones críticas, aplicar procedimientos estandarizados y cumplir con la normatividad vigente en Seguridad y Salud en el Trabajo, reduciendo accidentes y fortaleciendo la cultura de prevención en su organización.
+
+
+            </p>
+            
+            <ul class="caracteristicas">
+                <li>
+                    <i class="fas fa-clock"></i>
+                    <strong>Duración:</strong> 8 horas (4 sesiones de 2 horas)
+                </li>
+                <li>
+                    <i class="fas fa-certificate"></i>
+                    <strong>Certificado:</strong> Incluido al finalizar
+                </li>
+                <li>
+                    <i class="fas fa-users"></i>
+                    <strong>Modalidad:</strong> Virtual en vivo
+                </li>
+                <li>
+                    <i class="fas fa-book"></i>
+                    <strong>Material:</strong> Descargable incluido
+                </li>
+                <li>
+                    <i class="fas fa-infinity"></i>
+                    <strong>Acceso:</strong> De por vida a grabaciones
+                </li>
+            </ul>
+            
+           <div class="botones-accion">
+    <a 
+       href="https://wa.me/573125338803?text=Quiero%20saber%20más%20sobre%20la%20capacitación"
+       class="btn-inscribir"
+       target="_blank"
+    >
+        <i class="fas fa-shopping-cart"></i> Inscribirse Ahora
+    </a>
+                  </div>
+
+            
+            <div class="info-adicional">
+             
+                <div class="info-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Garantía de satisfacción</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-headset"></i>
+                    <span>Soporte 24/7</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

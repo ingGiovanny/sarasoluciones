@@ -1,0 +1,96 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="producto-container">
+    <div class="producto-grid">
+        <!-- Columna Izquierda - Imagen -->
+        <div class="imagen-producto">
+            <span class="badge-categoria">Capacitación</span>
+            <img src="{% static 'img/saludable.jpg' %}" alt="Curso de estilo de vida saludable" loading="eager">
+        </div>
+        
+        <!-- Columna Derecha - Información -->
+        <div class="info-producto">
+            <h1 class="titulo-curso">
+                Curso de como tener un estilo de vida saludable
+            </h1>
+            
+            <div class="rating">
+                <div class="estrellas">
+                    ★★★★★
+                </div>
+                <span class="valoraciones">(4.8) 127 valoraciones</span>
+            </div>
+            
+            <div class="precio-box">
+                <p class="precio">
+                    $70.000
+                </p>
+            </div>
+            
+            <p class="descripcion-corta">
+              El curso Vive Saludable, Vive Mejor está diseñado para ayudarte a transformar tu rutina y adoptar hábitos que 
+              fortalezcan tu bienestar físico y mental, enseñándote de manera práctica cómo construir un estilo de vida saludable
+               que perdure en el tiempo y te brinde más energía, equilibrio y calidad de vida; durante la formación se abordan
+                temas como alimentación balanceada, actividad física con rutinas sencillas, técnicas de manejo del estrés y
+                 bienestar emocional, hábitos de descanso y sueño reparador, además de estrategias para mantener la motivación y 
+                 disciplina en el cuidado personal; está dirigido a personas interesadas en mejorar su calidad de vida, empresas 
+                 que buscan fortalecer la salud de sus equipos y comunidades que promueven la prevención y el bienestar, y al 
+                 finalizar los participantes estarán en capacidad de aplicar prácticas saludables que reducen riesgos de
+                  enfermedades crónicas, incrementan la productividad y permiten disfrutar de un estilo de vida más pleno y
+                   consciente, recordando siempre que la salud es la mejor inversión.
+
+            </p>
+            
+            <ul class="caracteristicas">
+                <li>
+                    <i class="fas fa-clock"></i>
+                    <strong>Duración:</strong> 8 horas (4 sesiones de 2 horas)
+                </li>
+                <li>
+                    <i class="fas fa-certificate"></i>
+                    <strong>Certificado:</strong> Incluido al finalizar
+                </li>
+                <li>
+                    <i class="fas fa-users"></i>
+                    <strong>Modalidad:</strong> Virtual en vivo
+                </li>
+                <li>
+                    <i class="fas fa-book"></i>
+                    <strong>Material:</strong> Descargable incluido
+                </li>
+                <li>
+                    <i class="fas fa-infinity"></i>
+                    <strong>Acceso:</strong> De por vida a grabaciones
+                </li>
+            </ul>
+            
+           <div class="botones-accion">
+    <a 
+       href="https://wa.me/573125338803?text=Quiero%20saber%20más%20sobre%20la%20capacitación"
+       class="btn-inscribir"
+       target="_blank"
+    >
+        <i class="fas fa-shopping-cart"></i> Inscribirse Ahora
+    </a>
+                  </div>
+
+            
+            <div class="info-adicional">
+             
+                <div class="info-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Garantía de satisfacción</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-headset"></i>
+                    <span>Soporte 24/7</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
