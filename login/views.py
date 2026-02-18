@@ -9,6 +9,7 @@ from django.views.generic import RedirectView
 from django.contrib.auth import logout
 from django.urls import reverse_lazy
 
+
 class Login_view(LoginView):
     template_name = "login.html"
     
