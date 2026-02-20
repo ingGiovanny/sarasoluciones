@@ -1,6 +1,8 @@
 from django.http import JsonResponse
 import json
+from django.contrib.auth.decorators import login_required
 #boton de check para activar o desactivar un producto del carrito, esto no elimina el producto del carrito, solo lo marca como activo o inactivo para el calculo del total
+@login_required(login_url='login:login')
 def toggle_estado_producto(request, producto_id):
     carrito = request.session.get('carrito', {})
     producto_id = str(producto_id)
