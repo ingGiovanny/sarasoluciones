@@ -7,19 +7,10 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_compra import CompraForm
+from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
 
 
-
-
-def listar_compras(request):
-    data = {
-        "titulo": "Listado de compras",
-        "compra":Compra.objects.all()
-    }
-    return render(request, 'compra/compra.html', data)
-
-
-class CompraListView(ListView):
+class CompraListView(AdminRequiredMixin,ListView):
     model = Compra
     template_name ='modulos/compra/compra.html'
     
@@ -39,7 +30,7 @@ class CompraListView(ListView):
         context['entidad'] = 'Compra'  
         return context
     
-class CompraCreateView(CreateView):
+class CompraCreateView(AdminRequiredMixin,CreateView):
     model = Compra
     form_class = CompraForm
     template_name = 'modulos/compra/crear_compra.html'
@@ -56,7 +47,7 @@ class CompraCreateView(CreateView):
         context ['listar_url'] = reverse_lazy('mi_app:compras_lista')
         return context
     
-class CompraUpdateView(UpdateView):
+class CompraUpdateView(AdminRequiredMixin,UpdateView):
     model = Compra
     form_class = CompraForm
     template_name = 'modulos/compra/crear_compra.html'
@@ -73,7 +64,7 @@ class CompraUpdateView(UpdateView):
         context['listar_url'] = reverse_lazy('mi_app:compras_lista')
         return context
 
-class CompraDeleteView(DeleteView):
+class CompraDeleteView(AdminRequiredMixin,DeleteView):
     model = Compra
     template_name = 'modulos/compra/eliminar_compra.html'
     success_url = reverse_lazy('mi_app:compras_lista')

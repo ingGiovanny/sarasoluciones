@@ -7,19 +7,11 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_proveedor import ProveedorForm
+from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
 
 
 
-
-def listar_proveedor(request):
-    data = {
-        "titulo": "proveedores",
-        "proveedores": Proveedor.objects.all()
-    }
-    return render(request, 'proveedor/proveedor.html', data)
-
-
-class proveedorListView(ListView):
+class proveedorListView(AdminRequiredMixin,ListView):
     model = Proveedor
     template_name ='modulos/proveedor/proveedor.html'
     
@@ -39,7 +31,7 @@ class proveedorListView(ListView):
         context['entidad'] = 'proveedor'  
         return context
     
-class proveedorCreateView(CreateView):
+class proveedorCreateView(AdminRequiredMixin,CreateView):
     model = Proveedor
     form_class = ProveedorForm
     template_name = 'modulos/proveedor/crear_proveedor.html'
@@ -56,7 +48,7 @@ class proveedorCreateView(CreateView):
         context ['listar_url'] = reverse_lazy('mi_app:proveedor_lista')
         return context
     
-class proveedorupdateView(UpdateView):
+class proveedorupdateView(AdminRequiredMixin,UpdateView):
     model = Proveedor
     form_class = ProveedorForm
     template_name = 'modulos/proveedor/crear_proveedor.html'
@@ -73,7 +65,7 @@ class proveedorupdateView(UpdateView):
         context['listar_url'] = reverse_lazy('mi_app:proveedor_lista')
         return context
 
-class proveedorDeleteView(DeleteView):
+class proveedorDeleteView(AdminRequiredMixin,DeleteView):
     model = Proveedor
     template_name = 'modulos/proveedor/eliminar_proveedor.html'
     success_url = reverse_lazy('mi_app:proveedor_lista')

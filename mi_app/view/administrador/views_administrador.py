@@ -7,19 +7,13 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.administrador import AdministradorForm
+from mi_app.view.proteger_pagina_admin import *
 
 
 
 
-def listar_administradores(request):
-    data = {
-        "titulo": "Listado de Administradores",
-        "administradores": Administrador.objects.all()
-    }
-    return render(request, 'administrador/administrador.html', data)
+class AdministradorListView(AdminRequiredMixin,ListView):
 
-
-class AdministradorListView(ListView):
     model = Administrador
     template_name ='modulos/administrador/administrador.html'
     
@@ -39,7 +33,7 @@ class AdministradorListView(ListView):
         context['entidad'] = 'Administrador'  
         return context
     
-class AdministradorCreateView(CreateView):
+class AdministradorCreateView(AdminRequiredMixin,CreateView):
     model = Administrador
     form_class = AdministradorForm
     template_name = 'modulos/administrador/crear_administrador.html'
@@ -56,7 +50,7 @@ class AdministradorCreateView(CreateView):
         context ['listar_url'] = reverse_lazy('mi_app:administrador_lista')
         return context
     
-class AdministradorUpdateView(UpdateView):
+class AdministradorUpdateView(AdminRequiredMixin,UpdateView):
     model = Administrador
     form_class = AdministradorForm
     template_name = 'modulos/administrador/crear_administrador.html'
@@ -73,7 +67,7 @@ class AdministradorUpdateView(UpdateView):
         context['listar_url'] = reverse_lazy('mi_app:administrador_lista')
         return context
 
-class AdministradorDeleteView(DeleteView):
+class AdministradorDeleteView(AdminRequiredMixin,DeleteView):
     model = Administrador
     template_name = 'modulos/administrador/eliminar_administrador.html'
     success_url = reverse_lazy('mi_app:administrador_lista')
