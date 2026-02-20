@@ -39,6 +39,12 @@ body.dark-mode .content {
   border-color: #444 !important;
 }
 
+/* Propiedad para que el placeholder sea blanco en modo oscuro */
+body.dark-mode .form-control::placeholder {
+    color: #ffffff !important;
+    opacity: 0.8 !important;
+}
+
 /* Celdas de encabezado de tabla */
 body.dark-mode .table thead {
   background-color: #343a40 !important;
