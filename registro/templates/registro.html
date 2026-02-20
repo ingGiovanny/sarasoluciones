@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<div class="register-container">
+    <h2>Registro</h2>
+    <form>
+        <div class="input-group">
+            <i class="fas fa-user"></i> <input type="text" placeholder="nombres y apellidos">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="correo electronico">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Contraseña">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Confirme Contraseña">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="text" placeholder="Número de teléfono">
+        </div>
+        <button type="submit" class="btn-register">REGISTRASE</button>
+    </form>
+</div>

@@ -1,0 +1,60 @@
+/* Contenedor principal */
+.register-container {
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+h2 {
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Alineación de Icono + Input */
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border: 1px solid #ccc; /* El borde rodea a ambos */
+    padding: 5px 10px;
+    background-color: #fff;
+}
+
+.input-group i {
+    font-size: 18px;
+    margin-right: 10px;
+    width: 25px;
+    text-align: center;
+}
+
+.input-group input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+}
+
+/* Estilo de los Checkboxes */
+.checkbox-group {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    margin: 15px 0;
+}
+
+/* Botón de Registro */
+.btn-register {
+    background-color: white;
+    border: 1px solid #000;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-register:hover {
+    background-color: #f0f0f0;
+}

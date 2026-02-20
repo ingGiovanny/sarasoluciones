@@ -33,7 +33,8 @@ SECRET_KEY = 'django-insecure-#y*q^s*!__&pq1@&ivo^z_pk&x1-utdcm-76m5=^+6=fo-gi*x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
 
 
 # Application definition
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'mi_app',
     'widget_tweaks',
     'login',
+    'registro',
 ]
 
 MIDDLEWARE = [
@@ -124,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
 TIME_ZONE = 'UTC'
 
@@ -164,3 +166,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sarasoluciones55@gmail.com'
 EMAIL_HOST_PASSWORD = 'photrckrwbepernf'
+
+#para la conexcion con ngrok para pruebas en el celular 
+CSRF_TRUSTED_ORIGINS = [
+    'https://botchy-arboreally-britney.ngrok-free.dev',
+]

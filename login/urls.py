@@ -3,13 +3,13 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views 
 from .views import Login_view, logout_redirect
 from .forms import CustomPasswordResetForm
+from . import views 
 
 app_name = 'login'
 urlpatterns = [
 
     path('', Login_view.as_view(), name="login"),
     path('logout/', logout_redirect.as_view(), name="logout"),
-
     
     # ----------------------------------------------------
     # FLUJO DE RESTABLECIMIENTO DE CONTRASEÑA (4 Pasos)
