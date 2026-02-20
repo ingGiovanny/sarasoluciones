@@ -4,6 +4,10 @@ from django.shortcuts import render
 from mi_app.models import ImagenProducto, Producto, Categoria, Marca, Presentacion
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+
+
 
 #def listar_productos_clientes(request):
     # Usar select_related es VITAL cuando quitaste el nombre del modelo principal
@@ -11,13 +15,14 @@ from django.shortcuts import get_object_or_404
   #  return render(request, 'principalclientes/listar/listarproductos.html', {'productos': productos})
 
 
-
+@login_required(login_url='login:login')
 @require_POST
 def eliminar_imagen_galeria(request, pk):
     imagen = get_object_or_404(ImagenProducto, pk=pk)
     imagen.delete() # Esto borra el registro y Django se encarga del archivo si está configurado
     return JsonResponse({'status': 'ok'})
 
+@login_required(login_url='login:login')
 def listar_productos_publicos(request):
     # 1. Base: Traer todos los productos ordenados
     productos = Producto.objects.select_related('id_categoria', 'id_marca', 'id_presentacion').all().order_by('-id')

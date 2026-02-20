@@ -1,8 +1,10 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import JsonResponse
 from mi_app.models import Producto
+from django.contrib.auth.decorators import login_required
 from mi_app.view.A_todo_cliente.carrito_compras.carrito import Carrito # Importamos la clase carrito que se encarga de el crud de carrito de compras
 
+@login_required(login_url='login:login')
 def agregar_al_carrito(request, producto_id):
     try:
         carrito = Carrito(request)
@@ -40,6 +42,7 @@ def agregar_al_carrito(request, producto_id):
         })
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+@login_required(login_url='login:login')
 def ver_carrito(request):
     carrito = Carrito(request)
     # Calculamos el total usando la propiedad que creamos en la clase Carrito
@@ -48,7 +51,7 @@ def ver_carrito(request):
     return render(request, 'principalclientes/carrito_compras/ver_carrito.html', {
         'total_compra': total_compra
     })
-    
+@login_required(login_url='login:login')   
 def eliminar_del_carrito(request, producto_id):
     carrito = Carrito(request)
     producto = get_object_or_404(Producto, id=producto_id)
@@ -64,7 +67,7 @@ def eliminar_del_carrito(request, producto_id):
         'carrito_total': total_items,
         'carrito_vacio': len(carrito.carrito) == 0
     })
-    
+@login_required(login_url='login:login')   
 def modificar_cantidad(request, producto_id, accion):
     carrito = Carrito(request)
     producto = get_object_or_404(Producto, id=producto_id)
