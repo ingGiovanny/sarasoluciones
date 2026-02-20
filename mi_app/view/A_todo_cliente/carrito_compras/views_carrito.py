@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import JsonResponse
 from mi_app.models import Producto
-from mi_app.view.carrito_compras.carrito import Carrito # Importamos la clase carrito que se encarga de el crud de carrito de compras
+from mi_app.view.A_todo_cliente.carrito_compras.carrito import Carrito # Importamos la clase carrito que se encarga de el crud de carrito de compras
 
 def agregar_al_carrito(request, producto_id):
     try:

@@ -1,0 +1,25 @@
+/* ================= FOOTER (SIEMPRE NEGRO) ================= */
+footer {
+    background-color: #111111;
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
+    
+    /* ESTO ES LO IMPORTANTE PARA QUE OCUPE TODO: */
+    width: 100%;
+    box-sizing: border-box; /* El padding cuenta dentro del ancho */
+    position: relative;
+    left: 0;
+    bottom: 0;
+}
+
+/* Si pones enlaces dentro del footer en el futuro */
+footer a {
+    color: #cccccc;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: #ffa500; /* Color naranja al pasar el mouse */
+}

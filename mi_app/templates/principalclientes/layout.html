@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
    <!--link para iconos de bootstrap--> 
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
          <!--link para los estilos de la pagina-->
@@ -17,15 +16,27 @@
   <meta charset="UTF-8">    
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="{% static 'img/logosara.png' %}">
-  <!--swet alerta para los mensajes-->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!--swet alerta para los mensajes-->
+       <!--link para los estilos de la pagina-->
+    <link rel="stylesheet" href="{% static 'css_clientes/carrito_compras.css' %}">  <!--stilos de carro de compras-->
+    <link rel="stylesheet" href="{% static 'css_clientes/contenido.css' %}">
+    <link rel="stylesheet" href="{% static 'css_clientes/listar_producto.css' %}">
+    <link rel="stylesheet" href="{% static 'css_clientes/listar_servicios.css' %}">
+    <link rel="stylesheet" href="{% static 'css_clientes/headercli.css' %}"> <!--estilos header-->
+    <link rel="stylesheet" href="{% static 'css_clientes/footer.css' %}"> <!--estilos footer-->
+   
 
-  <!--ruta que tiene el widget de acceseibilidad-->
-      <link rel="stylesheet" href="{% static 'css/widget_custom.css' %}">
       <!--iconos del widgets-->
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-      <!--ruta para scrip de el sidebar o menu lateral-->
-       <script src="{% static 'js/sidebar.js' %}"></script> 
+      <!--ruta para scrip de la pagina clientes-->
+    
+   
+       <script src="{% static 'js_clientes/contenido.js' %}"></script> 
+       <script src="{% static 'js_clientes/header.js' %}"></script> 
+       <script src="{% static 'js_clientes/listar_productos.js' %}"></script> 
+        <script src="{% static 'js_clientes/detalle_producto.js' %}"></script>
+
+
   <title>Mi Tienda</title>
 
 <style>

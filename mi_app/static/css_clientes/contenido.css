@@ -1,0 +1,244 @@
+/* ================= 1. VARIABLES ================= */
+:root {
+    /* MODO CLARO */
+    --bg-body: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    
+    /* NAVBAR FIJO */
+    --bg-navbar: #111111;
+    --text-navbar: #ffffff;
+    
+    --accent-color: #ffa500;
+    --border-color: #e5e5e5;
+    --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* MODO OSCURO */
+body.dark-mode {
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+    --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* ================= 2. ESTILOS BASE ================= */
+body {
+    /* 1. Tipografía Moderna */
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    
+    /* 2. Colores (Usando las variables que definimos) */
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    
+    /* 3. Transiciones suaves para el modo oscuro */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    
+    /* 4. Reset básico */
+    margin: 0;
+    padding: 0;
+    
+    /* 5. SEGURIDAD RESPONSIVA (Vital para móviles) */
+    overflow-x: hidden; /* Evita que la web se mueva a los lados */
+    width: 100%;
+    
+    /* 6. TRUCO DEL FOOTER (Para que el footer siempre quede abajo) */
+    min-height: 100vh;      /* Ocupa al menos el 100% de la altura de pantalla */
+    display: flex;          /* Convierte el cuerpo en una caja flexible */
+    flex-direction: column; /* Organiza: Header -> Contenido -> Footer */
+}
+
+/* Esto asegura que el contenido empuje al footer hacia abajo */
+main {
+    flex: 1; 
+}
+
+h1.titulo, h2, h3 { color: var(--text-primary) !important; }
+
+/* ================= 3. CARRUSEL ================= */
+.carrusel-container {
+    position: relative;
+    width: 100%;
+    height: 500px; /* Altura Desktop */
+    overflow: hidden;
+    background: #000;
+}
+
+.carrusel-slides {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.55);
+}
+
+.slide-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: #ffffff !important;
+    padding: 20px;
+    max-width: 800px;
+}
+
+.slide h1 {
+    font-size: 4rem; /* Grande en PC */
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #ffffff !important;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    letter-spacing: 2px;
+}
+
+.slide p {
+    font-size: 1.5rem;
+    color: #e0e0e0 !important;
+    font-weight: 300;
+}
+
+/* Botones Navegación */
+.carrusel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carrusel-btn:hover {
+    background: white;
+    color: black;
+    border-color: white;
+}
+
+.carrusel-btn.prev { left: 30px; }
+.carrusel-btn.next { right: 30px; }
+
+/* ================= 4. SECCIÓN PRODUCTOS ================= */
+.titulo {
+    text-align: center;
+    margin: 60px 0 40px 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.productos {
+    display: grid;
+    /* RESPONSIVE: Ajustamos el minmax a 280px para que quepa en celulares */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto 80px auto;
+    padding: 0 20px;
+}
+
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.producto {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow-card);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-link:hover .producto {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    border-color: var(--accent-color);
+}
+
+.producto img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.producto h3 {
+    font-size: 1.8rem;
+    margin: 10px 0;
+    font-weight: 700;
+}
+
+.producto p {
+    font-size: 1.2rem;
+    color: var(--accent-color) !important;
+    font-weight: 600;
+    background: rgba(255, 165, 0, 0.1);
+    padding: 5px 15px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+/* ================= 5. MEDIA QUERIES (RESPONSIVE) ================= */
+@media (max-width: 768px) {
+    /* 1. Carrusel más pequeño en altura */
+    .carrusel-container { height: 350px; }
+
+    /* 2. Textos más pequeños para que quepan */
+    .slide h1 { font-size: 2rem; }
+    .slide p { font-size: 1rem; }
+    
+    /* 3. Botones más pequeños y pegados al borde */
+    .carrusel-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    .carrusel-btn.prev { left: 10px; }
+    .carrusel-btn.next { right: 10px; }
+
+    /* 4. Títulos y Márgenes generales */
+    .titulo { 
+        font-size: 2rem; 
+        margin: 40px 0 20px 0;
+    }
+    
+    .productos {
+        gap: 20px; /* Menos espacio entre tarjetas */
+    }
+}
