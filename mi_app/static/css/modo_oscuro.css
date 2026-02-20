@@ -73,7 +73,7 @@ body.dark-mode .main-sidebar .nav-link:hover {
 body.dark-mode .main-sidebar .brand-link {
   background-color: #242434 !important;
   color: #f1f1f1 !important;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid #444444;
 }
 
 /* Ajustes para el logo y textos del sidebar */

@@ -2,27 +2,34 @@
 {% load static %}
 
 {% block body %}
-  <body class="layout-fixed sidebar-expand-lg sidebar-mini sidebar-collapse bg-body-tertiary">
-    <!--begin::App Wrapper-->
-    <div class="app-wrapper"><!--estoy contiene lo que es las bases de la plantilla su header footer y esaas cosas sidebar tambien-->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<body class="layout-fixed sidebar-expand-lg sidebar-mini sidebar-collapse bg-body-tertiary">
+    <div class="app-wrapper">
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        {% include 'sidebar.html' %}
 
-
-
-     
-      {% include 'sidebar.html' %}
-   
- 
-      {% block content %}{% endblock %}
- 
-   
+        {% block content %}{% endblock %}
     </div>
 
-  </body>
-  
-<!--Esto incluye el codigo para poder mostrar en la pagina el boton de accesiibildad-->
-{% include "boton_widgetAccesibilidad.html" %}
+    {% include "boton_widgetAccesibilidad.html" %}
 
-
-
+<script>
+    const toggle = document.getElementById('mode-toggle');
+    if (toggle) {
+        toggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode');
+            
+            const text = document.getElementById('mode-text');
+            const icon = document.getElementById('mode-icon');
+            
+            if (toggle.checked) {
+                if(text) text.textContent = "oscuro";
+                if(icon) icon.classList.replace('bi-brightness-high', 'bi-moon-stars');
+            } else {
+                if(text) text.textContent = "claro";
+                if(icon) icon.classList.replace('bi-moon-stars', 'bi-brightness-high');
+            }
+        });
+    }
+</script>
+</body>
 {% endblock %}
