@@ -3,8 +3,6 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from mi_app.models import *
 from django.http import JsonResponse
 from django.contrib import messages
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_cliente import ClienteForm
 
@@ -19,24 +17,16 @@ def listar_cliente(request):
     return render(request, 'cliente/cliente.html', data)
 
 
-class clienteListView(ListView):
+class ClienteListView(ListView):
     model = GestionCliente
-    template_name ='modulos/cliente/cliente.html'
-    
-    # @method_decorator(login_required)
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-       return super().dispatch(request, *args, **kwargs)
-    
-    def post(self, request, *args, **kwargs):
-        nombre = {'nombre' : 'GestionCliente'}
-        return JsonResponse(nombre)
+    template_name = 'modulos/cliente/cliente.html'
+    context_object_name = 'object_list'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Gestión de Clientes'
         context['crear_url'] = reverse_lazy('mi_app:cliente_crear')
-        context['entidad'] = 'Cliente'  
+        context['entidad'] = 'Clientes'
         return context
     
 class clienteCreateView(CreateView):
@@ -73,19 +63,22 @@ class clienteupdateView(UpdateView):
         context['listar_url'] = reverse_lazy('mi_app:cliente_lista')
         return context
 
-class clienteDeleteView(DeleteView):
+class ClienteDeleteView(DeleteView):
     model = GestionCliente
     template_name = 'modulos/cliente/eliminar_cliente.html'
     success_url = reverse_lazy('mi_app:cliente_lista')
     
-    def form_valid(self, form):
-        messages.success(self.request, "cliente eliminado correctamente")
-        return super().form_valid(form)
-
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # Eliminar también el User asociado
+        if self.object.user:
+            self.object.user.delete()  # Esto eliminará en cascada el GestionCliente
+        messages.success(request, "Cliente eliminado correctamente")
+        return redirect(self.success_url)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar cliente'
+        context['titulo'] = 'Eliminar Cliente'
         context['entidad'] = 'Clientes'
         context['listar_url'] = reverse_lazy('mi_app:cliente_lista')
         return context

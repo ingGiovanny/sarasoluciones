@@ -1,38 +1,45 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.views.generic import TemplateView
+from mi_app.models import GestionCliente
 
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
-
-
-class registroView(TemplateView):
-    template_name = 'registro.html'   
-    def registro(request):
-        if request.method == 'POST':
-        # Obtener los datos del formulario (coincidiendo con los 'name' del HTML)
-            username = request.POST.get('username')
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            confirm_password = request.POST.get('confirm_password')
-        
-        # Datos adicionales que no están en el modelo User por defecto
+class RegistroView(TemplateView):
+    template_name = 'registro.html'
+    
+    def post(self, request, *args, **kwargs):
+        # Obtener datos del formulario
+        username = request.POST.get('username')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
         cedula = request.POST.get('cedula')
         telefono = request.POST.get('telefono')
 
-        # 1. Validar que las contraseñas coincidan
+        # Validar contraseñas
         if password != confirm_password:
-            messages.error(request, "Las contraseñas no coinciden.")
-            return render(request, 'registro.html')
+            messages.error(request, "Las contraseñas no coinciden")
+            return render(request, self.template_name)
 
-        # 2. Validar que el usuario no exista ya
+        # Validar usuario existente
         if User.objects.filter(username=username).exists():
-            messages.error(request, "El nombre de usuario ya está en uso.")
-            return render(request, 'registro.html')
+            messages.error(request, "El nombre de usuario ya está en uso")
+            return render(request, self.template_name)
+        
+        # Validar email existente
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "El correo electrónico ya está registrado")
+            return render(request, self.template_name)
+        
+        # Validar documento existente
+        if GestionCliente.objects.filter(numero_documento=cedula).exists():
+            messages.error(request, "El número de documento ya está registrado")
+            return render(request, self.template_name)
 
         try:
-            # 3. Crear el usuario en la base de datos de Django
+            # 1. Crear usuario en Django User
             user = User.objects.create_user(
                 username=username,
                 email=email,
@@ -42,13 +49,25 @@ class registroView(TemplateView):
             )
             user.save()
 
-            # Aquí podrías guardar la cédula y teléfono en un modelo "Perfil" si lo tienes creado
+            # 2. Crear perfil de cliente vinculado (SIN contrasena)
+            nombre_completo = f"{first_name} {last_name}"
             
-            messages.success(request, f"¡Cuenta creada para {username}! Ya puedes iniciar sesión.")
-            return redirect('login') # Redirige a la página de login tras el éxito
+            cliente = GestionCliente.objects.create(
+                user=user,
+                nombre_completo=nombre_completo,
+                numero_telefonico=telefono,
+                numero_documento=cedula,
+                correo_electronico=email
+                # ← YA NO incluye 'contrasena'
+            )
+            cliente.save()
+
+            messages.success(request, "¡Cuenta creada exitosamente! Ya puedes iniciar sesión")
+            return redirect('login:login')
 
         except Exception as e:
-            messages.error(request, f"Hubo un error al crear la cuenta: {e}")
-            
-    # Si es un método GET, simplemente mostramos el formulario
-        return render(request, 'registro.html')    
+            # Si algo falla, eliminar el User para evitar inconsistencias
+            if 'user' in locals():
+                user.delete()
+            messages.error(request, f"Error al crear la cuenta: {str(e)}")
+            return render(request, self.template_name)

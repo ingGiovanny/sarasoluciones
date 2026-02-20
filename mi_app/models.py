@@ -1,7 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
+
+from django.dispatch import receiver
 
 class Administrador(models.Model):
     nombres_completos = models.CharField(max_length=50, default="", verbose_name="Nombres Completos")
@@ -36,12 +40,13 @@ class Proveedor(models.Model):
 
 
 class GestionCliente(models.Model):
-    """Modelo para gestión de clientes"""
+    """Modelo para gestión de clientes vinculado a User de Django"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil_cliente')
     nombre_completo = models.CharField(max_length=100, verbose_name="Nombre Completo")
     numero_telefonico = models.CharField(max_length=50, null=True, blank=True, verbose_name="Número Telefónico")
     numero_documento = models.CharField(max_length=50, unique=True, verbose_name="Número Documento")
     correo_electronico = models.EmailField(max_length=50, verbose_name="Correo Electrónico")
-    contrasena = models.CharField(max_length=50, verbose_name="Contraseña")
+    fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
     
     class Meta:
         verbose_name = "Cliente"
@@ -49,6 +54,15 @@ class GestionCliente(models.Model):
         
     def __str__(self):
         return self.nombre_completo
+    
+@receiver(post_delete, sender=GestionCliente)
+def eliminar_usuario_vinculado(sender, instance, **kwargs):
+    """
+    Esta señal se dispara automáticamente DESPUÉS de que un GestionCliente es eliminado.
+    Busca el usuario de Django (User) que estaba vinculado a ese cliente y lo elimina.
+    """
+    if instance.user:
+        instance.user.delete()
 
 
 class Marca(models.Model):

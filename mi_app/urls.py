@@ -56,10 +56,10 @@ urlpatterns = [
 
     
 #_________________________modulo clientes_________________________________________
-    path('clientes/listar/', clienteListView.as_view(), name='cliente_lista'),
+    path('clientes/listar/', ClienteListView.as_view(), name='cliente_lista'),
     path('clientes/crear/', clienteCreateView.as_view(), name='cliente_crear'),
     path('clientes/editar/<int:pk>/', clienteupdateView.as_view(), name='cliente_editar'),
-    path('clientes/eliminar/<int:pk>/', clienteDeleteView.as_view(), name='cliente_eliminar'),
+    path('clientes/eliminar/<int:pk>/', ClienteDeleteView.as_view(), name='cliente_eliminar'),
 
     
 #_________________________modulo proveedores_________________________________________
