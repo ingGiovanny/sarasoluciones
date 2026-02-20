@@ -85,7 +85,7 @@ urlpatterns = [
 #_________________________modulo categoria_________________________________________
     path('categoria/listar/', categoriaListView.as_view(), name='categoria_lista'), 
     path('categoria/crear/', categoriaCreateView.as_view(), name='categoria_crear'),
-    path('categoria/editar/<int:pk>/', categoriaupdateView.as_view(), name='categoria_editar'),
+    path('categoria/editar/<int:pk>/', categoriaUpdateView.as_view(), name='categoria_editar'),
     path('categoria/eliminar/<int:pk>/', categoriaDeleteView.as_view(), name='categoria_eliminar'),
     
 #--------------------------------modulo producto ---------------------------------------
@@ -98,7 +98,7 @@ urlpatterns = [
  #--------------------------------modulo garantia ---------------------------------------
     path('garantia/listar/', GarantiaListView.as_view(), name='garantia_lista'),
     path('garantia/crear/', GarantiaCreateView.as_view(), name='garantia_crear'),
-    path('garantia/editar/<int:pk>/', GarantiaupdateView.as_view(), name='garantia_editar'),
+    path('garantia/editar/<int:pk>/', GarantiaUpdateView.as_view(), name='garantia_editar'),
     path('garantia/eliminar/<int:pk>/', GarantiaDeleteView.as_view(), name='garantia_eliminar'),  
      
 #--------------------------------modulo pedido ---------------------------------------
@@ -134,7 +134,7 @@ urlpatterns = [
     path('compras/eliminar/<int:pk>/', CompraDeleteView.as_view(), name='compras_eliminar'),   
 
 #--------------------------------modulo servicios ---------------------------------------
-path('gestion-servicios/', ServicioListView.as_view(), name='servicio_lista'),
+    path('gestion-servicios/', ServicioListView.as_view(), name='servicio_lista'),
     path('gestion-servicios/crear/', ServicioCreateView.as_view(), name='servicio_crear'),
     path('gestion-servicios/editar/<int:pk>/', ServicioUpdateView.as_view(), name='servicio_editar'),
     path('gestion-servicios/eliminar/<int:pk>/', ServicioDeleteView.as_view(), name='servicio_eliminar'),

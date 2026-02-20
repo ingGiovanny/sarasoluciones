@@ -2,9 +2,10 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from mi_app.models import GestionServicio
 from mi_app.forms.servicio import ServicioForm
+from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
 
 # 1. LISTAR
-class ServicioListView(ListView):
+class ServicioListView(AdminRequiredMixin,ListView):
     model = GestionServicio
     template_name = 'modulos/servicios/servicio.html'
     context_object_name = 'object_list'
@@ -15,21 +16,21 @@ class ServicioListView(ListView):
         return context
 
 # 2. CREAR
-class ServicioCreateView(CreateView):
+class ServicioCreateView(AdminRequiredMixin,CreateView):
     model = GestionServicio
     form_class = ServicioForm
     template_name = 'modulos/servicios/crear_servicio.html'
     success_url = reverse_lazy('mi_app:servicio_lista')
 
 # 3. EDITAR
-class ServicioUpdateView(UpdateView):
+class ServicioUpdateView(AdminRequiredMixin,UpdateView):
     model = GestionServicio
     form_class = ServicioForm
     template_name = 'modulos/servicios/crear_servicio.html' # Reutilizamos el de crear
     success_url = reverse_lazy('mi_app:servicio_lista')
 
 # 4. ELIMINAR
-class ServicioDeleteView(DeleteView):
+class ServicioDeleteView(AdminRequiredMixin,DeleteView):
     model = GestionServicio
     template_name = 'modulos/servicios/eliminar_servicio.html'
     success_url = reverse_lazy('mi_app:servicio_lista')

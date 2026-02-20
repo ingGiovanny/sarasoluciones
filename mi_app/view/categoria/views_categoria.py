@@ -7,19 +7,12 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_categoria import CategoriaForm
+from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
 
 
 
 
-def listar_categoria(request):
-    data = {
-        "titulo": "Gestión de categorias",
-        "categorias": Categoria.objects.all()
-    }
-    return render(request, 'categoria/categoria.html', data)
-
-
-class categoriaListView(ListView):
+class categoriaListView(AdminRequiredMixin,ListView):
     model = Categoria
     template_name ='modulos/categoria/categoria.html'
     
@@ -39,7 +32,7 @@ class categoriaListView(ListView):
         context['entidad'] = 'categoria'  
         return context
     
-class categoriaCreateView(CreateView):
+class categoriaCreateView(AdminRequiredMixin,CreateView):
     model = Categoria
     form_class = CategoriaForm
     template_name = 'modulos/categoria/crear_categoria.html'
@@ -56,7 +49,7 @@ class categoriaCreateView(CreateView):
         context ['listar_url'] = reverse_lazy('mi_app:categoria_lista')
         return context
     
-class categoriaupdateView(UpdateView):
+class categoriaUpdateView(AdminRequiredMixin,UpdateView):
     model = Categoria
     form_class = CategoriaForm
     template_name = 'modulos/categoria/crear_categoria.html'
@@ -73,7 +66,7 @@ class categoriaupdateView(UpdateView):
         context['listar_url'] = reverse_lazy('mi_app:categoria_lista')
         return context
 
-class categoriaDeleteView(DeleteView):
+class categoriaDeleteView(AdminRequiredMixin,DeleteView):
     model = Categoria
     template_name = 'modulos/categoria/eliminar_categoria.html'
     success_url = reverse_lazy('mi_app:categoria_lista')

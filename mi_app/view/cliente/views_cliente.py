@@ -5,19 +5,14 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.urls import reverse_lazy
 from mi_app.forms.form_cliente import ClienteForm
+from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
 
 
 
 
-def listar_cliente(request):
-    data = {
-        "titulo": "Gestión de Clientes",
-        "clientes": GestionCliente.objects.all()
-    }
-    return render(request, 'cliente/cliente.html', data)
 
 
-class ClienteListView(ListView):
+class ClienteListView(AdminRequiredMixin,ListView):
     model = GestionCliente
     template_name = 'modulos/cliente/cliente.html'
     context_object_name = 'object_list'
@@ -29,7 +24,7 @@ class ClienteListView(ListView):
         context['entidad'] = 'Clientes'
         return context
     
-class clienteCreateView(CreateView):
+class clienteCreateView(AdminRequiredMixin,CreateView):
     model = GestionCliente
     form_class = ClienteForm
     template_name = 'modulos/cliente/crear_cliente.html'
@@ -46,7 +41,7 @@ class clienteCreateView(CreateView):
         context ['listar_url'] = reverse_lazy('mi_app:cliente_lista')
         return context
     
-class clienteupdateView(UpdateView):
+class clienteupdateView(AdminRequiredMixin,UpdateView):
     model = GestionCliente
     form_class = ClienteForm
     template_name = 'modulos/cliente/crear_cliente.html'
@@ -63,7 +58,7 @@ class clienteupdateView(UpdateView):
         context['listar_url'] = reverse_lazy('mi_app:cliente_lista')
         return context
 
-class ClienteDeleteView(DeleteView):
+class ClienteDeleteView(AdminRequiredMixin,DeleteView):
     model = GestionCliente
     template_name = 'modulos/cliente/eliminar_cliente.html'
     success_url = reverse_lazy('mi_app:cliente_lista')

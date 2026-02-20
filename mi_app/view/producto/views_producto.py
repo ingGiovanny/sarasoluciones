@@ -7,21 +7,11 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
-from mi_app.forms.form_producto import ProductoForm 
+from mi_app.forms.form_producto import ProductoForm
+from mi_app.view.proteger_pagina_admin import AdminRequiredMixin 
 
 
-
-
-
-def listar_producto(request):
-    data = {
-        "titulo": "Gestión de Productos",
-        "producto": Producto.objects.all()
-    }
-    return render(request, 'producto/producto.html', data)
-
-
-class productoListView(ListView):
+class productoListView(AdminRequiredMixin,ListView):
     model = Producto
     template_name ='modulos/producto/producto.html'
     
@@ -41,7 +31,7 @@ class productoListView(ListView):
         return context
 
     
-class productoCreateView(CreateView):
+class productoCreateView(AdminRequiredMixin,CreateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'modulos/producto/crear_producto.html'
@@ -62,7 +52,7 @@ class productoCreateView(CreateView):
             ImagenProducto.objects.create(producto=self.object, imagen=f)
             return super().form_valid(form)
     
-class productoupdateView(UpdateView):
+class productoupdateView(AdminRequiredMixin,UpdateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'modulos/producto/crear_producto.html'
@@ -85,7 +75,7 @@ class productoupdateView(UpdateView):
         messages.success(self.request, "Producto actualizado con éxito")
         return super().form_valid(form)
 
-class productoDeleteView(DeleteView):
+class productoDeleteView(AdminRequiredMixin,DeleteView):
     model = Producto
     template_name = 'modulos/producto/eliminar_producto.html'
     success_url = reverse_lazy('mi_app:producto_lista')

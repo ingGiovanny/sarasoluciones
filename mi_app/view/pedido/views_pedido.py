@@ -10,15 +10,6 @@ from mi_app.forms.form_pedido import PedidoForm
 
 
 
-
-def listar_gestionpedido(request):
-    data = {
-        "titulo": "Listado de pedido",
-        "pedido": Pedido.objects.all()
-    }
-    return render(request, 'pedido/pedido.html', data)
-
-
 class pedidoListView(ListView):
     model = Pedido
     template_name ='modulos/pedido/pedido.html'

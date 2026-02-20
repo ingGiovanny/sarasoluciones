@@ -7,18 +7,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_ventas import ventasForm
-
-
-
-
-def listar_ventas(request):
-    data = {
-        "titulo": "Listado de ventas",
-        "ventas": Ventas.objects.all()
-    }
-    return render(request, 'ventas/ventas.html', data)
-
-
 class ventasListView(ListView):
     model = Ventas
     template_name ='modulos/ventas/ventas.html'

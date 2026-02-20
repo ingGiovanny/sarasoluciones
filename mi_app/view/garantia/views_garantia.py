@@ -7,19 +7,12 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_garantia import GarantiaForm
+from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
 
 
 
 
-def listar_garantia(request):
-    data = {
-        "titulo": "Garantia",
-        "Garantia": Garantia.objects.all()
-    }
-    return render(request, 'garantia/garantia.html', data)
-
-
-class GarantiaListView(ListView):
+class GarantiaListView(AdminRequiredMixin,ListView):
     model = Garantia
     template_name ='modulos/garantia/garantia.html'
     
@@ -39,7 +32,7 @@ class GarantiaListView(ListView):
         context['entidad'] = 'garantia'  
         return context
     
-class GarantiaCreateView(CreateView):
+class GarantiaCreateView(AdminRequiredMixin,CreateView):
     model = Garantia
     form_class = GarantiaForm
     template_name = 'modulos/garantia/crear_garantia.html'
@@ -56,7 +49,7 @@ class GarantiaCreateView(CreateView):
         context ['listar_url'] = reverse_lazy('mi_app:garantia_lista')
         return context
     
-class GarantiaupdateView(UpdateView):
+class GarantiaUpdateView(AdminRequiredMixin,UpdateView):
     model = Garantia
     form_class = GarantiaForm
     template_name = 'modulos/garantia/crear_garantia.html'
@@ -73,7 +66,7 @@ class GarantiaupdateView(UpdateView):
         context['listar_url'] = reverse_lazy('mi_app:garantias_lista')
         return context
 
-class GarantiaDeleteView(DeleteView):
+class GarantiaDeleteView(AdminRequiredMixin,DeleteView):
     model = Garantia
     template_name = 'modulos/garantia/eliminar_garantia.html'
     success_url = reverse_lazy('mi_app:garantia_lista')

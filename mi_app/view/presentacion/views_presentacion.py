@@ -11,13 +11,6 @@ from mi_app.forms.form_presentacion import presentacionForm as presentacionForm
 
 
 
-def listar_presentacion(request):
-    data = {
-        "titulo": "Listar Presentaciones",
-        "presentaciones": Presentacion.objects.all()
-    }
-    return render(request, 'presentacion/presentacion.html', data)
-
 
 class presentacionListView(ListView):
     model = Presentacion
