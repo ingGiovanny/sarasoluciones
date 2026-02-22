@@ -7,7 +7,13 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_ventas import ventasForm
-class ventasListView(ListView):
+from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
+from django.views.decorators.cache import never_cache # Para evitar que el navegador almacene en caché la página protegida
+
+
+
+@method_decorator(never_cache, name='dispatch')
+class ventasListView(AdminRequiredMixin,ListView):
     model = Ventas
     template_name ='modulos/ventas/ventas.html'
     
@@ -26,8 +32,8 @@ class ventasListView(ListView):
         context['crear_url'] = reverse_lazy('mi_app:ventas_crear')
         context['entidad'] = 'ventas'  
         return context
-    
-class ventasCreateView(CreateView):
+@method_decorator(never_cache, name='dispatch')    
+class ventasCreateView(AdminRequiredMixin,CreateView):
     model = Ventas
     form_class = ventasForm
     template_name = 'modulos/ventas/crear_ventas.html'
@@ -43,8 +49,8 @@ class ventasCreateView(CreateView):
         context ['entidad'] = 'ventas'
         context ['listar_url'] = reverse_lazy('mi_app:ventas_lista')
         return context
-    
-class ventasUpdateView(UpdateView):
+@method_decorator(never_cache, name='dispatch')    
+class ventasUpdateView(AdminRequiredMixin,UpdateView):
     model = Ventas
     form_class = ventasForm
     template_name = 'modulos/ventas/crear_ventas.html'
@@ -60,8 +66,8 @@ class ventasUpdateView(UpdateView):
         context['entidad'] = 'ventas'
         context['listar_url'] = reverse_lazy('mi_app:ventas_lista')
         return context
-
-class ventasDeleteView(DeleteView):
+@method_decorator(never_cache, name='dispatch')
+class ventasDeleteView(AdminRequiredMixin,DeleteView):
     model = Ventas
     template_name = 'modulos/ventas/eliminar_ventas.html'
     success_url = reverse_lazy('mi_app:ventas_lista')

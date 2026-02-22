@@ -8,8 +8,11 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_compra import CompraForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
+from django.views.decorators.cache import never_cache # Para evitar que el navegador almacene en caché la página protegida
 
 
+
+@method_decorator(never_cache, name='dispatch')
 class CompraListView(AdminRequiredMixin,ListView):
     model = Compra
     template_name ='modulos/compra/compra.html'
@@ -29,7 +32,7 @@ class CompraListView(AdminRequiredMixin,ListView):
         context['crear_url'] = reverse_lazy('mi_app:compras_crear')
         context['entidad'] = 'Compra'  
         return context
-    
+@method_decorator(never_cache, name='dispatch')    
 class CompraCreateView(AdminRequiredMixin,CreateView):
     model = Compra
     form_class = CompraForm
@@ -46,7 +49,7 @@ class CompraCreateView(AdminRequiredMixin,CreateView):
         context ['entidad'] = 'compras'
         context ['listar_url'] = reverse_lazy('mi_app:compras_lista')
         return context
-    
+@method_decorator(never_cache, name='dispatch')    
 class CompraUpdateView(AdminRequiredMixin,UpdateView):
     model = Compra
     form_class = CompraForm
@@ -63,7 +66,7 @@ class CompraUpdateView(AdminRequiredMixin,UpdateView):
         context['entidad'] = 'compras'
         context['listar_url'] = reverse_lazy('mi_app:compras_lista')
         return context
-
+@method_decorator(never_cache, name='dispatch')
 class CompraDeleteView(AdminRequiredMixin,DeleteView):
     model = Compra
     template_name = 'modulos/compra/eliminar_compra.html'

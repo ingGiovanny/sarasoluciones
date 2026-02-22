@@ -8,9 +8,10 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_proveedor import ProveedorForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
+from django.views.decorators.cache import never_cache # Para evitar que el navegador almacene en caché la página protegida
 
 
-
+@method_decorator(never_cache, name='dispatch')
 class proveedorListView(AdminRequiredMixin,ListView):
     model = Proveedor
     template_name ='modulos/proveedor/proveedor.html'
@@ -30,7 +31,7 @@ class proveedorListView(AdminRequiredMixin,ListView):
         context['crear_url'] = reverse_lazy('mi_app:proveedor_crear')
         context['entidad'] = 'proveedor'  
         return context
-    
+@method_decorator(never_cache, name='dispatch')    
 class proveedorCreateView(AdminRequiredMixin,CreateView):
     model = Proveedor
     form_class = ProveedorForm
@@ -47,7 +48,7 @@ class proveedorCreateView(AdminRequiredMixin,CreateView):
         context ['entidad'] = 'Proveedores'
         context ['listar_url'] = reverse_lazy('mi_app:proveedor_lista')
         return context
-    
+@method_decorator(never_cache, name='dispatch')   
 class proveedorupdateView(AdminRequiredMixin,UpdateView):
     model = Proveedor
     form_class = ProveedorForm
@@ -64,7 +65,7 @@ class proveedorupdateView(AdminRequiredMixin,UpdateView):
         context['entidad'] = 'proveedores'
         context['listar_url'] = reverse_lazy('mi_app:proveedor_lista')
         return context
-
+@method_decorator(never_cache, name='dispatch')
 class proveedorDeleteView(AdminRequiredMixin,DeleteView):
     model = Proveedor
     template_name = 'modulos/proveedor/eliminar_proveedor.html'
