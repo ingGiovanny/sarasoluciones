@@ -45,6 +45,17 @@ body.dark-mode .form-control::placeholder {
     opacity: 0.8 !important;
 }
 
+/* Soporte para navegadores antiguos (Opcional pero recomendado) */
+body.dark-mode .form-control::-webkit-input-placeholder { 
+  color: #ffffff !important; 
+}
+body.dark-mode .form-control::-moz-placeholder { 
+  color: #ffffff !important; 
+}
+body.dark-mode .form-control:-ms-input-placeholder { 
+  color: #ffffff !important; 
+}
+
 /* Celdas de encabezado de tabla */
 body.dark-mode .table thead {
   background-color: #343a40 !important;
