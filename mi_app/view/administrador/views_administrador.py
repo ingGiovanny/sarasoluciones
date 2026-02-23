@@ -8,10 +8,12 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.administrador import AdministradorForm
 from mi_app.view.proteger_pagina_admin import *
+from django.views.decorators.cache import never_cache # Para evitar que el navegador almacene en caché la página protegida
 
 
 
 
+@method_decorator(never_cache, name='dispatch')
 class AdministradorListView(AdminRequiredMixin,ListView):
 
     model = Administrador
@@ -33,6 +35,7 @@ class AdministradorListView(AdminRequiredMixin,ListView):
         context['entidad'] = 'Administrador'  
         return context
     
+@method_decorator(never_cache, name='dispatch' )   
 class AdministradorCreateView(AdminRequiredMixin,CreateView):
     model = Administrador
     form_class = AdministradorForm
@@ -49,7 +52,7 @@ class AdministradorCreateView(AdminRequiredMixin,CreateView):
         context ['entidad'] = 'Administradores'
         context ['listar_url'] = reverse_lazy('mi_app:administrador_lista')
         return context
-    
+@method_decorator(never_cache, name='dispatch')
 class AdministradorUpdateView(AdminRequiredMixin,UpdateView):
     model = Administrador
     form_class = AdministradorForm
@@ -66,7 +69,7 @@ class AdministradorUpdateView(AdminRequiredMixin,UpdateView):
         context['entidad'] = 'Administradores'
         context['listar_url'] = reverse_lazy('mi_app:administrador_lista')
         return context
-
+@method_decorator(never_cache, name='dispatch')
 class AdministradorDeleteView(AdminRequiredMixin,DeleteView):
     model = Administrador
     template_name = 'modulos/administrador/eliminar_administrador.html'

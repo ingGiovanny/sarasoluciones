@@ -8,10 +8,10 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_categoria import CategoriaForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
+from django.views.decorators.cache import never_cache # Para evitar que el navegador almacene en caché la página protegida
 
 
-
-
+@method_decorator(never_cache, name='dispatch')
 class categoriaListView(AdminRequiredMixin,ListView):
     model = Categoria
     template_name ='modulos/categoria/categoria.html'
@@ -31,7 +31,7 @@ class categoriaListView(AdminRequiredMixin,ListView):
         context['crear_url'] = reverse_lazy('mi_app:categoria_crear')
         context['entidad'] = 'categoria'  
         return context
-    
+@method_decorator(never_cache, name='dispatch')
 class categoriaCreateView(AdminRequiredMixin,CreateView):
     model = Categoria
     form_class = CategoriaForm
@@ -48,7 +48,7 @@ class categoriaCreateView(AdminRequiredMixin,CreateView):
         context ['entidad'] = 'categorias'
         context ['listar_url'] = reverse_lazy('mi_app:categoria_lista')
         return context
-    
+@method_decorator(never_cache, name='dispatch')
 class categoriaUpdateView(AdminRequiredMixin,UpdateView):
     model = Categoria
     form_class = CategoriaForm
@@ -65,7 +65,7 @@ class categoriaUpdateView(AdminRequiredMixin,UpdateView):
         context['entidad'] = 'categorias'
         context['listar_url'] = reverse_lazy('mi_app:categoria_lista')
         return context
-
+@method_decorator(never_cache, name='dispatch')
 class categoriaDeleteView(AdminRequiredMixin,DeleteView):
     model = Categoria
     template_name = 'modulos/categoria/eliminar_categoria.html'

@@ -2,7 +2,11 @@ import random
 from decimal import Decimal
 from django.core.management.base import BaseCommand
 from faker import Faker
-from django.db import transaction # Para seguridad en la BD
+from django.db import transaction
+
+# IMPORTACIÓN CORREGIDA AQUÍ:
+from django.contrib.auth.models import User 
+
 from mi_app.models import (
     Administrador, Proveedor, GestionCliente, Marca, Presentacion, 
     Categoria, GestionServicio, Producto, Factura, Garantia, 
@@ -13,29 +17,29 @@ class Command(BaseCommand):
     help = 'Puebla la base de datos completa con datos falsos'
 
     def handle(self, *args, **kwargs):
-        fake = Faker(['es_CO']) # Modo Colombia activado 🇨🇴
+        fake = Faker(['es_CO']) 
         
         self.stdout.write(self.style.WARNING('Iniciando proceso de siembra... Esto puede tardar unos segundos.'))
 
-        # Usamos transaction.atomic para que si algo falla, no guarde nada a medias
         with transaction.atomic():
             
-            # --- 1. LIMPIEZA (Opcional: Descomentar si quieres borrar todo antes) ---
-            # self.stdout.write("Limpiando base de datos...")
-            # Ventas.objects.all().delete()
-            # Pedido.objects.all().delete()
-            # Producto.objects.all().delete()
-            # ... (etc)
-
             # --- 2. CREANDO NIVEL 0 (INDEPENDIENTES) ---
-            
             self.stdout.write("Creando Administradores...")
             admins = []
             for _ in range(5):
+                correo_admin = fake.unique.email()
+                nombre_usuario = fake.unique.user_name()
+                
+                User.objects.create_superuser(
+                    username=nombre_usuario,
+                    email=correo_admin,
+                    password="admin123"
+                )
+
                 admin = Administrador.objects.create(
                     nombres_completos=fake.name(),
-                    correo_electronico=fake.unique.email(),
-                    contrasena="12345",
+                    correo_electronico=correo_admin,
+                    contrasena="admin123", 
                     cedula=fake.unique.ssn(),
                     telefono=fake.phone_number()[:15]
                 )
@@ -57,19 +61,28 @@ class Command(BaseCommand):
             self.stdout.write("Creando Clientes...")
             clientes = []
             for _ in range(20):
+                correo_falso = fake.unique.email()
+                
+                # 1. Creamos el usuario en Django
+                usuario_django = User.objects.create_user(
+                    username=fake.unique.user_name(),
+                    email=correo_falso,
+                    password="cliente123" 
+                )
+
+                # 2. Creamos el cliente Y LO CONECTAMOS al usuario (¡Aquí estaba el error!)
                 cli = GestionCliente.objects.create(
+                    user=usuario_django, # <--- ESTA ES LA LÍNEA MÁGICA QUE FALTABA
                     nombre_completo=fake.name(),
                     numero_telefonico=fake.phone_number()[:15],
                     numero_documento=fake.unique.ssn(),
-                    correo_electronico=fake.unique.email(),
-                    contrasena="cliente123"
+                    correo_electronico=correo_falso
                 )
                 clientes.append(cli)
 
             self.stdout.write("Creando Marcas, Categorías y Presentaciones...")
             marcas = []
             for _ in range(10):
-                # Usamos uuid4 o random para asegurar unicidad en nombres
                 m = Marca.objects.create(nombre_marca=f"{fake.company_suffix()} {fake.word().capitalize()} {random.randint(1,999)}")
                 marcas.append(m)
 
@@ -119,22 +132,18 @@ class Command(BaseCommand):
                     cantidad_producto=random.randint(0, 100),
                     valor_unitario=Decimal(random.randint(10, 200) * 1000),
                     estado_producto=random.choice(['Nuevo', 'Usado', 'Reacondicionado'])
-                    # logo_producto se deja vacío o puedes poner una ruta local por defecto
                 )
                 productos.append(prod)
                 
-                # Crear imágenes falsas para el producto (Nivel 2 - Galería)
                 for _ in range(random.randint(0, 3)):
                     ImagenProducto.objects.create(
-                        producto=prod,
-                        # No subimos archivo real, esto dejará el campo vacío o con error si intentas mostrarlo sin if
-                        # imagen= ... 
+                        producto=prod
                     )
 
             # --- 4. CREANDO NIVEL 2 (PEDIDOS Y COMPRAS) ---
             self.stdout.write("Creando Pedidos y Compras...")
             pedidos = []
-            estados_pedido = [x[0] for x in Pedido.opciones] # ['PROCESO', 'PEDIDO EXITOSO']
+            estados_pedido = [x[0] for x in Pedido.opciones] 
             
             for _ in range(40):
                 p = Pedido.objects.create(
@@ -147,7 +156,7 @@ class Command(BaseCommand):
                     direccion_entrega=fake.street_address(),
                     estado_pedido=random.choice(estados_pedido),
                     email=fake.email()
-                )
+                )      
                 pedidos.append(p)
 
             for _ in range(15):
@@ -171,12 +180,12 @@ class Command(BaseCommand):
                     id_administrador=random.choice(admins)
                 )
                 ventas.append(v)
-            
+                
             facturas = []
             for _ in range(15):
                 f = Factura.objects.create(
                     id_admin=random.choice(admins),
-                    id_venta=random.randint(1000, 9999), # Ya que es IntegerField y no ForeignKey
+                    id_venta=random.randint(1000, 9999), 
                     id_servicio=random.choice(servicios) if random.choice([True, False]) else None,
                     fecha_factura=fake.date_this_year(),
                     descripcion_venta="Venta de equipos varios y servicios",
@@ -189,7 +198,7 @@ class Command(BaseCommand):
             # --- 6. CREANDO NIVEL 4 (GARANTÍAS) ---
             self.stdout.write("Creando Garantías...")
             estados_garantia = [x[0] for x in Garantia.opciones]
-            
+                
             for _ in range(10):
                 Garantia.objects.create(
                     id_factura=random.choice(facturas),
@@ -197,5 +206,6 @@ class Command(BaseCommand):
                     fecha_garantia=fake.future_date(),
                     estado_garantia=random.choice(estados_garantia)
                 )
-
+                
+        # ESTO VA AFUERA DE TODO, PARA QUE SOLO SE IMPRIMA UNA VEZ AL FINAL
         self.stdout.write(self.style.SUCCESS('¡ÉXITO TOTAL! La base de datos ha sido poblada.'))

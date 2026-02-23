@@ -6,12 +6,13 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from mi_app.forms.form_cliente import ClienteForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache # Para evitar que el navegador almacene en caché la página protegida
 
 
 
 
-
-
+@method_decorator(never_cache, name='dispatch')
 class ClienteListView(AdminRequiredMixin,ListView):
     model = GestionCliente
     template_name = 'modulos/cliente/cliente.html'
@@ -23,7 +24,7 @@ class ClienteListView(AdminRequiredMixin,ListView):
         context['crear_url'] = reverse_lazy('mi_app:cliente_crear')
         context['entidad'] = 'Clientes'
         return context
-    
+@method_decorator(never_cache, name='dispatch')    
 class clienteCreateView(AdminRequiredMixin,CreateView):
     model = GestionCliente
     form_class = ClienteForm
@@ -40,7 +41,7 @@ class clienteCreateView(AdminRequiredMixin,CreateView):
         context ['entidad'] = 'Clientes'
         context ['listar_url'] = reverse_lazy('mi_app:cliente_lista')
         return context
-    
+@method_decorator(never_cache, name='dispatch')    
 class clienteupdateView(AdminRequiredMixin,UpdateView):
     model = GestionCliente
     form_class = ClienteForm
@@ -57,7 +58,7 @@ class clienteupdateView(AdminRequiredMixin,UpdateView):
         context['entidad'] = 'Cliente'
         context['listar_url'] = reverse_lazy('mi_app:cliente_lista')
         return context
-
+@method_decorator(never_cache, name='dispatch')
 class ClienteDeleteView(AdminRequiredMixin,DeleteView):
     model = GestionCliente
     template_name = 'modulos/cliente/eliminar_cliente.html'
