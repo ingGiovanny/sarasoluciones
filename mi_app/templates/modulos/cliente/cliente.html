@@ -1,3 +1,5 @@
+<html lang="es">
+
 {% extends "listar.html" %}
 
 {% block titulo %}
@@ -11,6 +13,7 @@
 {% endblock %}
 
 {% block columnas %}
+
                 <th>N°</th>
                 <th>Nombre Completo</th>
                 <th>Usuario</th>
@@ -22,8 +25,9 @@
 {% endblock %}
 
 {% block iterar %}
-            {% for a in object_list %}
-                    <tr>
+
+                {% for a in object_list %}                    
+                      <tr>
                         <td>{{ a.id }}</td>
                         <td>{{ a.nombre_completo }}</td>
                         <td>{{ a.user.username }}</td>
@@ -50,7 +54,7 @@
                     <tr>
                       <td colspan="8">No hay clientes registrados.</td>
                     </tr>
-                    {% endfor %}
+                {% endfor %}
 
 <!-- Mensajes con SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
