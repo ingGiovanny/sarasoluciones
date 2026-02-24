@@ -8,6 +8,10 @@
 <a href="{{crear_url}}" class=" btn btn-primary btn btn-xs"><i class="fas fa-plus"></i>
           Agregar
 </a>
+
+<a href="{% url 'exportar_pdf_universal' 'Venta' %}" class="btn btn-danger btn-xs">
+    <i class="fas fa-file-pdf"></i> Reporte PDF
+</a>
 {% endblock %}
 
 {% block columnas %}

@@ -31,6 +31,7 @@ class proveedorListView(AdminRequiredMixin,ListView):
         context['crear_url'] = reverse_lazy('mi_app:proveedor_crear')
         context['entidad'] = 'proveedor'  
         return context
+    
 @method_decorator(never_cache, name='dispatch')    
 class proveedorCreateView(AdminRequiredMixin,CreateView):
     model = Proveedor

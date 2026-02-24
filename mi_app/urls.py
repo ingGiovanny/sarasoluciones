@@ -127,11 +127,6 @@ urlpatterns = [
     path('compras/editar/<int:pk>/', CompraUpdateView.as_view(), name='compras_editar'),
     path('compras/eliminar/<int:pk>/', CompraDeleteView.as_view(), name='compras_eliminar'),        
 
-#--------------------------------modulo ayuda ---------------------------------------
-    path('compras/listar/', CompraListView.as_view(), name='compras_lista'),
-    path('compras/crear/', CompraCreateView.as_view(), name='compras_crear'),
-    path('compras/editar/<int:pk>/', CompraUpdateView.as_view(), name='compras_editar'),
-    path('compras/eliminar/<int:pk>/', CompraDeleteView.as_view(), name='compras_eliminar'),   
 
 #--------------------------------modulo servicios ---------------------------------------
     path('gestion-servicios/', ServicioListView.as_view(), name='servicio_lista'),

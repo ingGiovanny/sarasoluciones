@@ -10,6 +10,9 @@
 <a href="{% url 'mi_app:cliente_crear' %}" class="btn btn-primary btn-xs">
     <i class="fas fa-plus"></i> Agregar
 </a>
+<a href="{% url 'exportar_pdf_universal' 'Cliente' %}" class="btn btn-danger btn-xs">
+    <i class="fas fa-file-pdf"></i> Reporte PDF
+</a>
 {% endblock %}
 
 {% block columnas %}

@@ -35,6 +35,13 @@ class AdministradorListView(AdminRequiredMixin,ListView):
         context['entidad'] = 'Administrador'  
         return context
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # ESTA LÍNEA ACTIVA EL BOTÓN. 
+        # El nombre debe coincidir con el diccionario 'config' de tu exportar_modulo_pdf
+        context['nombre_modelo_pdf'] = 'Administrador' 
+        return context
+
 @method_decorator(never_cache, name='dispatch' )   
 class AdministradorCreateView(AdminRequiredMixin,CreateView):
     model = Administrador

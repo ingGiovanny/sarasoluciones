@@ -7,6 +7,11 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_marca import MarcaForm
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.apps import apps
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
 
 class marcaListView(ListView):
@@ -28,7 +33,6 @@ class marcaListView(ListView):
         context['entidad'] = 'Marca'  
         return context
 
-    
 class marcaCreateView(CreateView):
     model = Marca
     form_class = MarcaForm

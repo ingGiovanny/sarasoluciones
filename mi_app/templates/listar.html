@@ -35,7 +35,16 @@
       <div class="card-body">
         <div class="card-footer">
           {% block agregar %}
+              {% if nombre_modelo_pdf %}
+      <a href="{% url 'exportar_pdf_universal' nombre_modelo_pdf %}" class="btn btn-danger btn-xs">
+          <i class="fas fa-file-pdf"></i> Reporte PDF
+      </a>
+    {% endif %}
+  </div>
+  <table id="example1" class="table table-bordered table-striped">
           {% endblock %}
+          <div class="card-body">
+
         </div>
         <table id="example1" class="table table-bordered table-striped">
           <thead>
@@ -44,6 +53,9 @@
               {% endblock %}
             </tr>
           </thead>
+          
+          
+
           <!--el id de esta tabla funciona con cualquier modulo ya que en el listar  -->
                    <!-- de cualquier modulo solo llamamos los bloques de columnas y de iterar -->
           <tbody id="tablagenerica">

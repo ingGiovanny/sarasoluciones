@@ -17,7 +17,7 @@ class Command(BaseCommand):
     help = 'Puebla la base de datos completa con datos falsos'
 
     def handle(self, *args, **kwargs):
-        fake = Faker(['es_CO']) 
+        fake = Faker(['es_CO'])  # Configuramos Faker para español de Colombia
         
         self.stdout.write(self.style.WARNING('Iniciando proceso de siembra... Esto puede tardar unos segundos.'))
 
@@ -151,7 +151,7 @@ class Command(BaseCommand):
                     id_producto=random.choice(productos),
                     cantidad=random.randint(1, 5),
                     valor_total=Decimal(random.randint(50, 500) * 1000),
-                    departamento_entrega=fake.department_code(),
+                    departamento_entrega=fake.city(),
                     municipio_ciudad_entrega=fake.city(),
                     direccion_entrega=fake.street_address(),
                     estado_pedido=random.choice(estados_pedido),

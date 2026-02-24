@@ -31,6 +31,7 @@ class categoriaListView(AdminRequiredMixin,ListView):
         context['crear_url'] = reverse_lazy('mi_app:categoria_crear')
         context['entidad'] = 'categoria'  
         return context
+
 @method_decorator(never_cache, name='dispatch')
 class categoriaCreateView(AdminRequiredMixin,CreateView):
     model = Categoria
@@ -48,6 +49,7 @@ class categoriaCreateView(AdminRequiredMixin,CreateView):
         context ['entidad'] = 'categorias'
         context ['listar_url'] = reverse_lazy('mi_app:categoria_lista')
         return context
+    
 @method_decorator(never_cache, name='dispatch')
 class categoriaUpdateView(AdminRequiredMixin,UpdateView):
     model = Categoria
@@ -65,6 +67,7 @@ class categoriaUpdateView(AdminRequiredMixin,UpdateView):
         context['entidad'] = 'categorias'
         context['listar_url'] = reverse_lazy('mi_app:categoria_lista')
         return context
+    
 @method_decorator(never_cache, name='dispatch')
 class categoriaDeleteView(AdminRequiredMixin,DeleteView):
     model = Categoria

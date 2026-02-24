@@ -2,6 +2,7 @@
 {% load widget_tweaks %}
 
 {% block form %}
+
     {% csrf_token %}
 
     {% for field in form.visible_fields %}
@@ -24,6 +25,7 @@
     <button type="submit" class="btn btn-primary btn-flat">
         <i class="fas fa-save"></i> Agregar
     </button>
+
     <a href="{% url 'mi_app:proveedor_lista' %}" class="btn btn-danger btn-flat float-right">
         <i class="fas fa-times"></i> Cancelar
     </a>
