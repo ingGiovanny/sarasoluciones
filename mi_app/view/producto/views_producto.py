@@ -9,10 +9,8 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_producto import ProductoForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin 
-from django.views.decorators.cache import never_cache # Para evitar que el navegador almacene en caché la página protegida
 
 
-@method_decorator(never_cache, name='dispatch')
 class productoListView(AdminRequiredMixin,ListView):
     model = Producto
     template_name ='modulos/producto/producto.html'
@@ -32,7 +30,7 @@ class productoListView(AdminRequiredMixin,ListView):
         context['entidad'] = 'Producto'  
         return context
 
-@method_decorator(never_cache, name='dispatch')   
+    
 class productoCreateView(AdminRequiredMixin,CreateView):
     model = Producto
     form_class = ProductoForm
@@ -53,7 +51,7 @@ class productoCreateView(AdminRequiredMixin,CreateView):
          for f in archivos:
             ImagenProducto.objects.create(producto=self.object, imagen=f)
             return super().form_valid(form)
-@method_decorator(never_cache, name='dispatch')    
+    
 class productoupdateView(AdminRequiredMixin,UpdateView):
     model = Producto
     form_class = ProductoForm
@@ -77,7 +75,6 @@ class productoupdateView(AdminRequiredMixin,UpdateView):
         messages.success(self.request, "Producto actualizado con éxito")
         return super().form_valid(form)
 
-@method_decorator(never_cache, name='dispatch')
 class productoDeleteView(AdminRequiredMixin,DeleteView):
     model = Producto
     template_name = 'modulos/producto/eliminar_producto.html'

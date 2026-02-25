@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+/* Importar fuente moderna Poppins arriba */
 /* Elimina el fondo azul del autocompletado */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
@@ -6,8 +8,8 @@ input:-webkit-autofill:focus {
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Importar fuente moderna Poppins */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+
 
 * {
     box-sizing: border-box;

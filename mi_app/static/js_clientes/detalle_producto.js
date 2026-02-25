@@ -25,7 +25,7 @@
         const cantidad = input ? input.value : 1;
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        fetch(`/mi_app/carrito/agregar/${productoId}/`, {
+        fetch(`/carrito/agregar/${productoId}/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrftoken,
@@ -37,7 +37,7 @@
         .then(data => {
             if (data.status === 'ok') {
                 if (redireccionar) {
-                    window.location.href = "/mi_app/carrito/ver/"; 
+                    window.location.href = "/carrito/ver/"; 
                 } else {
                     Swal.fire({
                         icon: 'success',

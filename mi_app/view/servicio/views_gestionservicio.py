@@ -3,10 +3,8 @@ from django.urls import reverse_lazy
 from mi_app.models import GestionServicio
 from mi_app.forms.servicio import ServicioForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache # Para evitar que el navegador almacene en caché la página protegida
+
 # 1. LISTAR
-@method_decorator(never_cache, name='dispatch')
 class ServicioListView(AdminRequiredMixin,ListView):
     model = GestionServicio
     template_name = 'modulos/servicios/servicio.html'
@@ -18,7 +16,6 @@ class ServicioListView(AdminRequiredMixin,ListView):
         return context
 
 # 2. CREAR
-@method_decorator(never_cache, name='dispatch')
 class ServicioCreateView(AdminRequiredMixin,CreateView):
     model = GestionServicio
     form_class = ServicioForm
@@ -26,7 +23,6 @@ class ServicioCreateView(AdminRequiredMixin,CreateView):
     success_url = reverse_lazy('mi_app:servicio_lista')
 
 # 3. EDITAR
-@method_decorator(never_cache, name='dispatch')
 class ServicioUpdateView(AdminRequiredMixin,UpdateView):
     model = GestionServicio
     form_class = ServicioForm
@@ -34,7 +30,6 @@ class ServicioUpdateView(AdminRequiredMixin,UpdateView):
     success_url = reverse_lazy('mi_app:servicio_lista')
 
 # 4. ELIMINAR
-@method_decorator(never_cache, name='dispatch')
 class ServicioDeleteView(AdminRequiredMixin,DeleteView):
     model = GestionServicio
     template_name = 'modulos/servicios/eliminar_servicio.html'

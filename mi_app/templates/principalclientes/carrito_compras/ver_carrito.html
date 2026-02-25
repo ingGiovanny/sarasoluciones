@@ -152,178 +152,158 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // --- FUNCIÓN 1: ACTIVAR / DESACTIVAR PRODUCTO ---
+    function toggleProducto(id) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const row = document.getElementById(`row-${id}`);
 
-// --- FUNCIÓN 1: ACTIVAR / DESACTIVAR PRODUCTO ---
-function toggleProducto(id) {
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const row = document.getElementById(`row-${id}`);
-    
-    // Llamada AJAX al servidor
-    fetch(`/mi_app/carrito/toggle/${id}/`, {
-        method: 'POST',
-        headers: { 'X-CSRFToken': csrftoken }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'ok') {
-            // 1. Cambiar visualmente la fila
-            if (data.activo) {
-                row.classList.remove('row-desactivada');
-                row.setAttribute('data-activo', 'true');
-            } else {
-                row.classList.add('row-desactivada');
-                row.setAttribute('data-activo', 'false');
-            }
-            
-            // 2. Actualizar el Gran Total en la tarjeta derecha
-            document.querySelectorAll('.total-compra-span').forEach(el => {
-                el.innerText = `$ ${Number(data.nuevo_total).toLocaleString('es-CO')}`;
-            });
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
+        // ¡AQUÍ ESTÁ LA CORRECCIÓN! (Se quitó /mi_app)
+        fetch(`/carrito/toggle/${id}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrftoken }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    if (data.activo) {
+                        row.classList.remove('row-desactivada');
+                        row.setAttribute('data-activo', 'true');
+                    } else {
+                        row.classList.add('row-desactivada');
+                        row.setAttribute('data-activo', 'false');
+                    }
 
-// --- FUNCIÓN 2: MODIFICAR CANTIDAD ---
-function modificarCantidad(id, accion) {
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    
-    fetch(`/mi_app/carrito/modificar/${id}/${accion}/`, {
-        method: 'POST',
-        headers: { 'X-CSRFToken': csrftoken }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'ok') {
-            
-            // Actualizar fila (cantidad y subtotal)
-            const spanCantidad = document.querySelector(`.item-cantidad-${id}`);
-            if (spanCantidad) spanCantidad.innerText = data.cantidad_item;
-            
-            const subtotalSpan = document.querySelector(`.subtotal-${id}`);
-            if (subtotalSpan) subtotalSpan.innerText = `$ ${Number(data.subtotal_item).toLocaleString('es-CO')}`;
-            
-            // Actualizar el atributo data-cantidad para WhatsApp
-            const row = document.getElementById(`row-${id}`);
-            if(row) row.setAttribute('data-cantidad', data.cantidad_item);
-
-            // Actualizar total general
-            document.querySelectorAll('.total-compra-span').forEach(el => {
-                el.innerText = `$ ${Number(data.nuevo_total).toLocaleString('es-CO')}`;
-            });
-
-            // Actualizar icono del carrito
-            const cartCount = document.getElementById('cart-count');
-            if (cartCount) cartCount.innerText = data.total_items; 
-
-            // Botón de restar (bloqueo)
-            const btnRestar = document.getElementById(`btn-restar-${id}`);
-            if (btnRestar) {
-                if (data.cantidad_item <= 1) {
-                    btnRestar.disabled = true;
-                    btnRestar.style.opacity = "0.5";
-                    btnRestar.style.pointerEvents = "none";
-                } else {
-                    btnRestar.disabled = false;
-                    btnRestar.style.opacity = "1";
-                    btnRestar.style.pointerEvents = "auto";
+                    document.querySelectorAll('.total-compra-span').forEach(el => {
+                        el.innerText = `$ ${Number(data.nuevo_total).toLocaleString('es-CO')}`;
+                    });
                 }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // --- FUNCIÓN 2: MODIFICAR CANTIDAD ---
+    function modificarCantidad(id, accion) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // ¡AQUÍ ESTÁ LA CORRECCIÓN! (Se quitó /mi_app)
+        fetch(`/carrito/modificar/${id}/${accion}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrftoken }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    const spanCantidad = document.querySelector(`.item-cantidad-${id}`);
+                    if (spanCantidad) spanCantidad.innerText = data.cantidad_item;
+
+                    const subtotalSpan = document.querySelector(`.subtotal-${id}`);
+                    if (subtotalSpan) subtotalSpan.innerText = `$ ${Number(data.subtotal_item).toLocaleString('es-CO')}`;
+
+                    const row = document.getElementById(`row-${id}`);
+                    if (row) row.setAttribute('data-cantidad', data.cantidad_item);
+
+                    document.querySelectorAll('.total-compra-span').forEach(el => {
+                        el.innerText = `$ ${Number(data.nuevo_total).toLocaleString('es-CO')}`;
+                    });
+
+                    const cartCount = document.getElementById('cart-count');
+                    if (cartCount) cartCount.innerText = data.total_items;
+
+                    const btnRestar = document.getElementById(`btn-restar-${id}`);
+                    if (btnRestar) {
+                        if (data.cantidad_item <= 1) {
+                            btnRestar.disabled = true;
+                            btnRestar.style.opacity = "0.5";
+                            btnRestar.style.pointerEvents = "none";
+                        } else {
+                            btnRestar.disabled = false;
+                            btnRestar.style.opacity = "1";
+                            btnRestar.style.pointerEvents = "auto";
+                        }
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // --- FUNCIÓN 3: ENVIAR WHATSAPP DINÁMICO ---
+    function enviarWhatsApp() {
+        Swal.fire({
+            title: '¿Confirmar pedido?',
+            text: 'Serás redirigido a WhatsApp para completar tu compra',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#25d366',
+            cancelButtonColor: '#95a5a6',
+            confirmButtonText: '<i class="fab fa-whatsapp me-2"></i>Ir a WhatsApp',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let mensaje = "🛒 *Nuevo Pedido - Soluciones Sara*%0A%0A";
+                let totalCalculado = 0;
+                let productosEncontrados = false;
+
+                const filas = document.querySelectorAll('.producto-row');
+
+                filas.forEach(fila => {
+                    const estaActivo = fila.getAttribute('data-activo') === 'true';
+
+                    if (estaActivo) {
+                        productosEncontrados = true;
+                        const nombre = fila.getAttribute('data-nombre');
+                        const cantidad = parseInt(fila.getAttribute('data-cantidad'));
+                        const precioStr = fila.getAttribute('data-precio').replace(',', '.');
+                        const precio = parseFloat(precioStr);
+
+                        const subtotal = precio * cantidad;
+                        totalCalculado += subtotal;
+
+                        mensaje += `✅ ${nombre}%0A   Cantidad: ${cantidad}%0A   Precio Unit: $${precio.toLocaleString('es-CO')}%0A%0A`;
+                    }
+                });
+
+                if (!productosEncontrados) {
+                    Swal.fire('Error', 'No tienes ningún producto seleccionado para comprar.', 'error');
+                    return;
+                }
+
+                mensaje += `💰 *TOTAL A PAGAR: $${totalCalculado.toLocaleString('es-CO')}*`;
+                window.open(`https://wa.me/573125338803?text=${mensaje}`, '_blank');
             }
+        });
+    }
 
-        } else if (data.status === 'error') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Límite alcanzado',
-                text: data.message,
-                toast: true,
-                position: 'top-end',
-                timer: 2000,
-                showConfirmButton: false
-            });
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
+    // --- FUNCIONES EXTRA (ELIMINAR) ---
+    function confirmarEliminar(id, nombre) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            html: `Se eliminará <strong>${nombre}</strong> de tu carrito`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff6b6b',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarProducto(id);
+            }
+        });
+    }
 
-// --- FUNCIÓN 3: ENVIAR WHATSAPP DINÁMICO ---
-// Esta función ahora lee el HTML para ver qué está marcado y qué no
-function enviarWhatsApp() {
-    Swal.fire({
-        title: '¿Confirmar pedido?',
-        text: 'Serás redirigido a WhatsApp para completar tu compra',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#25d366',
-        cancelButtonColor: '#95a5a6',
-        confirmButtonText: '<i class="fab fa-whatsapp me-2"></i>Ir a WhatsApp',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            let mensaje = "🛒 *Nuevo Pedido - Soluciones Sara*%0A%0A";
-            let totalCalculado = 0;
-            let productosEncontrados = false;
-
-            // Recorremos todas las filas de productos en la tabla
-            const filas = document.querySelectorAll('.producto-row');
-            
-            filas.forEach(fila => {
-                // Verificamos si la fila está activa (checkbox marcado)
-                const estaActivo = fila.getAttribute('data-activo') === 'true';
-                
-                if (estaActivo) {
-                    productosEncontrados = true;
-                    const nombre = fila.getAttribute('data-nombre');
-                    const cantidad = parseInt(fila.getAttribute('data-cantidad'));
-                    const precioStr = fila.getAttribute('data-precio').replace(',', '.'); // Asegurar formato numero
-                    const precio = parseFloat(precioStr);
-                    
-                    const subtotal = precio * cantidad;
-                    totalCalculado += subtotal;
-
-                    mensaje += `✅ ${nombre}%0A   Cantidad: ${cantidad}%0A   Precio Unit: $${precio.toLocaleString('es-CO')}%0A%0A`;
+    function eliminarProducto(id) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        // ¡AQUÍ ESTÁ LA CORRECCIÓN! (Se quitó /mi_app)
+        fetch(`/carrito/eliminar/${id}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrftoken }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    location.reload();
                 }
             });
-
-            if (!productosEncontrados) {
-                Swal.fire('Error', 'No tienes ningún producto seleccionado para comprar.', 'error');
-                return;
-            }
-
-            mensaje += `💰 *TOTAL A PAGAR: $${totalCalculado.toLocaleString('es-CO')}*`;
-            window.open(`https://wa.me/573125338803?text=${mensaje}`, '_blank');
-        }
-    });
-}
-
-// --- FUNCIONES EXTRA (ELIMINAR) ---
-function confirmarEliminar(id, nombre) {
-    Swal.fire({
-        title: '¿Estás seguro?',
-        html: `Se eliminará <strong>${nombre}</strong> de tu carrito`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ff6b6b',
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            eliminarProducto(id);
-        }
-    });
-}
-
-function eliminarProducto(id) {
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    fetch(`/mi_app/carrito/modificar/${id}/eliminar/`, {
-        method: 'POST',
-        headers: { 'X-CSRFToken': csrftoken }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'ok') {
-            location.reload();
-        }
-    });
-}
+    }
 </script>
 {% endblock %}

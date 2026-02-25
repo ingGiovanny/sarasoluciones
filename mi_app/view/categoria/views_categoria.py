@@ -8,10 +8,11 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_categoria import CategoriaForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
-from django.views.decorators.cache import never_cache # Para evitar que el navegador almacene en caché la página protegida
+from django.views.decorators.cache import never_cache
 
 
-@method_decorator(never_cache, name='dispatch')
+
+
 class categoriaListView(AdminRequiredMixin,ListView):
     model = Categoria
     template_name ='modulos/categoria/categoria.html'

@@ -32,7 +32,7 @@ urlpatterns = [
    path('ayuda/', ayuda, name='ayuda'),
 
 
-   path('', pagina_clientes, name='contenido_cliente'),
+   path('cli', pagina_clientes, name='contenido_cliente'),
    path('productos', listar_productos_publicos, name='productos_clientes'),
     
     #detalle producto
@@ -45,10 +45,9 @@ urlpatterns = [
     path('carrito/modificar/<int:producto_id>/<str:accion>/', modificar_cantidad, name='modificar_carrito'),
     #icon check carrito
     path('carrito/toggle/<int:producto_id>/', toggle_estado_producto, name='toggle_estado'),
+    path('carrito/eliminar/<int:producto_id>/', eliminar_del_carrito, name='eliminar_del_carrito'),
     #pasarela de pago
-    path('mercadopago/', procesar_pago, name='procesar_pago'),
-   
-    path('pago-exitoso-wompi/', pago_exitoso_wompi, name='pago_exitoso_wompi'),
+
     
       
 #_________________________ Modulo de Administrador __________________________

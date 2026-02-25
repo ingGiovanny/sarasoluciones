@@ -2,10 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from functools import wraps # Importante para crear nuestro propio decorador
-from django.views.decorators.cache import never_cache # Para evitar que el navegador almacene en caché la página protegida
 
 # 1. Creamos nuestro propio "Guardaespaldas" que sí habla
-
 def solo_administradores(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
@@ -23,7 +21,6 @@ def solo_administradores(view_func):
 
 
 # 2. Protegemos la vista con nuestro nuevo decorador
-@never_cache
 @login_required
 @solo_administradores
 def principal(request):
