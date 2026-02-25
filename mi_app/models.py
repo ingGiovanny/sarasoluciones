@@ -4,8 +4,7 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
-
-from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 class Administrador(models.Model):
     nombres_completos = models.CharField(max_length=50, default="", verbose_name="Nombres Completos")

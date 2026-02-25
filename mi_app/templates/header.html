@@ -1,4 +1,14 @@
 {% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú de Usuario</title>
+    <link rel="stylesheet" href="{% static 'css/modo_oscuro.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 <nav class="app-header navbar navbar-expand bg-body">
         <!--begin::Container-->
         <div class="container-fluid">
@@ -41,6 +51,7 @@
                 <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
               </a>
             </li>
+            
             <!--end::Fullscreen Toggle-->
 
             
@@ -48,7 +59,39 @@
                 <li class="user-body">
                
                 </li>
+              </ul>
             
-        </div>
+            <li class="nav-item dropdown">
+                <div class="user-menu-container" style="display: flex; align-items: center; height: 100%; padding: 0 10px;">
+                    <div class="user-trigger" onclick="toggleMenu()" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <span style="font-size: 14px; font-weight: 600;">Söfîå <i class="fas fa-chevron-down" style="font-size: 10px;"></i></span>
+                    </div>
+                    
+<div id="dropdownMenu" class="dropdown-content-custom">
+    <div class="menu-header-custom">BIENVENIDOS</div>
+    
+    <a href="/perfil/" class="menu-item-custom">
+        <i class="fas fa-user"></i> Mi perfil
+    </a>
+    
+    <a href="/configuracion/" class="menu-item-custom">
+        <i class="fas fa-cog"></i> Configuración
+    </a>
+    
+    <a href="/ayuda/" class="menu-item-custom">
+        <i class="fas fa-question-circle"></i> Ayuda
+    </a>
+    
+    <hr style="margin: 5px 0; border-top: 1px solid #eee;">
+    
+    <a href="/login/" class="menu-item-custom login-custom">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+    </a>
+</div>
+                </div>
+            </li>
+          </ul>
     
   </nav>
+  </body>
+</html>

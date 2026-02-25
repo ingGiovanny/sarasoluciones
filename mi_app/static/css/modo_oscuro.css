@@ -139,3 +139,54 @@ body.dark-mode .brand-link {
 body.dark-mode .nav-icon {
     color: #ffffff !important;
 }
+/* --- SOLO LO RELACIONADO AL MENÚ DESPLEGABLE --- */
+.user-menu-container {
+    position: relative;
+}
+
+.dropdown-content-custom {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #ffffff;
+    min-width: 180px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    z-index: 9999;
+    padding: 10px 0;
+}
+
+.dropdown-content-custom.show {
+    display: block;
+}
+
+.menu-header-custom {
+    padding: 5px 15px;
+    font-size: 11px;
+    color: #999;
+    font-weight: bold;
+}
+
+.menu-item-custom {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    color: #333 !important;
+    text-decoration: none;
+    font-size: 14px;
+    gap: 10px;
+}
+
+.menu-item-custom:hover {
+    background-color: #f8f9fa;
+}
+
+/* Integración con tu modo oscuro existente */
+body.dark-mode .dropdown-content-custom {
+    background-color: #2d2d39;
+    border: 1px solid #444;
+}
+body.dark-mode .menu-item-custom {
+    color: #f1f1f1 !important;
+}

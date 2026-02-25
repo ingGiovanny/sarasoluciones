@@ -3,12 +3,13 @@ from mi_app.templates import *
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 from django.apps import apps
 from .utils import generar_pdf_universal # Esta es la única importación necesaria de utils
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 
 def vista(request):
     return render(request, 'index.html',)
@@ -164,3 +165,19 @@ def exportar_pdf_universal(request, modelo):
     p.save()
     
     return response
+
+@login_required
+def perfil_view(request):
+    # Esto envía los datos del usuario logueado a la página de perfil
+    return render(request, 'perfil.html', {'user': request.user})
+
+@login_required
+def config_view(request):
+    if request.method == 'POST':
+        # Aquí procesarías el cambio de teléfono, dirección o clave
+        user = request.user
+        user.telefono = request.POST.get('telefono')
+        user.direccion = request.POST.get('direccion')
+        user.save()
+        return redirect('perfil')
+    return render(request, 'configuracion.html')

@@ -11,6 +11,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('registro/', include('registro.urls', namespace='registro')),    
     path('exportar-pdf/<str:modelo>/', views.exportar_pdf_universal, name='exportar_pdf_universal'),
+    path('perfil/', views.perfil_view, name='perfil'),
     ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

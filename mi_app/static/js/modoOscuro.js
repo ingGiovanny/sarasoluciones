@@ -31,3 +31,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+// --- LÓGICA DEL MENÚ DE USUARIO ---
+function toggleMenu() {
+    const menu = document.getElementById("dropdownMenu");
+    menu.classList.toggle("show");
+}
+
+// Cerrar el menú si haces clic fuera de él
+window.addEventListener('click', function(e) {
+    const container = document.querySelector('.user-menu-container');
+    if (container && !container.contains(e.target)) {
+        document.getElementById("dropdownMenu").classList.remove('show');
+    }
+});

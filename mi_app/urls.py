@@ -32,7 +32,7 @@ urlpatterns = [
    path('ayuda/', ayuda, name='ayuda'),
 
 
-   path('cli', pagina_clientes, name='contenido_cliente'),
+   path('', pagina_clientes, name='contenido_cliente'),
    path('productos', listar_productos_publicos, name='productos_clientes'),
     
     #detalle producto
