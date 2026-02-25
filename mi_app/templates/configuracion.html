@@ -1,21 +1,14 @@
 {% extends "base.html" %}
-{% block content %}
+ {% block content %}
 <div class="container mt-5">
     <div class="card" style="max-width: 500px; margin: auto; padding: 20px;">
-        <h2>Configuración</h2>
-        <form method="POST">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label>Nombre:</label>
-                <input type="text" name="nombre" value="{{ user.first_name }}" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label>Email:</label>
-                <input type="email" name="email" value="{{ user.email }}" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Guardar Cambios</button>
-            <a href="{% url 'perfil' %}" class="btn btn-secondary">Cancelar</a>
-        </form>
+        <h2>Mi Perfil</h2>
+        <hr>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Usuario:</strong> {{ user.username }}</p>
+        <p><strong>Telefono:</strong> {{ user.profile.telefono }}</p>
+        <a href="{% url 'configuracion' %}" class="btn btn-success mt-3">Editar Datos</a>
     </div>
 </div>
+
 {% endblock %}

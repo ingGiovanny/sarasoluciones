@@ -8,7 +8,6 @@ from .utils import generar_pdf_universal # Esta es la única importación necesa
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 def vista(request):
@@ -162,18 +161,19 @@ def exportar_pdf_universal(request, modelo):
     
     return response
 
-@login_required
+@login_required # Esto obliga a estar logueado para ver el perfil
 def perfil_view(request):
-    # Esto envía los datos del usuario logueado a la página de perfil
-    return render(request, 'perfil.html', {'user': request.user})
+        return render(request, 'perfil.html', {'user': request.user})
 
+# views.py
 @login_required
 def config_view(request):
     if request.method == 'POST':
-        # Aquí procesarías el cambio de teléfono, dirección o clave
-        user = request.user
-        user.telefono = request.POST.get('telefono')
-        user.direccion = request.POST.get('direccion')
-        user.save()
-        return redirect('perfil')
+        # Tomamos lo que el usuario escribió en el formulario
+        request.user.first_name = request.POST.get('nombre_f') # 'nombre_f' debe ser el name del input
+        request.user.last_name = request.POST.get('apellido_f')
+        request.user.email = request.POST.get('email_f')
+        request.user.save() # ESTO GUARDA EN LA BASE DE DATOS
+        return redirect('perfil') # Te manda de vuelta al perfil para ver los cambios
+    
     return render(request, 'configuracion.html')
