@@ -1,6 +1,7 @@
 from django.urls import path
 #importa las views reales según tus carpetas
 
+from mi_app.view.A_todo_cliente.mercado_pago.pago_mercado import pago_exitoso_wompi, procesar_pago
 from mi_app.views import *
 from . import views
 from mi_app.view.administrador.views_administrador import *
@@ -13,7 +14,6 @@ from mi_app.view.producto.views_producto import *
 from mi_app.view.servicio.views_gestionservicio import *
 from mi_app.view.pedido.views_pedido import *
 from mi_app.view.factura.views_factura import *
-from mi_app.view.ventas.views_ventas import *
 from mi_app.view.garantia.views_garantia import *
 from mi_app.view.principal.views_principal import *
 from mi_app.view.A_todo_cliente.productoscli.views_productoscli import *
@@ -32,7 +32,7 @@ urlpatterns = [
    path('ayuda/', ayuda, name='ayuda'),
 
 
-   path('cli', pagina_clientes, name='contenido_cliente'),
+   path('', pagina_clientes, name='contenido_cliente'),
    path('productos', listar_productos_publicos, name='productos_clientes'),
     
     #detalle producto
@@ -45,7 +45,10 @@ urlpatterns = [
     path('carrito/modificar/<int:producto_id>/<str:accion>/', modificar_cantidad, name='modificar_carrito'),
     #icon check carrito
     path('carrito/toggle/<int:producto_id>/', toggle_estado_producto, name='toggle_estado'),
-    
+    #pasarela de pago
+    path('mercadopago/', procesar_pago, name='procesar_pago'),
+   
+    path('pago-exitoso-wompi/', pago_exitoso_wompi, name='pago_exitoso_wompi'),
     
       
 #_________________________ Modulo de Administrador __________________________
@@ -113,13 +116,6 @@ urlpatterns = [
     path('factura/crear/', FacturaCreateView.as_view(), name='factura_crear'),
     path('factura/editar/<int:pk>/', FacturaUpdateView.as_view(), name='factura_editar'),
     path('factura/eliminar/<int:pk>/', facturaDeleteView.as_view(), name='factura_eliminar'),      
-            
-
-#--------------------------------modulo ventas ---------------------------------------
-    path('ventas/listar/', ventasListView.as_view(), name='ventas_lista'),
-    path('ventas/crear/', ventasCreateView.as_view(), name='ventas_crear'),
-    path('ventas/editar/<int:pk>/', ventasUpdateView.as_view(), name='ventas_editar'),
-    path('ventas/eliminar/<int:pk>/', ventasDeleteView.as_view(), name='ventas_eliminar'),
         
 #--------------------------------modulo compras ---------------------------------------
     path('compras/listar/', CompraListView.as_view(), name='compras_lista'),

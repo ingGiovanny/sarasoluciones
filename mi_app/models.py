@@ -265,22 +265,6 @@ class Compra(models.Model):
         
     def __str__(self):
         return f"Compra #{self.id} - {self.fecha_compra}"
-
-
-class Ventas(models.Model):
-    """Modelo para registro de ventas"""
-    id_pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='ventas_pedido')
-    comprobante_pago = models.CharField(max_length=50, verbose_name="Comprobante Pago")
-    fecha_venta = models.DateField(verbose_name="Fecha Venta")
-    id_administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE, related_name='ventas_admin', verbose_name="Administrador")
-    
-    class Meta:
-        verbose_name = "Venta"
-        verbose_name_plural = "Ventas"
-        
-    def __str__(self):
-        return f"Venta #{self.id} - {self.fecha_venta}"
-    
     
 class ImagenProducto(models.Model):
      producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='imagenes')
