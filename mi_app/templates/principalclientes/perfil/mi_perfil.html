@@ -1,0 +1,95 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body text-center p-4">
+                    <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                        <i class="fas fa-user-circle fa-4x" style="color: #2d005f;"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">{{ cliente.nombre_completo }}</h4>
+                    <p class="text-muted mb-4">Cliente Frecuente</p>
+                    
+                    <hr>
+                    
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item px-0 border-0">
+                            <i class="fas fa-envelope text-muted me-2"></i> 
+                            <strong>Correo:</strong> <br> <span class="text-muted">{{ cliente.correo_electronico }}</span>
+                        </li>
+                        <li class="list-group-item px-0 border-0">
+                            <i class="fas fa-id-card text-muted me-2"></i> 
+                            <strong>Documento:</strong> <br> <span class="text-muted">{{ cliente.numero_documento }}</span>
+                        </li>
+                        <li class="list-group-item px-0 border-0">
+                            <i class="fas fa-phone text-muted me-2"></i> 
+                            <strong>Teléfono:</strong> <br> <span class="text-muted">{{ cliente.numero_telefonico|default:"No registrado" }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold" style="color: #2d005f;">
+                        <i class="fas fa-shopping-bag me-2"></i> Mi Historial de Compras
+                    </h5>
+                </div>
+                
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light text-muted">
+                                <tr>
+                                    <th class="ps-4">Comprobante</th>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pedido in pedidos %}
+                                <tr>
+                                    <td class="ps-4 fw-bold text-secondary">{{ pedido.comprobante_pago }}</td>
+                                    <td>
+                                        {{ pedido.id_producto.id_presentacion.nombre }}
+                                    </td>
+                                    <td>{{ pedido.cantidad }} und</td>
+                                    <td class="fw-bold">$ {{ pedido.valor_total|floatformat:0 }}</td>
+                                    <td>
+                                        {% if pedido.estado_pedido == 'PEDIDO EXITOSO' %}
+                                            <span class="badge bg-success rounded-pill px-3 py-2">Completado</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">{{ pedido.estado_pedido }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="fas fa-box-open fa-3x mb-3"></i>
+                                            <h5>Aún no tienes pedidos</h5>
+                                            <p>Cuando realices una compra, aparecerá aquí.</p>
+                                            <a href="{% url 'mi_app:productos_clientes' %}" class="btn btn-outline-primary mt-2">Ir a comprar</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

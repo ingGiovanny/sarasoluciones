@@ -116,7 +116,6 @@ class Migration(migrations.Migration):
             name='Factura',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('id_venta', models.IntegerField()),
                 ('fecha_factura', models.DateField(verbose_name='Fecha Factura')),
                 ('descripcion_venta', models.TextField(max_length=255, verbose_name='Descripción Venta')),
                 ('terminos_condiciones', models.TextField(max_length=255, verbose_name='Términos y Condiciones')),

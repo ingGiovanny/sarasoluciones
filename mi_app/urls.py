@@ -1,7 +1,5 @@
 from django.urls import path
 #importa las views reales según tus carpetas
-
-
 from mi_app.views import *
 from . import views
 from mi_app.view.administrador.views_administrador import *
@@ -32,7 +30,7 @@ urlpatterns = [
    path('ayuda/', ayuda, name='ayuda'),
 
 
-   path('cli', pagina_clientes, name='contenido_cliente'),
+   path('', pagina_clientes, name='contenido_cliente'),
    path('productos', listar_productos_publicos, name='productos_clientes'),
     
     #detalle producto
@@ -52,6 +50,9 @@ urlpatterns = [
   #  path('pago-exitoso-wompi/', pago_exitoso_wompi, name='pago_exitoso_wompi'),
     # Pasarela Simulada (Plan B)
     path('procesar-pago/', procesar_pago_simulado, name='procesar_pago_simulado'),
+    
+    #perfil cliente
+    path('mi-perfil/', mi_perfil, name='mi_perfil'),
     
       
 #_________________________ Modulo de Administrador __________________________

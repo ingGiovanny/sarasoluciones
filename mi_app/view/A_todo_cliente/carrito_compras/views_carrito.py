@@ -126,15 +126,19 @@ def procesar_pago_simulado(request):
     carrito_sesion = request.session.get('carrito', {})
     cliente_actual = GestionCliente.objects.filter(user=request.user).first()
 
-    # 1. Si está logueado como Admin y no como Cliente, lo rebotamos con mensaje
     if not cliente_actual:
-        messages.error(request, "Error: Estás usando una cuenta de Administrador. Inicia sesión como Cliente para comprar.")
+        messages.error(request, "Error: Estás usando una cuenta de Administrador.")
         return redirect('mi_app:ver_carrito')
 
     if carrito_sesion and cliente_actual:
         transaction_id = f"SARA-TX-{uuid.uuid4().hex[:8].upper()}"
 
         for key, item in carrito_sesion.items():
+            # --- ESTA ES LA LÍNEA QUE TE FALTA O ESTÁ MAL ESCRITA ---
+            # Obtenemos el objeto del producto usando su ID
+            producto_db = Producto.objects.get(id=item['producto_id'])
+            
+            # CREAMOS EL PEDIDO
             Pedido.objects.create(
                 id_cliente=cliente_actual,
                 id_producto_id=item['producto_id'],
@@ -148,8 +152,12 @@ def procesar_pago_simulado(request):
                 direccion_entrega="Pendiente"
             )
 
+            # --- AHORA SÍ RECONOCERÁ producto_db ---
+            producto_db.cantidad_producto -= int(item['cantidad'])
+            producto_db.save() 
+
         del request.session['carrito']
         request.session.modified = True
-        messages.success(request, f"¡Pago aprobado! Tu orden es {transaction_id}")
+        messages.success(request, f"¡Pago aprobado e inventario actualizado! Orden: {transaction_id}")
         
     return redirect('mi_app:ver_carrito')

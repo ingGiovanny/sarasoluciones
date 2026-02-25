@@ -98,11 +98,7 @@ def exportar_modulo_pdf(request, nombre_modelo):
             'campos': ['id', 'nombre', 'descripcion', 'precio'],
             'headers': ['ID', 'Nombre', 'Descripción', 'Precio ($)']
         },
-        'ventas': {
-            'titulo': 'Reporte de Ventas',
-            'campos': ['id', 'fecha', 'total'],
-            'headers': ['ID', 'Fecha de Venta', 'Total ($)']
-        },
+
 
     }
 

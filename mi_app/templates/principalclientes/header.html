@@ -13,6 +13,18 @@
         <li><a href="{% url 'login:login' %}">Iniciar Sesión</a></li>
         <li><a href="{% url 'registro:registro' %}">Registro</a></li>
     </ul>
+    {% if user.is_authenticated %}
+    <li class="nav-item">
+        <a href="{% url 'mi_app:mi_perfil' %}" 
+           class="nav-link fw-bold" style="color: #2d005f;"
+           data-bs-toggle="tooltip" 
+           data-bs-placement="bottom" 
+           title="Ver más información de usuario">
+            <i class="fas fa-user-circle me-1"></i> 
+            Hola, {{ user.perfil_cliente.nombre_completo|default:user.username }}
+        </a>
+    </li>
+{% endif %}
 
     <div class="navbar-actions">
         <!-- BOTÓN oscuro -->
