@@ -15,11 +15,7 @@ class FacturaForm(ModelForm):
                 attrs={
                     'placeholder': 'Ingrese el id del administrador',
                 }
-            ),
-            'id_venta': Select(
-                attrs={
-                    'placeholder': 'Ingrese el id de la venta',
-                }
+            
             ),
             'id_servicio': Select(
                 attrs={

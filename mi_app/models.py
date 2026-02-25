@@ -180,7 +180,6 @@ class Factura(models.Model):
     """Modelo para facturación"""
     # Relaciones
     id_admin = models.ForeignKey(Administrador, on_delete=models.CASCADE, related_name='facturas_admin')
-    id_venta = models.IntegerField()
     id_servicio = models.ForeignKey(GestionServicio, on_delete=models.SET_NULL, null=True, blank=True, related_name='facturas_servicio')
     
     # Campos de factura
