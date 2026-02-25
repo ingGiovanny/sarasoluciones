@@ -1,6 +1,10 @@
+import time
+import uuid
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import JsonResponse
-from mi_app.models import Producto
+from django.urls import reverse
+from mi_app.models import Producto ,Pedido, GestionCliente
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from mi_app.view.A_todo_cliente.carrito_compras.carrito import Carrito # Importamos la clase carrito que se encarga de el crud de carrito de compras
 
@@ -42,14 +46,15 @@ def agregar_al_carrito(request, producto_id):
         })
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
 @login_required(login_url='login:login')
 def ver_carrito(request):
-    carrito = Carrito(request)
-    # Calculamos el total usando la propiedad que creamos en la clase Carrito
+    carrito = Carrito(request) 
     total_compra = carrito.total_carrito 
     
+    # Ya no necesitamos generar links de Wompi, el carrito queda limpio y rápido
     return render(request, 'principalclientes/carrito_compras/ver_carrito.html', {
-        'total_compra': total_compra
+        'total_compra': total_compra,
     })
 @login_required(login_url='login:login')   
 def eliminar_del_carrito(request, producto_id):
@@ -116,4 +121,35 @@ def modificar_cantidad(request, producto_id, accion):
 
 
 })
-    
+@login_required(login_url='login:login')
+def procesar_pago_simulado(request):
+    carrito_sesion = request.session.get('carrito', {})
+    cliente_actual = GestionCliente.objects.filter(user=request.user).first()
+
+    # 1. Si está logueado como Admin y no como Cliente, lo rebotamos con mensaje
+    if not cliente_actual:
+        messages.error(request, "Error: Estás usando una cuenta de Administrador. Inicia sesión como Cliente para comprar.")
+        return redirect('mi_app:ver_carrito')
+
+    if carrito_sesion and cliente_actual:
+        transaction_id = f"SARA-TX-{uuid.uuid4().hex[:8].upper()}"
+
+        for key, item in carrito_sesion.items():
+            Pedido.objects.create(
+                id_cliente=cliente_actual,
+                id_producto_id=item['producto_id'],
+                cantidad=item['cantidad'],
+                valor_total=item['total'],
+                comprobante_pago=transaction_id,
+                estado_pedido='PEDIDO EXITOSO',
+                email=request.user.email,
+                departamento_entrega="Bogotá", 
+                municipio_ciudad_entrega="Bogotá",
+                direccion_entrega="Pendiente"
+            )
+
+        del request.session['carrito']
+        request.session.modified = True
+        messages.success(request, f"¡Pago aprobado! Tu orden es {transaction_id}")
+        
+    return redirect('mi_app:ver_carrito')

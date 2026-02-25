@@ -1,7 +1,7 @@
 from django.urls import path
 #importa las views reales según tus carpetas
 
-from mi_app.view.A_todo_cliente.mercado_pago.pago_mercado import pago_exitoso_wompi, procesar_pago
+
 from mi_app.views import *
 from . import views
 from mi_app.view.administrador.views_administrador import *
@@ -46,8 +46,12 @@ urlpatterns = [
     #icon check carrito
     path('carrito/toggle/<int:producto_id>/', toggle_estado_producto, name='toggle_estado'),
     path('carrito/eliminar/<int:producto_id>/', eliminar_del_carrito, name='eliminar_del_carrito'),
+    
     #pasarela de pago
-
+# Pasarela de Wompi
+  #  path('pago-exitoso-wompi/', pago_exitoso_wompi, name='pago_exitoso_wompi'),
+    # Pasarela Simulada (Plan B)
+    path('procesar-pago/', procesar_pago_simulado, name='procesar_pago_simulado'),
     
       
 #_________________________ Modulo de Administrador __________________________

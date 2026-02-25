@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 
-
 <div class="cart-container">
     <div class="cart-header">
         <h2><i class="fas fa-shopping-cart me-3"></i>Mi Carrito</h2>
@@ -103,43 +102,45 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="summary-card">
-                <h4><i class="fas fa-receipt me-2"></i>Resumen del Pedido</h4>
-                
-                <div class="summary-row">
-                    <span class="summary-label">Productos:</span>
-                    <span class="summary-value">{{ request.session.carrito|length }}</span>
+            <br>
+            <div class="summary-card p-4 border rounded shadow-sm bg-white">
+                <h4 class="border-bottom pb-2 mb-3"><i class="fas fa-receipt me-2"></i>Resumen del Pedido</h4>
+
+                <div class="summary-row d-flex justify-content-between mb-2">
+                    <span class="summary-label text-muted">Productos:</span>
+                    <span class="summary-value fw-bold" id="cart-count">{{ request.session.carrito|length }}</span>
                 </div>
-                
-                <div class="summary-row">
-                    <span class="summary-label">Subtotal:</span>
-                    <span class="summary-value total-compra-span">$ {{ total_compra|floatformat:0 }}</span>
+
+                <div class="summary-row d-flex justify-content-between mb-2">
+                    <span class="summary-label text-muted">Subtotal:</span>
+                    <span class="summary-value total-compra-span fw-bold">$ {{ total_compra|floatformat:0 }}</span>
                 </div>
-                
-                <div class="summary-row">
+
+                <div class="summary-row d-flex justify-content-between mt-3 pt-3 border-top mb-4">
                     <span class="summary-label h5 mb-0">Total a Pagar:</span>
-                    <span class="summary-value summary-total total-compra-span">$ {{ total_compra|floatformat:0 }}</span>
+                    <span class="summary-value summary-total total-compra-span h5 mb-0 text-success fw-bold">$ {{ total_compra|floatformat:0 }}</span>
                 </div>
-                
-                {% csrf_token %}
-                <button onclick="enviarWhatsApp()" class="btn-whatsapp">
-                    <i class="fab fa-whatsapp me-2"></i> Confirmar Pedido
+
+            <button onclick="simularPago()" class="btn btn-primary btn-lg w-100 fw-bold shadow mb-3" style="background-color: #2d005f; border-color: #2d005f;">
+                <i class="fas fa-credit-card me-2"></i> Procesar Pago Seguro
+            </button>
+                <button onclick="enviarWhatsApp()" class="btn btn-success btn-lg w-100 fw-bold text-white shadow-sm">
+                    <i class="fab fa-whatsapp me-2"></i> Pedir por WhatsApp
                 </button>
-                
+
                 <div class="text-center mt-3">
-                    <br>
-                    <small style="opacity: 0.8;">
-                        <i class="fas fa-shield-alt me-1"></i>
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1 text-success"></i>
                         Compra 100% Segura
                     </small>
                 </div>
             </div>
         </div>
-    </div>
-
+    </div> 
     {% else %}
     <div class="empty-cart">
         <i class="fas fa-shopping-basket"></i>
+  
         <h3>Tu carrito está vacío</h3>
         <p class="text-muted mb-4">¡Agrega productos y comienza a comprar!</p>
         <br><br><br>
@@ -305,5 +306,35 @@
                 }
             });
     }
+    // --- FUNCIÓN DE PASARELA SIMULADA ---
+    function simularPago() {
+        // 1. Sale la ventana de carga estilo banco
+        Swal.fire({
+            title: 'Procesando pago...',
+            html: 'Conectando con la pasarela segura.<br><b>Por favor no cierres esta ventana.</b>',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+
+        // 2. Espera 3 segundos (para dar realismo) y redirige a la vista que guarda todo
+        setTimeout(() => {
+            window.location.href = "{% url 'mi_app:procesar_pago_simulado' %}";
+        }, 3000);
+    }
+    // --- CONVERTIR MENSAJES DE DJANGO A SWEETALERT ---
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                icon: '{% if message.tags == "error" %}error{% else %}success{% endif %}',
+                title: '{% if message.tags == "error" %}¡Atención!{% else %}¡Excelente!{% endif %}',
+                text: '{{ message }}',
+                confirmButtonColor: '#2d005f',
+                confirmButtonText: 'Entendido'
+            });
+        {% endfor %}
+    {% endif %}
 </script>
 {% endblock %}
