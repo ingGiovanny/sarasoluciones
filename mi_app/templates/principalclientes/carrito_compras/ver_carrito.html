@@ -107,6 +107,23 @@
             <div class="summary-card p-4 border rounded shadow-sm bg-white">
                 <h4 class="border-bottom pb-2 mb-3"><i class="fas fa-receipt me-2"></i>Resumen del Pedido</h4>
 
+                <div class="mb-4 text-start">
+                    <label class="fw-bold mb-2"><i class="fas fa-map-marker-alt text-danger me-2"></i>Dirección de Envío:</label>
+                    {% if direcciones %}
+                        <select id="selector_direccion" class="form-select border-primary shadow-sm">
+                            <option value="" disabled selected>Selecciona una dirección...</option>
+                            {% for dir in direcciones %}
+                                <option value="{{ dir.id }}">{{ dir.alias }} - {{ dir.direccion_detallada }} ({{ dir.ciudad }})</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <div class="alert alert-warning p-2 text-center" style="font-size: 14px;">
+                            <i class="fas fa-exclamation-triangle me-1"></i> No tienes direcciones.<br>
+                            <a href="{% url 'mi_app:mi_perfil' %}" class="fw-bold text-danger">Ve a tu perfil para crear una.</a>
+                        </div>
+                    {% endif %}
+                </div>
+
                 <div class="summary-row d-flex justify-content-between mb-2">
                     <span class="summary-label text-muted">Productos:</span>
                     <span class="summary-value fw-bold" id="cart-count">{{ request.session.carrito|length }}</span>
@@ -309,34 +326,33 @@
             });
     }
     // --- FUNCIÓN DE PASARELA SIMULADA ---
-    function simularPago() {
-        // 1. Sale la ventana de carga estilo banco
+function simularPago() {
+        // VALIDACIÓN DE DIRECCIÓN
+        const selector = document.getElementById('selector_direccion');
+        
+        if (!selector) {
+            Swal.fire('¡Falta tu dirección!', 'Debes crear una dirección en tu perfil para poder comprar.', 'warning');
+            return;
+        }
+        
+        const direccionId = selector.value;
+        if (!direccionId) {
+            Swal.fire('¡Selecciona una dirección!', 'Por favor elige a dónde enviaremos tu pedido.', 'info');
+            return;
+        }
+
         Swal.fire({
             title: 'Procesando pago...',
             html: 'Conectando con la pasarela segura.<br><b>Por favor no cierres esta ventana.</b>',
             allowOutsideClick: false,
             showConfirmButton: false,
-            didOpen: () => {
-                Swal.showLoading()
-            }
+            didOpen: () => { Swal.showLoading() }
         });
 
-        // 2. Espera 3 segundos (para dar realismo) y redirige a la vista que guarda todo
+        // Le enviamos el ID de la dirección por la URL
         setTimeout(() => {
-            window.location.href = "{% url 'mi_app:procesar_pago_simulado' %}";
+            window.location.href = "{% url 'mi_app:procesar_pago_simulado' %}?direccion_id=" + direccionId;
         }, 3000);
     }
-    // --- CONVERTIR MENSAJES DE DJANGO A SWEETALERT ---
-    {% if messages %}
-        {% for message in messages %}
-            Swal.fire({
-                icon: '{% if message.tags == "error" %}error{% else %}success{% endif %}',
-                title: '{% if message.tags == "error" %}¡Atención!{% else %}¡Excelente!{% endif %}',
-                text: '{{ message }}',
-                confirmButtonColor: '#2d005f',
-                confirmButtonText: 'Entendido'
-            });
-        {% endfor %}
-    {% endif %}
 </script>
 {% endblock %}

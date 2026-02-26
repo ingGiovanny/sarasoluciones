@@ -38,7 +38,6 @@ class Proveedor(models.Model):
     def __str__(self):
         return self.nombre_completo
 
-
 class GestionCliente(models.Model):
     """Modelo para gestión de clientes vinculado a User de Django"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil_cliente')
@@ -63,6 +62,17 @@ def eliminar_usuario_vinculado(sender, instance, **kwargs):
     """
     if instance.user:
         instance.user.delete()
+        
+class Direccion(models.Model):
+    cliente = models.ForeignKey(GestionCliente, on_delete=models.CASCADE, related_name='direcciones')
+    alias = models.CharField(max_length=50, help_text="Ej: Casa, Oficina, Trabajo")
+    departamento = models.CharField(max_length=100)
+    ciudad = models.CharField(max_length=100)
+    direccion_detallada = models.CharField(max_length=255, help_text="Ej: Calle 123 # 45-67, Apto 101")
+
+    def __str__(self):
+        return f"{self.alias} - {self.direccion_detallada} ({self.ciudad})"
+
 
 
 class Marca(models.Model):

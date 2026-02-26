@@ -14,6 +14,7 @@ from mi_app.view.pedido.views_pedido import *
 from mi_app.view.factura.views_factura import *
 from mi_app.view.garantia.views_garantia import *
 from mi_app.view.principal.views_principal import *
+from mi_app.view.panel_pedidos.panel_logistica import *
 from mi_app.view.A_todo_cliente.productoscli.views_productoscli import *
 from mi_app.view.A_todo_cliente.servicio_cli.detalle_servicio import catalogo_servicios, detalle_servicio_cliente
 from mi_app.view.A_todo_cliente.principalcliente.views_principal_cliente import *
@@ -53,6 +54,18 @@ urlpatterns = [
     
     #perfil cliente
     path('mi-perfil/', mi_perfil, name='mi_perfil'),
+    # Ruta secreta para que el Admin cambie el estado desde el correo
+    path('admin-accion/preparar/<str:transaction_id>/', despachar_pedido, name='despachar_pedido'),
+    # Descargar Factura PDF
+    path('factura/<str:transaction_id>/', descargar_factura_pdf, name='descargar_factura_pdf'),
+    #panel de logistica para el admin
+    path('logistica/', panel_logistica, name='panel_logistica'),
+    path('logistica/cambiar-estado/<str:transaction_id>/<str:nuevo_estado>/', cambiar_estado_pedido, name='cambiar_estado_pedido'),
+    # Rutas para gestionar direcciones del cliente
+    path('perfil/direccion/agregar/', agregar_direccion, name='agregar_direccion'),
+    path('perfil/direccion/eliminar/<int:direccion_id>/', eliminar_direccion, name='eliminar_direccion'),
+    # Cerrar Sesión
+    path('salir/', salir_cliente, name='salir_cliente'),
     
       
 #_________________________ Modulo de Administrador __________________________

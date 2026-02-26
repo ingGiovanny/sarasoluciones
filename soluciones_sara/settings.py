@@ -171,3 +171,9 @@ EMAIL_HOST_PASSWORD = 'photrckrwbepernf'
 CSRF_TRUSTED_ORIGINS = [
     'https://botchy-arboreally-britney.ngrok-free.dev',
 ]
+
+
+# CONFIGURACIÓN DE CORREOS (MODO PRUEBA EN CONSOLA)
+# Todo correo enviado se imprimirá en la terminal de VS Code
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST_USER = 'no-reply@solucionessara.com'

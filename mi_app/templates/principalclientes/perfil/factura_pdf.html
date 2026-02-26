@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura {{ pedido_base.comprobante_pago }}</title>
+    <style>
+        body { font-family: Helvetica, sans-serif; font-size: 14px; color: #333; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .title { font-size: 24px; color: #2d005f; font-weight: bold; }
+        .subtitle { font-size: 12px; color: #777; }
+        .details-box { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .details-box td { padding: 5px; }
+        .table-items { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .table-items th { background-color: #2d005f; color: white; padding: 10px; text-align: left; }
+        .table-items td { padding: 10px; border-bottom: 1px solid #ddd; }
+        .total-row { font-weight: bold; font-size: 16px; background-color: #f9f9f9; }
+        .footer { text-align: center; font-size: 10px; color: #888; margin-top: 50px; border-top: 1px solid #ddd; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="title">SOLUCIONES SARA</div>
+        <div class="subtitle">NIT: 900.123.456-7 | Dirección: Sogamoso, Boyacá</div>
+        <br>
+        <h2>Factura Electrónica de Venta</h2>
+    </div>
+
+    <table class="details-box">
+        <tr>
+            <td><strong>Cliente:</strong> {{ pedido_base.id_cliente.nombre_completo }}</td>
+            <td style="text-align: right;"><strong>Comprobante:</strong> {{ pedido_base.comprobante_pago }}</td>
+        </tr>
+        <tr>
+            <td><strong>Documento/NIT:</strong> {{ pedido_base.id_cliente.numero_documento }}</td>
+            <td style="text-align: right;"><strong>Fecha:</strong> {% if factura %}{{ factura.fecha_factura }}{% else %}Reciente{% endif %}</td>
+        </tr>
+        <tr>
+            <td><strong>Email:</strong> {{ pedido_base.email }}</td>
+            <td style="text-align: right;"><strong>Estado:</strong> Pagado</td>
+        </tr>
+    </table>
+
+    <table class="table-items">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cant.</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pedidos %}
+            <tr>
+                <td>{{ p.id_producto.id_presentacion.nombre }}</td>
+                <td>{{ p.cantidad }}</td>
+                <td>$ {{ p.valor_total|floatformat:0 }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total-row">
+                <td colspan="2" style="text-align: right; padding-right: 20px;">TOTAL A PAGAR:</td>
+                <td>$ {{ total_final|floatformat:0 }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        Esta es una representación gráfica de la factura de venta.<br>
+        {% if factura %}{{ factura.terminos_condiciones }}{% endif %}<br>
+        ¡Gracias por su compra!
+    </div>
+
+</body>
+</html>
