@@ -18,7 +18,6 @@ from mi_app.view.panel_pedidos.panel_logistica import *
 from mi_app.view.A_todo_cliente.productoscli.views_productoscli import *
 from mi_app.view.A_todo_cliente.servicio_cli.detalle_servicio import catalogo_servicios, detalle_servicio_cliente
 from mi_app.view.A_todo_cliente.principalcliente.views_principal_cliente import *
-from mi_app.view.A_todo_cliente.detalle_producto.detalle_producto_views import detalle_producto
 from mi_app.view.A_todo_cliente.carrito_compras.views_carrito import *
 from mi_app.view.A_todo_cliente.carrito_compras.check import *
 from mi_app.view.compra.views_compra import CompraListView, CompraCreateView, CompraUpdateView, CompraDeleteView
@@ -46,11 +45,11 @@ urlpatterns = [
     path('carrito/toggle/<int:producto_id>/', toggle_estado_producto, name='toggle_estado'),
     path('carrito/eliminar/<int:producto_id>/', eliminar_del_carrito, name='eliminar_del_carrito'),
     
-    #pasarela de pago
-# Pasarela de Wompi
-  #  path('pago-exitoso-wompi/', pago_exitoso_wompi, name='pago_exitoso_wompi'),
+    
     # Pasarela Simulada (Plan B)
     path('procesar-pago/', procesar_pago_simulado, name='procesar_pago_simulado'),
+   # Ruta para la página de éxito
+   path('pago-exitoso/<str:transaction_id>/', pago_exitoso, name='pago_exitoso'),
     
     #perfil cliente
     path('mi-perfil/', mi_perfil, name='mi_perfil'),

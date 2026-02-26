@@ -12,8 +12,10 @@ from django.http import HttpResponse
 from django.utils import timezone
 from mi_app.view.A_todo_cliente.carrito_compras.carrito import Carrito # Importamos la clase carrito que se encarga de el crud de carrito de compras
 
-@login_required(login_url='login:login')
+
 def agregar_al_carrito(request, producto_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'unauthenticated', 'message': 'Debes iniciar sesión'})
     try:
         carrito = Carrito(request)
         producto = get_object_or_404(Producto, id=producto_id)
@@ -202,7 +204,16 @@ def procesar_pago_simulado(request):
         messages.success(request, f"¡Pago aprobado! Orden {transaction_id} en camino a: {direccion_envio.alias}.")
         
     # --- AQUÍ ESTABA EL ERROR: ESTA LÍNEA ES OBLIGATORIA Y DEBE ESTAR AL FINAL ---
-    return redirect('mi_app:ver_carrito')
+    return redirect('mi_app:pago_exitoso', transaction_id=transaction_id)
+
+
+# 2. AGREGA ESTA NUEVA FUNCIÓN AL FINAL DEL ARCHIVO
+@login_required(login_url='login:login')
+def pago_exitoso(request, transaction_id):
+    # Simplemente renderizamos la plantilla y le pasamos el número de transacción
+    return render(request, 'principalclientes/carrito_compras/exito.html', {
+        'transaction_id': transaction_id
+    })
 
 @login_required(login_url='login:login')
 def despachar_pedido(request, transaction_id):

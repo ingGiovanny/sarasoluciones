@@ -118,4 +118,4 @@ def salir_cliente(request):
     logout(request) # Destruye la sesión actual
     messages.info(request, "Has cerrado sesión correctamente. ¡Vuelve pronto!")
     # Lo redirigimos a la página principal de productos (o tu home)
-    return redirect('mi_app:productos_clientes')
+    return redirect('mi_app:contenido_cliente')

@@ -3,33 +3,51 @@
 
 {% block content %}
 <style>
-    /* Estilos Premium para el Dashboard del Cliente */
+    /* Estilos Premium Dinámicos para el Dashboard del Cliente */
     .profile-card {
-        border-top: 5px solid #2d005f;
-        transition: transform 0.3s ease;
+        border-top: 5px solid var(--accent-color);
+        background-color: var(--bg-card);
+        transition: transform 0.3s ease, box-shadow 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
     .profile-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    /* Tabla adaptativa */
+    .table-custom {
+        background-color: var(--bg-card);
     }
     .table-custom th {
-        background-color: #f8f9fa;
-        color: #2d005f;
-        font-weight: 600;
+        background-color: var(--bg-secondary) !important;
+        color: var(--accent-color) !important;
+        font-weight: 700;
         text-transform: uppercase;
         font-size: 0.85rem;
         letter-spacing: 0.5px;
+        border-bottom: 2px solid var(--border-color);
+    }
+    .table-custom td {
+        border-color: var(--border-color);
+        color: var(--text-primary);
     }
     
-    /* Colores dinámicos para los estados del pedido */
-    .badge-exitoso { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-    .badge-preparacion { background-color: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
-    .badge-enviado { background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+    /* Colores dinámicos para los estados (Más sutiles en oscuro) */
+    .badge-exitoso { background-color: rgba(46, 125, 50, 0.15); color: #2e7d32; border: 1px solid rgba(46, 125, 50, 0.3); }
+    .badge-preparacion { background-color: rgba(239, 108, 0, 0.15); color: #ef6c00; border: 1px solid rgba(239, 108, 0, 0.3); }
+    .badge-enviado { background-color: rgba(21, 101, 192, 0.15); color: #1565c0; border: 1px solid rgba(21, 101, 192, 0.3); }
     
-    /* Botón de PDF personalizado */
+    /* Modo oscuro: Aclaramos los textos de las badges para que se lean mejor */
+    body.dark-mode .badge-exitoso { color: #81c784; }
+    body.dark-mode .badge-preparacion { color: #ffb74d; }
+    body.dark-mode .badge-enviado { color: #64b5f6; }
+    
+    /* Botón de PDF adaptativo */
     .btn-pdf {
-        background-color: #ffebee;
+        background-color: rgba(198, 40, 40, 0.1);
         color: #c62828;
-        border: 1px solid #ffcdd2;
+        border: 1px solid rgba(198, 40, 40, 0.2);
         font-weight: 600;
         transition: all 0.3s;
     }
@@ -38,6 +56,7 @@
         color: white;
         box-shadow: 0 4px 8px rgba(198, 40, 40, 0.2);
     }
+    body.dark-mode .btn-pdf { color: #ef5350; }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -134,6 +153,7 @@
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold" style="color: #2d005f;">
+                        
                         <i class="fas fa-shopping-bag me-2"></i> Mi Historial de Compras
                     </h5>
                 </div>
