@@ -3,12 +3,12 @@ from mi_app.templates import *
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 from django.apps import apps
 from .utils import generar_pdf_universal # Esta es la única importación necesaria de utils
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from django.shortcuts import render, redirect
 
 def vista(request):
     return render(request, 'index.html',)
@@ -160,3 +160,20 @@ def exportar_pdf_universal(request, modelo):
     p.save()
     
     return response
+
+@login_required # Esto obliga a estar logueado para ver el perfil
+def perfil_view(request):
+        return render(request, 'perfil.html', {'user': request.user})
+
+# views.py
+@login_required
+def config_view(request):
+    if request.method == 'POST':
+        # Tomamos lo que el usuario escribió en el formulario
+        request.user.first_name = request.POST.get('nombre_f') # 'nombre_f' debe ser el name del input
+        request.user.last_name = request.POST.get('apellido_f')
+        request.user.email = request.POST.get('email_f')
+        request.user.save() # ESTO GUARDA EN LA BASE DE DATOS
+        return redirect('perfil') # Te manda de vuelta al perfil para ver los cambios
+    
+    return render(request, 'configuracion.html')
