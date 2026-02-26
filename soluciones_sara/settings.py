@@ -23,19 +23,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Cargar las variables del archivo .env
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#y*q^s*!__&pq1@&ivo^z_pk&x1-utdcm-76m5=^+6=fo-gi*x'
+SECRET_KEY = os.getenv('SECRET_KEY') # Leer desde .env
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 't') # Leer desde .env
 
 ALLOWED_HOSTS = ['*']
-
-
+#ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'maderasisabella.artisandev.site']
 
 # Application definition
 
@@ -94,13 +95,14 @@ WSGI_APPLICATION = 'soluciones_sara.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_sena',
-        'USER': 'root',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'HOST': os.getenv('DB_HOST'), # Apuntará al servicio 'db' de Docker
+        'PORT': os.getenv('DB_PORT'),
     }
 }
+
 
 
 
@@ -168,6 +170,5 @@ EMAIL_HOST_USER = 'sarasoluciones55@gmail.com'
 EMAIL_HOST_PASSWORD = 'photrckrwbepernf'
 
 #para la conexcion con ngrok para pruebas en el celular 
-CSRF_TRUSTED_ORIGINS = [
-    'https://botchy-arboreally-britney.ngrok-free.dev',
-]
+CSRF_TRUSTED_ORIGINS = ['https://botchy-arboreally-britney.ngrok-free.dev']
+#CSRF_TRUSTED_ORIGINS = ['https://sarasoluciones.artisandev.site']
