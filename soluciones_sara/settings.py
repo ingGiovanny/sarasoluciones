@@ -156,11 +156,9 @@ LOGIN_REDIRECT_URL = 'mi_app:principal'
 LOGOUT_REDIRECT_URL = ''
 
 # -----------------------------------------------------
-# ✅ CONFIGURACIÓN DE CORREO CORREGIDA Y FINAL
+# ✅ CONFIGURACIÓN DE CORREO CORREGIDA Y FINAL (La de tu compañera)
 # -----------------------------------------------------
-# Asegúrate de que esta línea esté presente:
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
-# Si usas Gmail (lo más común):
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -175,5 +173,5 @@ CSRF_TRUSTED_ORIGINS = [
 
 # CONFIGURACIÓN DE CORREOS (MODO PRUEBA EN CONSOLA)
 # Todo correo enviado se imprimirá en la terminal de VS Code
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST_USER = 'no-reply@solucionessara.com'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_HOST_USER = 'no-reply@solucionessara.com'

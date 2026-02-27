@@ -189,12 +189,53 @@ def procesar_pago_simulado(request):
                 total=total_compra
             )
 
-        # ENVIAMOS EL CORREO AL ADMINISTRADOR (Opcional, si lo tienes activo)
-        url_admin = request.build_absolute_uri(reverse('mi_app:despachar_pedido', args=[transaction_id]))
-        asunto_admin = f"🚨 NUEVA VENTA: {transaction_id}"
-        mensaje_admin = f"Nuevo pedido por ${total_compra}. Clic para despachar: {url_admin}"
-        admin_correo = admin_sistema.correo_electronico if admin_sistema else 'admin@solucionessara.com'
-        send_mail(asunto_admin, mensaje_admin, settings.EMAIL_HOST_USER, [admin_correo], fail_silently=True)
+        # =========================================================
+        # ENVIAMOS CORREOS REALES (AL ADMIN Y AL CLIENTE)
+        # =========================================================
+        try:
+            # 1. Correo para el Administrador
+            url_admin = request.build_absolute_uri(reverse('mi_app:panel_logistica'))
+            asunto_admin = f"🚨 NUEVA VENTA: {transaction_id}"
+            mensaje_admin = f"""
+            Hola Administrador,
+            
+            ¡Cha-ching! Acabamos de recibir un nuevo pedido por ${total_compra:,.0f}.
+            
+            Transacción: {transaction_id}
+            Cliente: {cliente_actual.nombre_completo}
+            
+            Por favor, ingresa al Panel de Logística para despachar este pedido:
+            {url_admin}
+            """
+            # Si el admin no tiene correo, se lo mandamos al mismo correo que envía
+            admin_correo = admin_sistema.correo_electronico if admin_sistema else settings.EMAIL_HOST_USER
+            
+            # 2. Correo para el Cliente
+            asunto_cliente = f"¡Gracias por tu compra en Soluciones Sara! 🛒 Orden {transaction_id}"
+            mensaje_cliente = f"""
+            Hola {cliente_actual.nombre_completo},
+            
+            ¡Tu pago por ${total_compra:,.0f} ha sido aprobado exitosamente!
+            
+            Detalles de tu orden:
+            - Transacción: {transaction_id}
+            - Dirección de entrega: {direccion_envio.direccion_detallada} ({direccion_envio.ciudad})
+            
+            Ya estamos preparando tu pedido. Recuerda que puedes descargar tu factura electrónica en PDF directamente desde la sección "Mi Perfil" en nuestra página web.
+            
+            ¡Gracias por confiar en Soluciones Sara!
+            """
+            
+            # Ejecutamos el envío (fail_silently=False para que nos avise si falla)
+            send_mail(asunto_admin, mensaje_admin, settings.EMAIL_HOST_USER, [admin_correo], fail_silently=False)
+            send_mail(asunto_cliente, mensaje_cliente, settings.EMAIL_HOST_USER, [request.user.email], fail_silently=False)
+            
+        except Exception as e:
+            # Si el internet falla o hay error de Google no le tumbamos la compra al cliente, solo avisamos en la consola
+            print(f"La compra fue un éxito, pero hubo un error enviando los correos: {e}")
+
+        # =========================================================
+
 
         # VACIAMOS EL CARRITO
         del request.session['carrito']
