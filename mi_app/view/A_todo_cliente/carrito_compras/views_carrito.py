@@ -3,13 +3,19 @@ import uuid
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import JsonResponse
 from django.urls import reverse
-from mi_app.models import Producto ,Pedido, GestionCliente
+from mi_app.models import Producto ,Pedido, GestionCliente,Factura, Administrador , Direccion
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import HttpResponse
+from django.utils import timezone
 from mi_app.view.A_todo_cliente.carrito_compras.carrito import Carrito # Importamos la clase carrito que se encarga de el crud de carrito de compras
 
-@login_required(login_url='login:login')
+
 def agregar_al_carrito(request, producto_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'unauthenticated', 'message': 'Debes iniciar sesión'})
     try:
         carrito = Carrito(request)
         producto = get_object_or_404(Producto, id=producto_id)
@@ -47,14 +53,20 @@ def agregar_al_carrito(request, producto_id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+
+
 @login_required(login_url='login:login')
 def ver_carrito(request):
     carrito = Carrito(request) 
     total_compra = carrito.total_carrito 
     
-    # Ya no necesitamos generar links de Wompi, el carrito queda limpio y rápido
+    # 1. Traemos las direcciones del cliente logueado
+    cliente_actual = GestionCliente.objects.filter(user=request.user).first()
+    direcciones = Direccion.objects.filter(cliente=cliente_actual) if cliente_actual else []
+    
     return render(request, 'principalclientes/carrito_compras/ver_carrito.html', {
         'total_compra': total_compra,
+        'direcciones': direcciones, # Las enviamos al HTML
     })
 @login_required(login_url='login:login')   
 def eliminar_del_carrito(request, producto_id):
@@ -121,43 +133,157 @@ def modificar_cantidad(request, producto_id, accion):
 
 
 })
+
+
 @login_required(login_url='login:login')
 def procesar_pago_simulado(request):
     carrito_sesion = request.session.get('carrito', {})
     cliente_actual = GestionCliente.objects.filter(user=request.user).first()
+    
+    # 1. ATRAPAMOS LA DIRECCIÓN DESDE LA URL
+    direccion_id = request.GET.get('direccion_id')
+    direccion_envio = Direccion.objects.filter(id=direccion_id, cliente=cliente_actual).first()
 
-    if not cliente_actual:
-        messages.error(request, "Error: Estás usando una cuenta de Administrador.")
+    # 2. VALIDAMOS QUE EXISTA EL CLIENTE Y LA DIRECCIÓN
+    if not cliente_actual or not direccion_envio:
+        messages.error(request, "Error: No seleccionaste una dirección válida para el envío.")
         return redirect('mi_app:ver_carrito')
 
-    if carrito_sesion and cliente_actual:
+    # 3. PROCESAMOS LA COMPRA SI EL CARRITO TIENE ALGO
+    if carrito_sesion:
         transaction_id = f"SARA-TX-{uuid.uuid4().hex[:8].upper()}"
+        total_compra = 0 
 
         for key, item in carrito_sesion.items():
-            # --- ESTA ES LA LÍNEA QUE TE FALTA O ESTÁ MAL ESCRITA ---
-            # Obtenemos el objeto del producto usando su ID
             producto_db = Producto.objects.get(id=item['producto_id'])
+            total_compra += item['total']
             
-            # CREAMOS EL PEDIDO
-            Pedido.objects.create(
+            # GUARDAMOS LOS DATOS DE LA DIRECCIÓN ELEGIDA
+            pedido_creado = Pedido.objects.create(
                 id_cliente=cliente_actual,
-                id_producto_id=item['producto_id'],
+                id_producto=producto_db,
                 cantidad=item['cantidad'],
                 valor_total=item['total'],
                 comprobante_pago=transaction_id,
                 estado_pedido='PEDIDO EXITOSO',
                 email=request.user.email,
-                departamento_entrega="Bogotá", 
-                municipio_ciudad_entrega="Bogotá",
-                direccion_entrega="Pendiente"
+                departamento_entrega=direccion_envio.departamento, 
+                municipio_ciudad_entrega=direccion_envio.ciudad,
+                direccion_entrega=direccion_envio.direccion_detallada
             )
-
-            # --- AHORA SÍ RECONOCERÁ producto_db ---
+            
+            # RESTAMOS EL STOCK
             producto_db.cantidad_producto -= int(item['cantidad'])
             producto_db.save() 
 
+        # CREAMOS LA FACTURA AUTOMÁTICAMENTE
+        admin_sistema = Administrador.objects.first()
+        if admin_sistema:
+            Factura.objects.create(
+                id_admin=admin_sistema,
+                id_venta=pedido_creado.id, 
+                fecha_factura=timezone.now().date(),
+                descripcion_venta=f"Compra Online - Transacción {transaction_id}",
+                terminos_condiciones="Pago procesado correctamente. Garantía de 30 días.",
+                nit=cliente_actual.numero_documento, 
+                total=total_compra
+            )
+
+        # =========================================================
+        # ENVIAMOS CORREOS REALES (AL ADMIN Y AL CLIENTE)
+        # =========================================================
+        try:
+            # 1. Correo para el Administrador
+            url_admin = request.build_absolute_uri(reverse('mi_app:panel_logistica'))
+            asunto_admin = f"🚨 NUEVA VENTA: {transaction_id}"
+            mensaje_admin = f"""
+            Hola Administrador,
+            
+            ¡Cha-ching! Acabamos de recibir un nuevo pedido por ${total_compra:,.0f}.
+            
+            Transacción: {transaction_id}
+            Cliente: {cliente_actual.nombre_completo}
+            
+            Por favor, ingresa al Panel de Logística para despachar este pedido:
+            {url_admin}
+            """
+            # Si el admin no tiene correo, se lo mandamos al mismo correo que envía
+            admin_correo = admin_sistema.correo_electronico if admin_sistema else settings.EMAIL_HOST_USER
+            
+            # 2. Correo para el Cliente
+            asunto_cliente = f"¡Gracias por tu compra en Soluciones Sara! 🛒 Orden {transaction_id}"
+            mensaje_cliente = f"""
+            Hola {cliente_actual.nombre_completo},
+            
+            ¡Tu pago por ${total_compra:,.0f} ha sido aprobado exitosamente!
+            
+            Detalles de tu orden:
+            - Transacción: {transaction_id}
+            - Dirección de entrega: {direccion_envio.direccion_detallada} ({direccion_envio.ciudad})
+            
+            Ya estamos preparando tu pedido. Recuerda que puedes descargar tu factura electrónica en PDF directamente desde la sección "Mi Perfil" en nuestra página web.
+            
+            ¡Gracias por confiar en Soluciones Sara!
+            """
+            
+            # Ejecutamos el envío (fail_silently=False para que nos avise si falla)
+            send_mail(asunto_admin, mensaje_admin, settings.EMAIL_HOST_USER, [admin_correo], fail_silently=False)
+            send_mail(asunto_cliente, mensaje_cliente, settings.EMAIL_HOST_USER, [request.user.email], fail_silently=False)
+            
+        except Exception as e:
+            # Si el internet falla o hay error de Google no le tumbamos la compra al cliente, solo avisamos en la consola
+            print(f"La compra fue un éxito, pero hubo un error enviando los correos: {e}")
+
+        # =========================================================
+
+
+        # VACIAMOS EL CARRITO
         del request.session['carrito']
         request.session.modified = True
-        messages.success(request, f"¡Pago aprobado e inventario actualizado! Orden: {transaction_id}")
         
-    return redirect('mi_app:ver_carrito')
+        # MENSAJE DE ÉXITO MOSTRANDO A DÓNDE VA EL PEDIDO
+        messages.success(request, f"¡Pago aprobado! Orden {transaction_id} en camino a: {direccion_envio.alias}.")
+        
+    # --- AQUÍ ESTABA EL ERROR: ESTA LÍNEA ES OBLIGATORIA Y DEBE ESTAR AL FINAL ---
+    return redirect('mi_app:pago_exitoso', transaction_id=transaction_id)
+
+
+# 2. AGREGA ESTA NUEVA FUNCIÓN AL FINAL DEL ARCHIVO
+@login_required(login_url='login:login')
+def pago_exitoso(request, transaction_id):
+    # Simplemente renderizamos la plantilla y le pasamos el número de transacción
+    return render(request, 'principalclientes/carrito_compras/exito.html', {
+        'transaction_id': transaction_id
+    })
+
+@login_required(login_url='login:login')
+def despachar_pedido(request, transaction_id):
+    # 1. Buscamos todos los pedidos asociados a esa transacción
+    pedidos = Pedido.objects.filter(comprobante_pago=transaction_id)
+    
+    if not pedidos.exists():
+        return HttpResponse("<h2 style='text-align:center; color:red; margin-top:50px;'>Este pedido no existe o ya fue procesado.</h2>")
+
+    # 2. Cambiamos el estado a "EN PREPARACIÓN"
+    pedidos.update(estado_pedido='EN PREPARACIÓN')
+    
+    # 3. Le enviamos un correo automático al CLIENTE avisándole
+    primer_pedido = pedidos.first()
+    cliente_email = primer_pedido.email
+    nombre_cliente = primer_pedido.id_cliente.nombre_completo
+    
+    asunto = f"¡Tu pedido {transaction_id} ya se está preparando! 📦"
+    mensaje = f"""
+    Hola {nombre_cliente},
+    
+    ¡Buenas noticias! Nuestro equipo ya ha recibido tu pago y tu pedido se encuentra EN PREPARACIÓN.
+    Se enviará pronto a la siguiente dirección: {primer_pedido.direccion_entrega}.
+    
+    Gracias por confiar en Soluciones Sara.
+    """
+    
+    # fail_silently=True evita que la página explote si el internet falla al enviar el correo
+    send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [cliente_email], fail_silently=True)
+    
+    # 4. Mensaje de éxito en pantalla para el Administrador
+    return HttpResponse(f"<h1 style='color:#2d005f; font-family:sans-serif; text-align:center; margin-top:50px;'>¡Éxito! El pedido {transaction_id} pasó a 'En Preparación' y el cliente fue notificado.</h1>")

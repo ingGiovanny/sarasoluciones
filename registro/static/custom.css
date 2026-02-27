@@ -1,4 +1,9 @@
 /* ========== REGISTRO PROFESIONAL ========== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 .register-wrapper {
     min-height: 100vh;
@@ -55,18 +60,22 @@
     transition: all 0.3s ease;
 }
 
+
+
+
+/* 1. EL ÍCONO: Lo fijamos arriba para que no se baje cuando salga el error */
 .input-group i {
     position: absolute;
     left: 18px;
-    top: 50%;
+    top: 27px; /* Cambiamos el 50% por un valor fijo desde arriba */
     transform: translateY(-50%);
     font-size: 18px;
     color: #95a5a6;
     transition: all 0.3s ease;
     z-index: 1;
 }
-
 .input-group input {
+    box-sizing: border-box; /* ESTA ES LA LÍNEA MÁGICA QUE EVITA QUE SE SALGAN */
     width: 100%;
     padding: 16px 20px 16px 55px;
     border: 2px solid #e0e0e0;

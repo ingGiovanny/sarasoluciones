@@ -22,7 +22,7 @@ def eliminar_imagen_galeria(request, pk):
     imagen.delete() # Esto borra el registro y Django se encarga del archivo si está configurado
     return JsonResponse({'status': 'ok'})
 
-@login_required(login_url='login:login')
+
 def listar_productos_publicos(request):
     # 1. Base: Traer todos los productos ordenados
     productos = Producto.objects.select_related('id_categoria', 'id_marca', 'id_presentacion').all().order_by('-id')
@@ -77,3 +77,12 @@ def listar_productos_publicos(request):
     }
     
     return render(request, 'principalclientes/listar/listarproductos.html', context)
+
+
+
+
+
+def detalle_producto(request, pk):
+    # Buscamos el producto por su llave primaria (pk)
+    producto = get_object_or_404(Producto.objects.select_related('id_presentacion', 'id_marca'), pk=pk)
+    return render(request, 'principalclientes/listar/detalle_producto.html', {'producto': producto})

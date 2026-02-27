@@ -1,0 +1,83 @@
+{% extends "listar.html" %}
+
+{% block titulo %}
+    <h1 class="text-center">Gestión De Logística y Despachos</h1>
+{% endblock titulo %}
+
+{% block agregar %}
+    <a href="{% url 'mi_app:panel_logistica' %}" class="btn btn-info btn-xs text-white">
+        <i class="fas fa-sync-alt"></i> Actualizar Pedidos
+    </a>
+{% endblock %}
+
+{% block columnas %}
+    <th>Orden (TX)</th>
+    <th>Cliente</th>
+    <th>Producto</th>
+    <th>Total</th>
+    <th>Estado</th>
+    <th>Acciones Rápidas</th>
+{% endblock %}
+
+{% block iterar %}
+    {% for pedido in object_list %}
+        <tr>
+            <td><b>{{ pedido.comprobante_pago }}</b></td>
+            <td>
+                {{ pedido.id_cliente.nombre_completo }}<br>
+                <small class="text-muted">{{ pedido.direccion_entrega }}</small>
+            </td>
+            <td>{{ pedido.id_producto.id_presentacion.nombre }} (x{{ pedido.cantidad }})</td>
+            <td>$ {{ pedido.valor_total|floatformat:0 }}</td>
+            
+            <td>
+                {% if pedido.estado_pedido == 'PEDIDO EXITOSO' %}
+                    <span class="badge bg-success">Recién Pagado</span>
+                {% elif pedido.estado_pedido == 'EN PREPARACIÓN' %}
+                    <span class="badge bg-warning text-dark">En Preparación</span>
+                {% elif pedido.estado_pedido == 'ENVIADO' %}
+                    <span class="badge bg-primary">Enviado</span>
+                {% elif pedido.estado_pedido == 'ENTREGADO' %}
+                    <span class="badge bg-secondary">Entregado</span>
+                {% else %}
+                    <span class="badge bg-dark">{{ pedido.estado_pedido }}</span>
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{% url 'mi_app:cambiar_estado_pedido' pedido.comprobante_pago 'EN PREPARACIÓN' %}" 
+                   class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Marcar en Preparación">
+                   <i class="fas fa-box-open"></i>
+                </a>
+                
+                <a href="{% url 'mi_app:cambiar_estado_pedido' pedido.comprobante_pago 'ENVIADO' %}" 
+                   class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="Marcar como Enviado">
+                   <i class="fas fa-truck"></i>
+                </a>
+
+                <a href="{% url 'mi_app:cambiar_estado_pedido' pedido.comprobante_pago 'ENTREGADO' %}" 
+                   class="btn btn-secondary btn-sm" data-bs-toggle="tooltip" title="Marcar como Entregado">
+                   <i class="fas fa-home"></i>
+                </a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="6" class="text-center">No hay pedidos pendientes en el sistema.</td>
+        </tr>
+    {% endfor %}
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      {% if messages %}
+        {% for message in messages %}
+          Swal.fire({
+            icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
+            title: '{{ message|escapejs }}',
+            timer: 2500,
+            showConfirmButton: false
+          });
+        {% endfor %}
+      {% endif %}
+    </script>
+{% endblock %}

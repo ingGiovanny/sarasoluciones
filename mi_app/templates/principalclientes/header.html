@@ -13,26 +13,34 @@
         <li><a href="{% url 'login:login' %}">Iniciar Sesión</a></li>
         <li><a href="{% url 'registro:registro' %}">Registro</a></li>
     </ul>
+
     {% if user.is_authenticated %}
-    <li class="nav-item">
+<li class="nav-item">
         <a href="{% url 'mi_app:mi_perfil' %}" 
-           class="nav-link fw-bold" style="color: #2d005f;"
-           data-bs-toggle="tooltip" 
-           data-bs-placement="bottom" 
-           title="Ver más información de usuario">
+           class="nav-link fw-bold text-white"
+           title="Haz clic para ver tu historial de compras y direcciones">
             <i class="fas fa-user-circle me-1"></i> 
             Hola, {{ user.perfil_cliente.nombre_completo|default:user.username }}
         </a>
     </li>
+    
+    <li class="nav-item ms-2 d-flex align-items-center">
+        <a href="{% url 'mi_app:salir_cliente' %}" class="btn btn-sm btn-outline-danger shadow-sm rounded-pill px-3" title="Cerrar sesión">
+            <i class="fas fa-sign-out-alt me-1"></i> Salir
+        </a>
+    </li>
 {% endif %}
+
+
 
     <div class="navbar-actions">
         <!-- BOTÓN oscuro -->
-        <button onclick="toggleDarkMode()" class="dark-mode-toggle" id="darkModeBtn" aria-label="Cambiar modo oscuro">
-            <span class="toggle-slider">
-                <i class="fas fa-sun" id="themeIcon"></i>
-            </span>
-        </button>
+            <button class="dark-mode-toggle" id="darkModeBtn" type="button" aria-label="Cambiar modo oscuro">
+                <span class="toggle-slider">
+                    <i class="fas fa-sun" id="themeIcon"></i>
+                </span>
+            </button>
+
 
         <a href="{% url 'mi_app:ver_carrito' %}" class="cart-icon-wrapper">
             <i class="fas fa-shopping-cart"></i>
