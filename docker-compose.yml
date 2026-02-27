@@ -8,8 +8,9 @@ services:
   web:
     # Construye la imagen apartir del Dockerfile en la ruta actual
     build: .
-    image: sarasoluciones_web  # Nombre de la imagen Docker construida
+    image: sarasoluciones_web # Nombre de la imagen Docker construida
     container_name: sarasoluciones_app # Nombre del contenedor
+    env_file: .env
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       # Montal el codigo del proyecto dentro del contenedor en la carpeta /app
@@ -32,15 +33,16 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=db # Debe ser el nombre del servicio de la BD
+      - DB_HOST=db
       - DB_PORT=3306
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
     # This service will not start until the 'db' service reports as healthy
-    depends_on: # Define el orden de arranque de los servicios.
+    depends_on:
+      # Define el orden de arranque de los servicios.
       # Le dice al servicio web que no intente arrancar hasta que el servicio 
       # db no solo se haya iniciado
-      db: 
+      db:
         # db debe estar reportando un estado "saludable" (healthcheck)
         condition: service_healthy
 
@@ -48,6 +50,7 @@ services:
   db:
     image: mysql:8.0
     container_name: sarasoluciones_mysql_db
+    env_file: .env
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
@@ -64,7 +67,7 @@ services:
     # si el servicio está realmente funcionando.
     healthcheck:
       # Es una forma ligera de preguntar a MySQL "¿estás vivo y aceptas conexiones?".
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s # Cada cuanto pregunta
       timeout: 5s # Cuanto debe esperar por la respuesta
       retries: 5 # Cuantos intentos debe hacer
@@ -73,6 +76,7 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: sarasoluciones_phpmyadmin_gui
+    env_file: .env
     environment:
       PMA_HOST: db # Points to the database service
       PMA_PORT: 3306
@@ -99,7 +103,7 @@ volumes:
   sarasoluciones_mysql_data:
     name: sarasoluciones_mysql_data
   # CAMBIO AQUÍ: El nombre debe ser igual al que usaste en el servicio 'web'
-  sarasoluciones_static_volume: 
+  sarasoluciones_static_volume:
     name: sarasoluciones_static_volume
   sarasoluciones_media_volume:
     name: sarasoluciones_media_volume

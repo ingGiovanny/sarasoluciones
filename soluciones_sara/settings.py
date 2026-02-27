@@ -14,12 +14,11 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Cargar variables de entorno desde el archivo .env  
-
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(os.path.join(BASE_DIR, ".env")) # Cargar variables de entorno desde el archivo .env  
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -28,12 +27,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#y*q^s*!__&pq1@&ivo^z_pk&x1-utdcm-76m5=^+6=fo-gi*x'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 't')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 
 
@@ -94,11 +93,11 @@ WSGI_APPLICATION = 'soluciones_sara.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_sena',
-        'USER': 'root',
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME', 'django_sena'),
+        'USER': os.getenv('DB_USER', 'root'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 
@@ -162,8 +161,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'sarasoluciones55@gmail.com'
-EMAIL_HOST_PASSWORD = 'photrckrwbepernf'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 #para la conexcion con ngrok para pruebas en el celular 
 CSRF_TRUSTED_ORIGINS = [
