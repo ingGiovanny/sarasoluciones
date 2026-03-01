@@ -11,8 +11,17 @@ from mi_app.forms.form_producto import ProductoForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin 
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from core.utils import exportar_a_pdf
 
 
+def reporte_productos(request):
+    productos = Producto.objects.all()
+    encabezados = ['Producto', 'Marca', 'Stock', 'Precio Unit.', 'Estado']
+    
+    # AQUÍ ESTÁ LA CORRECCIÓN: usamos p.estado_producto
+    datos = [[p.id_presentacion.nombre, p.id_marca.nombre_marca, p.cantidad_producto, f"${p.valor_unitario}", p.estado_producto] for p in productos]
+    
+    return exportar_a_pdf('Inventario de Productos', encabezados, datos)
 class productoListView(AdminRequiredMixin,ListView):
     model = Producto
     template_name ='modulos/producto/producto.html'

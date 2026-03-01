@@ -7,9 +7,14 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_pedido import PedidoForm
+from core.utils import exportar_a_pdf
 
 
-
+def reporte_pedidos(request):
+    pedidos = Pedido.objects.all()
+    encabezados = ['ID Pedido', 'Cliente', 'Producto', 'Cant.', 'Total', 'Estado']
+    datos = [[p.id, p.id_cliente.nombre_completo, p.id_producto.id_presentacion.nombre, p.cantidad, f"${p.valor_total}", p.estado_pedido] for p in pedidos]
+    return exportar_a_pdf('Historial de Pedidos', encabezados, datos)
 class pedidoListView(ListView):
     model = Pedido
     template_name ='modulos/pedido/pedido.html'

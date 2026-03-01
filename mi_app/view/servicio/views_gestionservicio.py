@@ -3,7 +3,14 @@ from django.urls import reverse_lazy
 from mi_app.models import GestionServicio
 from mi_app.forms.servicio import ServicioForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
+from core.utils import exportar_a_pdf
 
+
+def reporte_servicios(request):
+    servicios = GestionServicio.objects.all()
+    encabezados = ['Servicio', 'Categoría', 'Precio', 'Modalidad', 'Duración']
+    datos = [[s.nombre_servicio, s.categoria, f"${s.valor}", s.modalidad, s.duracion] for s in servicios]
+    return exportar_a_pdf('Portafolio de Servicios', encabezados, datos)
 # 1. LISTAR
 class ServicioListView(AdminRequiredMixin,ListView):
     model = GestionServicio

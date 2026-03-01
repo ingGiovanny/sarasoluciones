@@ -9,8 +9,14 @@ from mi_app.forms.form_proveedor import ProveedorForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator  # Te dejo este también por si acaso te llega a faltar
+from core.utils import exportar_a_pdf
 
 
+def reporte_proveedores(request):
+    proveedores = Proveedor.objects.all()
+    encabezados = ['Nombre/Empresa', 'NIT/Documento', 'Teléfono', 'Dirección']
+    datos = [[p.nombre_completo, p.numero_documento_nit, p.numero_telefonico, p.direccion_empresa] for p in proveedores]
+    return exportar_a_pdf('Proveedores', encabezados, datos)
 
 class proveedorListView(AdminRequiredMixin,ListView):
     model = Proveedor

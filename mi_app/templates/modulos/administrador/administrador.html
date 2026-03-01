@@ -8,8 +8,8 @@
 <a href="{{crear_url}}" class="btn btn-primary btn-xs">
     <i class="fas fa-plus"></i> Agregar
 </a>
-<a href="{% url 'exportar_pdf_universal' 'Administrador' %}" class="btn btn-danger btn-xs">
-    <i class="fas fa-file-pdf"></i> Reporte PDF
+<a href="{% url 'mi_app:pdf_admins' %}" class="btn btn-danger">
+    <i class="fas fa-file-pdf"></i> Descargar Reporte
 </a>
 {% endblock %}
 

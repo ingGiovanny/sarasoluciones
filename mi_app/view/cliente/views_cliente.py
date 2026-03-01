@@ -6,9 +6,14 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from mi_app.forms.form_cliente import ClienteForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
+from core.utils import exportar_a_pdf # Importas la función universal
+from core.utils import exportar_a_pdf
 
-
-
+def reporte_clientes(request):
+    clientes = GestionCliente.objects.all()
+    encabezados = ['Nombre Completo', 'Documento', 'Correo', 'Teléfono', 'Registro']
+    datos = [[c.nombre_completo, c.numero_documento, c.correo_electronico, c.numero_telefonico, c.fecha_registro.strftime('%d/%m/%Y')] for c in clientes]
+    return exportar_a_pdf('Clientes', encabezados, datos)
 
 
 
@@ -77,4 +82,3 @@ class ClienteDeleteView(AdminRequiredMixin,DeleteView):
         context['entidad'] = 'Clientes'
         context['listar_url'] = reverse_lazy('mi_app:cliente_lista')
         return context
-    

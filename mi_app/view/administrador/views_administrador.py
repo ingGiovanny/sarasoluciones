@@ -10,11 +10,18 @@ from mi_app.forms.administrador import AdministradorForm
 from mi_app.view.proteger_pagina_admin import *
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from core.utils import exportar_a_pdf
 
 
+def reporte_administradores(request):
+    admins = Administrador.objects.all()
+    encabezados = ['Nombre Completo', 'Documento', 'Correo', 'Teléfono']
+    datos = [[a.nombre_completo, a.numero_documento, a.correo_electronico, a.telefono] for a in admins]
+    return exportar_a_pdf('Administradores', encabezados, datos)
 # ==========================================
 # LISTAR ADMINISTRADORES
 # ==========================================
+
 class AdministradorListView(AdminRequiredMixin, ListView):
     model = Administrador
     template_name = 'modulos/administrador/administrador.html'
