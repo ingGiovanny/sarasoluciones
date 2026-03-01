@@ -1,80 +1,20 @@
-/* ================= 1. VARIABLES ================= */
-/* === REGLA DE ORO: CORRECCIÓN DE ANCHO === */
-* {
-    box-sizing: border-box; /* El padding no aumenta el ancho de los elementos */
-}
+/* static/css_clientes/contenido.css */
 
-html, body {
+/* ================= 1. AJUSTES GLOBALES DE PÁGINA ================= */
+* { box-sizing: border-box; }
+
+.contenido-principal {
     width: 100%;
-    max-width: 100vw;       /* Asegura que nada sea más ancho que la ventana */
-    overflow-x: hidden;     /* Corta cualquier desbordamiento horizontal */
-    margin: 0;
-    padding: 0;
-}
-:root {
-    /* MODO CLARO */
-    --bg-body: #f8f9fa;
-    --bg-card: #ffffff;
-    --text-primary: #1a1a1a;
-    --text-secondary: #666666;
-    
-    /* NAVBAR FIJO */
-    --bg-navbar: #111111;
-    --text-navbar: #ffffff;
-    
-    --accent-color: #ffa500;
-    --border-color: #e5e5e5;
-    --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.08);
-}
-
-/* MODO OSCURO */
-body.dark-mode {
-    --bg-body: #0f172a;
-    --bg-card: #1e293b;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --border-color: #334155;
-    --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.5);
-}
-
-/* ================= 2. ESTILOS BASE ================= */
-body {
-    /* 1. Tipografía Moderna */
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    
-    /* 2. Colores (Usando las variables que definimos) */
+    overflow-x: hidden;
     background-color: var(--bg-body);
-    color: var(--text-primary);
-    
-    /* 3. Transiciones suaves para el modo oscuro */
-    transition: background-color 0.3s ease, color 0.3s ease;
-    
-    /* 4. Reset básico */
-    margin: 0;
-    padding: 0;
-    
-    /* 5. SEGURIDAD RESPONSIVA (Vital para móviles) */
-    overflow-x: hidden; /* Evita que la web se mueva a los lados */
-    width: 100%;
-    
-    /* 6. TRUCO DEL FOOTER (Para que el footer siempre quede abajo) */
-    min-height: 100vh;      /* Ocupa al menos el 100% de la altura de pantalla */
-    display: flex;          /* Convierte el cuerpo en una caja flexible */
-    flex-direction: column; /* Organiza: Header -> Contenido -> Footer */
 }
 
-/* Esto asegura que el contenido empuje al footer hacia abajo */
-main {
-    flex: 1; 
-}
-
-h1.titulo, h2, h3 { color: var(--text-primary) !important; }
-
-/* ================= 3. CARRUSEL ================= */
+/* ================= 2. CARRUSEL PREMIUM ================= */
 .carrusel-container {
     position: relative;
     width: 100%;
-    height: 500px; /* Altura Desktop */
+    height: 65vh; /* Altura dinámica basada en la pantalla */
+    min-height: 400px;
     overflow: hidden;
     background: #000;
 }
@@ -100,7 +40,7 @@ h1.titulo, h2, h3 { color: var(--text-primary) !important; }
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(0.55);
+    filter: brightness(0.5); /* Oscurece la imagen para que el texto resalte */
 }
 
 .slide-content {
@@ -109,148 +49,98 @@ h1.titulo, h2, h3 { color: var(--text-primary) !important; }
     text-align: center;
     color: #ffffff !important;
     padding: 20px;
-    max-width: 800px;
+    max-width: 900px;
 }
 
 .slide h1 {
-    font-size: 4rem; /* Grande en PC */
+    font-size: clamp(2rem, 8vw, 4.5rem); /* Tamaño fluido: se ajusta solo */
     font-weight: 900;
     margin-bottom: 10px;
-    color: #ffffff !important;
-    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    text-shadow: 0 4px 15px rgba(0,0,0,0.6);
     letter-spacing: 2px;
 }
 
 .slide p {
-    font-size: 1.5rem;
-    color: #e0e0e0 !important;
-    font-weight: 300;
+    font-size: clamp(1rem, 3vw, 1.8rem);
+    color: #f1f1f1 !important;
 }
 
-/* Botones Navegación */
+/* Botones de Navegación */
 .carrusel-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
-    font-size: 1.5rem;
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     cursor: pointer;
     z-index: 10;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
 }
 
-.carrusel-btn:hover {
-    background: white;
-    color: black;
-    border-color: white;
-}
+.carrusel-btn:hover { background: white; color: black; }
+.carrusel-btn.prev { left: 20px; }
+.carrusel-btn.next { right: 20px; }
 
-.carrusel-btn.prev { left: 30px; }
-.carrusel-btn.next { right: 30px; }
-
-/* ================= 4. SECCIÓN PRODUCTOS ================= */
-.titulo {
+/* ================= 3. SECCIÓN DE TARJETAS (PRODUCTOS/SERVICIOS) ================= */
+.titulo-seccion {
     text-align: center;
-    margin: 60px 0 40px 0;
-    font-size: 2.5rem;
+    margin: 60px 0 40px;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
     font-weight: 800;
+    color: var(--text-primary);
 }
 
-.productos {
+.grid-ofertas {
     display: grid;
-    /* Bajamos a 260px para que quepan en celulares pequeños sin romper la pantalla */
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto 80px auto;
+    max-width: 1100px;
+    margin: 0 auto 80px;
     padding: 0 20px;
 }
 
-.card-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-}
-
-.producto {
+.producto-card {
     background-color: var(--bg-card);
-    color: var(--text-primary);
     border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 25px;
+    border-radius: 24px;
+    padding: 20px;
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: var(--shadow-card);
-    height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.card-link:hover .producto {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+.card-link:hover .producto-card {
+    transform: translateY(-12px);
     border-color: var(--accent-color);
 }
 
-.producto img {
+.producto-card img {
     width: 100%;
-    height: 250px;
+    height: 220px;
     object-fit: cover;
-    border-radius: 15px;
+    border-radius: 18px;
     margin-bottom: 20px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-.producto h3 {
-    font-size: 1.8rem;
+.producto-card h3 {
+    font-size: 1.6rem;
     margin: 10px 0;
     font-weight: 700;
 }
 
-.producto p {
-    font-size: 1.2rem;
+.cta-tag {
     color: var(--accent-color) !important;
-    font-weight: 600;
-    background: rgba(255, 165, 0, 0.1);
-    padding: 5px 15px;
-    border-radius: 20px;
+    font-weight: 700;
+    background: rgba(45, 0, 95, 0.08); /* Morado muy suave */
+    padding: 8px 20px;
+    border-radius: 50px;
     display: inline-block;
-}
-
-/* ================= 5. MEDIA QUERIES (RESPONSIVE) ================= */
-/* AJUSTE PARA MÓVILES */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column; /* Apilar elementos */
-        padding: 15px 15px;     /* Reducir padding lateral (De 40px a 15px) */
-        width: 100vw;           /* Forzar ancho completo de ventana */
-    }
-
-    .navbar-menu {
-        flex-wrap: wrap;        /* Permitir que los enlaces bajen si no caben */
-        justify-content: center;
-        gap: 10px;
-        width: 100%;
-    }
-
-    .navbar-actions {
-        width: 100%;
-        justify-content: center;
-        margin-top: 10px;
-    }
-
-    /* Ajuste del Footer para que no se corte */
-    footer {
-        width: 100vw;
-        padding: 30px 15px;
-    }
+    margin-top: auto;
 }

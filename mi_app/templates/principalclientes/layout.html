@@ -1,174 +1,50 @@
-    {%load static %}
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-    <!--link para iconos de bootstrap--> 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-            <!--link para los estilos de la pagina-->
-
-        <link rel="stylesheet" href="{% static 'css/registro.css' %}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <meta charset="UTF-8">    
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soluciones Sara | Mi Tienda</title>
     <link rel="icon" type="image/png" href="{% static 'img/logosara.png' %}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!--swet alerta para los mensajes-->
-        <!--link para los estilos de la pagina-->
-        <link rel="stylesheet" href="{% static 'css_clientes/carrito_compras.css' %}">  <!--stilos de carro de compras-->
-        <link rel="stylesheet" href="{% static 'css_clientes/contenido.css' %}">
-        <link rel="stylesheet" href="{% static 'css_clientes/listar_producto.css' %}">
-        <link rel="stylesheet" href="{% static 'css_clientes/listar_servicios.css' %}">
-        <link rel="stylesheet" href="{% static 'css_clientes/headercli.css' %}"> <!--estilos header-->
-        <link rel="stylesheet" href="{% static 'css_clientes/footer.css' %}"> <!--estilos footer-->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css_clientes/global_vars.css' %}">
     
+    <link rel="stylesheet" href="{% static 'css/registro.css' %}">
+    <link rel="stylesheet" href="{% static 'css_clientes/headercli.css' %}">
+    <link rel="stylesheet" href="{% static 'css_clientes/carrito_compras.css' %}">
+    <link rel="stylesheet" href="{% static 'css_clientes/contenido.css' %}">
+    <link rel="stylesheet" href="{% static 'css_clientes/listar_producto.css' %}">
+    <link rel="stylesheet" href="{% static 'css_clientes/listar_servicios.css' %}">
+    <link rel="stylesheet" href="{% static 'css_clientes/footer.css' %}">
+</head>
 
-        <!--iconos del widgets-->
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <!--ruta para scrip de la pagina clientes-->
-        
-
-      
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-      <script src="{% static 'js_clientes/contenido.js' %}"></script> 
-      <script src="{% static 'js_clientes/header.js' %}"></script> 
-      <script src="{% static 'js_clientes/listar_productos.js' %}"></script> 
-      <script src="{% static 'js_clientes/detalle_producto.js' %}"></script>
-      
-      <script src="{% static 'js/mensajesBotones(tooltips).js' %}"></script> 
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script src="{% static 'js_clientes/carrito_compras.js' %}"></script>
-
-
-
-    <title>Mi Tienda</title>
-<style>
-    /* =========================================================
-       EL CEREBRO DE COLORES: VARIABLES GLOBALES DEL SISTEMA
-       ========================================================= */
-    :root {
-        /* MODO CLARO (Por defecto) */
-        --bg-body: #f4f6f9;         /* Fondo de la página exterior */
-        --bg-card: #ffffff;         /* Fondo de tarjetas y tablas */
-        --bg-secondary: #f8f9fa;    /* Fondo de menús o resaltados */
-        
-        --text-primary: #2c3e50;    /* Textos principales (Oscuros) */
-        --text-secondary: #7f8c8d;  /* Textos secundarios (Gris) */
-        
-        --accent-color: #2d005f;    /* Morado de tu marca */
-        --border-color: #e0e0e0;    /* Líneas divisorias suaves */
-    }
-
-    body.dark-mode {
-        /* MODO OSCURO */
-        --bg-body: #121212;         /* Fondo exterior ultra oscuro */
-        --bg-card: #1e1e1e;         /* Tarjetas un poco más claras para contraste */
-        --bg-secondary: #2d2d2d;    /* Menús oscuros */
-        
-        --text-primary: #ffffff;    /* Textos principales (Blancos) */
-        --text-secondary: #b0b0b0;  /* Textos secundarios (Gris claro) */
-        
-        --accent-color: #8c52ff;    /* Morado más brillante para que resalte en negro */
-        --border-color: #333333;    /* Líneas divisorias oscuras */
-    }
-
-    /* APLICACIÓN AUTOMÁTICA A TODA LA PÁGINA */
-    html, body {
-        height: 100%;
-        margin: 0;
-        background-color: var(--bg-body);
-        color: var(--text-primary);
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    .contenido-principal {
-        flex: 1;
-        display: block;
-    }
-
-    /* Forzar a las tarjetas y tablas a usar las variables */
-    .card, .bg-white, .table, .modal-content {
-        background-color: var(--bg-card) !important;
-        color: var(--text-primary) !important;
-        border-color: var(--border-color) !important;
-    }
-    
-    .text-muted {
-        color: var(--text-secondary) !important;
-    }
-    /* Cuando el body tiene dark-mode, mueve el slider 30px a la derecha */
-body.dark-mode .toggle-slider {
-    transform: translateX(30px);
-}
-</style>
-    
-    </head>
-    <body>
-    {%include "principalclientes/header.html"%}
+<body>
+    {% include "principalclientes/header.html" %}
 
     <main class="contenido-principal">
-            {% block body %}{% endblock %}
-        </main>
+        {% block body %}{% endblock %}
+    </main>
 
-    {%include "principalclientes/footer.html"%}
+    {% include "principalclientes/footer.html" %}
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    </body>
-
-
-
-    <!--Scrip para el widget de acceseibilidad-->
-        <script src="{% static 'js/siena_widgte_accesibilidad.js' %}"></script>
+    <script src="{% static 'js_clientes/global_scripts.js' %}"></script>
+    
+    <script src="{% static 'js_clientes/contenido.js' %}"></script>
+   <!-- <script src="{% static 'js_clientes/header.js' %}"></script>-->
+    <script src="{% static 'js_clientes/listar_productos.js' %}"></script>
+    <script src="{% static 'js_clientes/detalle_producto.js' %}"></script>
+    <script src="{% static 'js_clientes/carrito_compras.js' %}"></script>
+    <script src="{% static 'js/mensajesBotones(tooltips).js' %}"></script>
+    <script src="{% static 'js/siena_widgte_accesibilidad.js' %}"></script>
     <script src="{% static 'js/siena-config.js' %}"></script>
-    <script>
-        // --- ESTE CÓDIGO ENCIENDE LAS BURBUJAS DE BOOTSTRAP (TOOLTIPS) ---
-    document.addEventListener('DOMContentLoaded', function () {
-        // Busca todos los elementos que tengan tooltip
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        
-        // Los enciende uno por uno
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl, {
-                container: 'body' // Esto asegura que la burbuja no se quede atrapada en el menú
-            });
-        });
-    });
-    // 1. LA FUNCIÓN PRINCIPAL
-    function toggleDarkMode() {
-        // Cambiamos el modo en el cuerpo de la página
-        document.body.classList.toggle('dark-mode');
-        
-        // Buscamos el icono de tu botón original
-        const themeIcon = document.getElementById('themeIcon');
-        
-        if (document.body.classList.contains('dark-mode')) {
-            // SI ESTÁ OSCURO: Guardamos y ponemos la Luna
-            localStorage.setItem('temaOscuro', 'activado');
-            if (themeIcon) {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-            }
-        } else {
-            // SI ESTÁ CLARO: Guardamos y ponemos el Sol
-            localStorage.setItem('temaOscuro', 'desactivado');
-            if (themeIcon) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            }
-        }
-    }
-
-    // 2. AL CARGAR LA PÁGINA (Para que recuerde la opción del usuario)
-    document.addEventListener('DOMContentLoaded', function() {
-        const themeIcon = document.getElementById('themeIcon');
-        
-        if (localStorage.getItem('temaOscuro') === 'activado') {
-            // Si lo dejó oscuro la última vez, lo activamos
-            document.body.classList.add('dark-mode');
-            if (themeIcon) {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-            }
-        }
-    });
-</script>
-    </html>
+</body>
+</html>

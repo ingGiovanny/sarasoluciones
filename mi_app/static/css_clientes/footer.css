@@ -1,25 +1,63 @@
-/* ================= FOOTER (SIEMPRE NEGRO) ================= */
+/* static/css_clientes/footer.css */
+
+/* =========================================================
+   ESTILOS ESPECÍFICOS DEL FOOTER (SIEMPRE OSCURO)
+   ========================================================= */
 footer {
-    background-color: #111111;
-    color: white;
+    background-color: var(--navbar-bg); /* Usamos el mismo negro del navbar para consistencia */
+    color: var(--navbar-text);
     text-align: center;
-    padding: 30px 20px;
-    
-    /* ESTO ES LO IMPORTANTE PARA QUE OCUPE TODO: */
+    padding: 40px 20px;
     width: 100%;
-    box-sizing: border-box; /* El padding cuenta dentro del ancho */
+    box-sizing: border-box;
     position: relative;
-    left: 0;
-    bottom: 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: auto; /* Empuja el footer al fondo si hay poco contenido */
 }
 
-/* Si pones enlaces dentro del footer en el futuro */
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-brand {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.footer-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    opacity: 0.8;
+}
+
+/* Enlaces dentro del footer */
 footer a {
-    color: #cccccc;
-    text-decoration: none;
-    transition: color 0.3s;
+    color: var(--navbar-text);
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    opacity: 0.7;
 }
 
 footer a:hover {
-    color: #ffa500; /* Color naranja al pasar el mouse */
+    color: var(--accent-color);
+    opacity: 1;
+}
+
+/* Estilo para el copyright */
+.copyright {
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+    opacity: 0.6;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    footer {
+        padding: 30px 15px;
+    }
 }

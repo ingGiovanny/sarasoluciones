@@ -5,20 +5,36 @@ from django.dispatch import receiver
 from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
 from django.db.models.signals import post_save
+from django.utils import timezone
+from datetime import timedelta
+
+
+
 
 class Administrador(models.Model):
-    nombres_completos = models.CharField(max_length=50, default="", verbose_name="Nombres Completos")
+    # La conexión vital con Django
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil_admin')
+    
+    # Tus campos personalizados
+    nombre_completo = models.CharField(max_length=100, verbose_name="Nombre Completo")
     correo_electronico = models.EmailField(max_length=50, default="", verbose_name="Correo Electrónico")
-    contrasena = models.CharField(max_length=128, default="", verbose_name="Contraseña")
-    cedula = models.CharField(max_length=20, default="", verbose_name="Cédula")
-    telefono = models.CharField(max_length=15, default="", verbose_name="Teléfono")
+    numero_documento = models.CharField(max_length=50, unique=True, verbose_name="Número Documento")
+    telefono = models.CharField(max_length=50, null=True, blank=True)
+    # Agrega los campos que necesites...
 
     class Meta:
         verbose_name = "Administrador"
         verbose_name_plural = "Administradores"
         
     def __str__(self):
-        return f"{self.nombres_completos} {self.cedula}"
+        return self.nombre_completo
+
+# Señal para que si borras al Administrador de tu panel, se borre de Django también
+@receiver(post_delete, sender=Administrador)
+def eliminar_admin_vinculado(sender, instance, **kwargs):
+    if instance.user:
+        instance.user.delete()
+
 
 
 class Proveedor(models.Model):
@@ -44,6 +60,10 @@ class GestionCliente(models.Model):
     numero_telefonico = models.CharField(max_length=50, null=True, blank=True, verbose_name="Número Telefónico")
     numero_documento = models.CharField(max_length=50, unique=True, verbose_name="Número Documento")
     correo_electronico = models.EmailField(max_length=50, verbose_name="Correo Electrónico")
+    
+    # --- NUEVO CAMPO DE AVATAR ---
+    avatar = models.CharField(max_length=30, default='avatar1.png', verbose_name="Avatar")
+    
     fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
     
     class Meta:
@@ -184,51 +204,40 @@ class Producto(models.Model):
     def __str__(self):
     # Usamos el nombre que viene de la relación id_presentacion
      return f"{self.id_presentacion.nombre} - {self.id_marca.nombre_marca}"
-
-
-class Factura(models.Model):
-    """Modelo para facturación"""
-    # Relaciones
-    id_admin = models.ForeignKey(Administrador, on_delete=models.CASCADE, related_name='facturas_admin')
-    id_servicio = models.ForeignKey(GestionServicio, on_delete=models.SET_NULL, null=True, blank=True, related_name='facturas_servicio')
-    
-    # Campos de factura
-    fecha_factura = models.DateField(verbose_name="Fecha Factura")
-    descripcion_venta = models.TextField(max_length=255, verbose_name="Descripción Venta")
-    terminos_condiciones = models.TextField(max_length=255, verbose_name="Términos y Condiciones")
-    nit = models.CharField(max_length=50, verbose_name="NIT")
-    total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total")
-    
-    class Meta:
-        verbose_name = "Factura"
-        verbose_name_plural = "Facturas"
-        
-    def __str__(self):
-        # usar el nombre correcto del campo: fecha_factura
-        return f"Factura #{self.id} - {self.fecha_factura}"
-
+ 
 
 class Garantia(models.Model):
-    """Modelo para gestión de garantías"""
-    # CORREGIDO: Aseguramos que apunte correctamente a Facturacion
-    id_factura = models.ForeignKey(Factura, on_delete=models.CASCADE, related_name='garantias_factura', null=True, blank=True)
-    descripcion_garantia = models.TextField(max_length=255, verbose_name="Descripción Garantía")
-    fecha_garantia = models.DateField(verbose_name="Fecha Garantía")
-    opciones=[
-        ('PENDIENTE', 'pendiente'),
-        ('APROVADO', 'aprovado'),
-        ('RECHAZADO', 'rechazado'),
-     
-    ]
-    estado_garantia = models.CharField(max_length=20, choices=opciones)
+    """Modelo profesional para gestión de garantías"""
     
+    # 1. Relación con la compra
+    id_Pedido = models.ForeignKey('Pedido', on_delete=models.CASCADE, related_name='garantias_pedido', null=True, blank=True)
+    
+    # 2. Lo que llena el cliente
+    descripcion_garantia = models.TextField(max_length=500, verbose_name="Motivo de la Garantía")
+    evidencia = models.ImageField(upload_to='garantias/evidencias/', null=True, blank=True, verbose_name="Foto de Evidencia")
+    
+    # 3. Lo que llenas tú (El Administrador)
+    respuesta_admin = models.TextField(max_length=500, null=True, blank=True, verbose_name="Respuesta del Administrador")
+    
+    # 4. Control del sistema (Se llena solo)
+    # Cambiamos DateField a DateTimeField para saber la hora exacta en que reclamó
+    fecha_garantia = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Solicitud")
+    
+    # CORREGIDO: "APROBADO" con B y le pusimos 'PENDIENTE' como estado por defecto
+    opciones = [
+        ('PENDIENTE', 'Pendiente de Revisión'),
+        ('APROBADO', 'Aprobado (Devolución/Cambio)'),
+        ('RECHAZADO', 'Rechazado'),
+    ]
+    estado_garantia = models.CharField(max_length=20, choices=opciones, default='PENDIENTE', verbose_name="Estado de la Garantía")
 
     class Meta:
         verbose_name = "Garantía"
         verbose_name_plural = "Garantías"
+        ordering = ['-fecha_garantia'] # Para que en tu panel salgan las más recientes primero
 
     def __str__(self):
-        return f"Garantía #{self.id} - {self.estado_garantia}"
+        return f"Garantía #{self.id} - {self.estado_garantia} (Pedido TX: {self.id_Pedido.comprobante_pago if self.id_Pedido else 'N/A'})"
 
 
 class Pedido(models.Model):
@@ -241,13 +250,16 @@ class Pedido(models.Model):
     municipio_ciudad_entrega = models.CharField(max_length=50)
     direccion_entrega = models.CharField(max_length=50)
     comprobante_pago = models.CharField(max_length=50, default="pago exitoso")
+    
     opciones=[
         ('PROCESO', 'proceso'),
         ('PEDIDO EXITOSO', 'pedido exitoso')
-     
     ]
     estado_pedido = models.CharField(max_length=20, choices=opciones, verbose_name="Estado Pedido")
     email = models.EmailField(max_length=50, verbose_name="Email")
+    
+    # NUESTRA FECHA CORREGIDA Y A PRUEBA DE FALLOS
+    fecha_pedido = models.DateTimeField(default=timezone.now, null=True, blank=True, verbose_name="Fecha y Hora del Pedido")
     
     class Meta:
         verbose_name = "Pedido"
@@ -255,7 +267,32 @@ class Pedido(models.Model):
         
     def __str__(self):
         return f"Pedido #{self.id} - {self.id_cliente.nombre_completo}"
+        
+    # ==========================================
+    # CÁLCULOS INTELIGENTES PARA LA GARANTÍA
+    # ==========================================
+    @property
+    def dias_restantes_garantia(self):
+        # Si por algún error el pedido no tiene fecha, decimos que es 0
+        if not self.fecha_pedido:
+            return 0
+            
+        # 1. Calculamos cuándo se vence (Fecha de compra + 6 días)
+        fecha_vencimiento = self.fecha_pedido + timedelta(days=6)
+        
+        # 2. Restamos la fecha de vencimiento con la fecha y hora actual
+        tiempo_restante = fecha_vencimiento - timezone.now()
+        
+        # 3. Si los días son menores a 0 (ya pasó el tiempo), devolvemos 0
+        if tiempo_restante.days < 0:
+            return 0
+            
+        return tiempo_restante.days
 
+    @property
+    def garantia_vigente(self):
+        # Devuelve True si todavía le quedan días, o False si ya expiró
+        return self.dias_restantes_garantia > 0
 
 class Compra(models.Model):
     """Modelo para compras a proveedores"""

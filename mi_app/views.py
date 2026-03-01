@@ -53,11 +53,7 @@ def exportar_modulo_pdf(request, nombre_modelo):
             'campos': ['id', 'nombre', 'color', 'modelo'],
             'headers': ['N°', 'Nombre', 'Color', 'Modelo']
         },
-        'Factura': {
-            'titulo': 'Listado de Marcas',
-            'campos': ['id', 'nombre'],
-            'headers': ['ID', 'Nombre']
-        },
+        
         'Garantia': {
             'titulo': 'Listado de Garantías',
             'campos': ['id', 'nombre'],

@@ -9,6 +9,8 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.urls import reverse_lazy
 from mi_app.forms.form_producto import ProductoForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 
 
 class productoListView(AdminRequiredMixin,ListView):
@@ -92,3 +94,18 @@ class productoDeleteView(AdminRequiredMixin,DeleteView):
         return context
 
     
+
+
+@login_required(login_url='login:login')
+def producto_cambiar_estado(request, pk):
+    producto = get_object_or_404(Producto, id=pk)
+    
+    if producto.estado_producto == 'ACTIVO':
+        producto.estado_producto = 'INACTIVO'
+        messages.warning(request, f"El producto {producto.id_presentacion.nombre} ha sido DESACTIVADO.")
+    else:
+        producto.estado_producto = 'ACTIVO'
+        messages.success(request, f"El producto {producto.id_presentacion.nombre} ahora está ACTIVO.")
+    
+    producto.save()
+    return redirect('mi_app:producto_lista')

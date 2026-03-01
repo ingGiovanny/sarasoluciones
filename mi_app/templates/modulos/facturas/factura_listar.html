@@ -1,0 +1,53 @@
+{% extends "listar.html" %}
+
+{% block titulo %}
+    <h1 class="text-center">{{ titulo }}</h1>
+{% endblock titulo %}
+
+{% block agregar %}
+    <a href="{% url 'mi_app:panel_logistica' %}" class="btn btn-secondary btn-xs">
+        <i class="fas fa-arrow-left"></i> Volver a Logística
+    </a>
+{% endblock %}
+
+{% block columnas %}
+    <th>Transacción (TX)</th>
+    <th>Cliente</th>
+    <th>Documento</th>
+    <th>Estado de la Orden</th>
+    <th>Acciones</th>
+{% endblock %}
+
+{% block iterar %}
+    {% for pedido in facturas %}
+        <tr>
+            <td><b>{{ pedido.comprobante_pago }}</b></td>
+            <td>
+                {{ pedido.id_cliente.nombre_completo }}<br>
+                <small class="text-muted">{{ pedido.id_cliente.correo_electronico }}</small>
+            </td>
+            <td>{{ pedido.id_cliente.numero_documento }}</td>
+            
+            <td>
+                {% if pedido.estado_pedido == 'PEDIDO EXITOSO' %}
+                    <span class="badge bg-success">Pagado / Recibido</span>
+                {% elif pedido.estado_pedido == 'CANCELADO' %}
+                    <span class="badge bg-danger">Cancelado</span>
+                {% else %}
+                    <span class="badge bg-primary">{{ pedido.estado_pedido }}</span>
+                {% endif %}
+            </td>
+            
+            <td>
+                <a href="{% url 'mi_app:descargar_factura_pdf' pedido.comprobante_pago %}" 
+                   class="btn btn-danger btn-sm" target="_blank" data-bs-toggle="tooltip" title="Ver Factura PDF">
+                   <i class="fas fa-file-pdf"></i> Ver PDF
+                </a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No hay facturas registradas en el sistema todavía.</td>
+        </tr>
+    {% endfor %}
+{% endblock %}

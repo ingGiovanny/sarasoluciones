@@ -1,5 +1,6 @@
 from django.urls import path
 #importa las views reales según tus carpetas
+from mi_app.view.producto import views_producto
 from mi_app.views import *
 from . import views
 from mi_app.view.administrador.views_administrador import *
@@ -53,16 +54,20 @@ urlpatterns = [
     
     #perfil cliente
     path('mi-perfil/', mi_perfil, name='mi_perfil'),
+    path('editar-perfil/', editar_perfil, name='editar_perfil'),
     # Ruta secreta para que el Admin cambie el estado desde el correo
     path('admin-accion/preparar/<str:transaction_id>/', despachar_pedido, name='despachar_pedido'),
-    # Descargar Factura PDF
-    path('factura/<str:transaction_id>/', descargar_factura_pdf, name='descargar_factura_pdf'),
+ 
     #panel de logistica para el admin
     path('logistica/', panel_logistica, name='panel_logistica'),
     path('logistica/cambiar-estado/<str:transaction_id>/<str:nuevo_estado>/', cambiar_estado_pedido, name='cambiar_estado_pedido'),
     # Rutas para gestionar direcciones del cliente
     path('perfil/direccion/agregar/', agregar_direccion, name='agregar_direccion'),
     path('perfil/direccion/eliminar/<int:direccion_id>/', eliminar_direccion, name='eliminar_direccion'),
+    #garantias
+    path('mis-pedidos/garantia/<int:pedido_id>/', solicitar_garantia, name='solicitar_garantia'),#solicitar garantia desde el perfil del cliente
+    path('logistica/garantias/', gestionar_garantias, name='gestionar_garantias'),
+    path('mis-garantias/', mis_garantias, name='mis_garantias'),
     # Cerrar Sesión
     path('salir/', salir_cliente, name='salir_cliente'),
     
@@ -113,6 +118,7 @@ urlpatterns = [
     path('producto/crear/', productoCreateView.as_view(), name='producto_crear'),
     path('producto/editar/<int:pk>/', productoupdateView.as_view(), name='producto_editar'),
     path('producto/eliminar/<int:pk>/', productoDeleteView.as_view(), name='producto_eliminar'),
+    path('producto/estado/<int:pk>/', views_producto.producto_cambiar_estado, name='producto_cambiar_estado'),
            
  #--------------------------------modulo garantia ---------------------------------------
     path('garantia/listar/', GarantiaListView.as_view(), name='garantia_lista'),
@@ -128,10 +134,9 @@ urlpatterns = [
       
       
 #--------------------------------modulo facturacion ---------------------------------------
-    path('factura/listar/', FacturaListView.as_view(), name='factura_lista'),   
-    path('factura/crear/', FacturaCreateView.as_view(), name='factura_crear'),
-    path('factura/editar/<int:pk>/', FacturaUpdateView.as_view(), name='factura_editar'),
-    path('factura/eliminar/<int:pk>/', facturaDeleteView.as_view(), name='factura_eliminar'),      
+    path('facturar/listar/', FacturaListView.as_view(), name='factura_lista'),      
+       # Descargar Factura PDF
+    path('factura/<str:transaction_id>/', descargar_factura_pdf, name='descargar_factura_pdf'),   
         
 #--------------------------------modulo compras ---------------------------------------
     path('compras/listar/', CompraListView.as_view(), name='compras_lista'),

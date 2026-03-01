@@ -1,5 +1,7 @@
-<nav class="navbar">
-    <a href="{% url 'mi_app:contenido_cliente' %}" class="navbar-logo">Soluciones Sara</a>
+{% load static %}
+<nav class="navbar navbar-expand-lg"> <a href="{% url 'mi_app:contenido_cliente' %}" class="navbar-logo">
+        Soluciones Sara
+    </a>
 
     <ul class="navbar-menu">
         <li><a href="{% url 'mi_app:contenido_cliente' %}">Inicio</a></li>
@@ -10,39 +12,36 @@
                 Contactanos
             </a>
         </li>
-        <li><a href="{% url 'login:login' %}">Iniciar Sesión</a></li>
-        <li><a href="{% url 'registro:registro' %}">Registro</a></li>
+
+        {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a href="{% url 'mi_app:mi_perfil' %}" class="nav-link fw-bold text-white d-flex align-items-center" title="Ver mi perfil">
+               <img src="{% static 'img/avatares/' %}{{ user.perfil_cliente.avatar|default:'avatar1.png' }}" 
+                 class="rounded-circle me-2 bg-white" 
+                  style="width: 30px; height: 30px; object-fit: cover; border: 2px solid white; padding: 2px;">
+                 Hola, {{ user.perfil_cliente.nombre_completo|truncatewords:1 }}
+              </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'mi_app:salir_cliente' %}" class="btn btn-sm btn-outline-danger rounded-pill px-3 ms-2">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </a>
+            </li>
+        {% else %}
+            <li><a href="{% url 'login:login' %}">Iniciar Sesión</a></li>
+            <li><a href="{% url 'registro:registro' %}">Registro</a></li>
+        {% endif %}
     </ul>
 
-    {% if user.is_authenticated %}
-<li class="nav-item">
-        <a href="{% url 'mi_app:mi_perfil' %}" 
-           class="nav-link fw-bold text-white"
-           title="Haz clic para ver tu historial de compras y direcciones">
-            <i class="fas fa-user-circle me-1"></i> 
-            Hola, {{ user.perfil_cliente.nombre_completo|default:user.username }}
-        </a>
-    </li>
-    
-    <li class="nav-item ms-2 d-flex align-items-center">
-        <a href="{% url 'mi_app:salir_cliente' %}" class="btn btn-sm btn-outline-danger shadow-sm rounded-pill px-3" title="Cerrar sesión">
-            <i class="fas fa-sign-out-alt me-1"></i> Salir
-        </a>
-    </li>
-{% endif %}
+    <div class="navbar-actions d-flex align-items-center">
+        
+    <button class="sara-toggle-btn" id="darkModeBtn" onclick="toggleDarkMode()" type="button">
+    <div class="sara-slider-circle">
+        <i class="fas fa-sun" id="themeIcon"></i>
+    </div>
+</button>
 
-
-
-    <div class="navbar-actions">
-        <!-- BOTÓN oscuro -->
-            <button class="dark-mode-toggle" id="darkModeBtn" type="button" aria-label="Cambiar modo oscuro">
-                <span class="toggle-slider">
-                    <i class="fas fa-sun" id="themeIcon"></i>
-                </span>
-            </button>
-
-
-        <a href="{% url 'mi_app:ver_carrito' %}" class="cart-icon-wrapper">
+        <a href="{% url 'mi_app:ver_carrito' %}" class="cart-icon-wrapper ms-3">
             <i class="fas fa-shopping-cart"></i>
             <span class="badge" id="cart-count">
                 {{ request.session.carrito|length|default:0 }}
@@ -50,4 +49,3 @@
         </a>
     </div>
 </nav>
-

@@ -1,33 +1,52 @@
-    // --- Lógica de Galería ---
-    function cambiarImagen(url, elemento) {
-        document.getElementById('img-principal').src = url;
-        document.querySelectorAll('.miniatura-item').forEach(m => m.classList.remove('active'));
-        elemento.classList.add('active');
+/**
+ * Detalle Producto JS - Soluciones Sara
+ * Maneja galería, selectores dinámicos y carrito asíncrono.
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("Módulo de detalle de producto activo.");
+});
+
+// --- 1. LÓGICA DE GALERÍA ---
+// Cambia la imagen principal y marca la miniatura activa
+function cambiarImagen(url, elemento) {
+    const principal = document.getElementById('img-principal');
+    if (principal) {
+        principal.style.opacity = '0'; // Efecto suave
+        setTimeout(() => {
+            principal.src = url;
+            principal.style.opacity = '1';
+        }, 150);
     }
+    
+    document.querySelectorAll('.miniatura-item').forEach(m => m.classList.remove('active'));
+    elemento.classList.add('active');
+}
 
-    // --- Lógica del Selector Estilo Amazon ---
-    function abrirSelector(elemento) {
-        if (elemento.options.length > 5) {
-            elemento.size = 6;
-        } else {
-            elemento.size = elemento.options.length;
-        }
+// --- 2. LÓGICA DEL SELECTOR ESTILO AMAZON ---
+// Expande el select al hacer clic para mejorar la UX
+function abrirSelector(elemento) {
+    if (elemento.options.length > 5) {
+        elemento.size = 6;
+    } else {
+        elemento.size = elemento.options.length;
     }
+}
 
-    function cerrarSelector(elemento) {
-        elemento.size = 1;
-        elemento.blur();
-    }
+function cerrarSelector(elemento) {
+    elemento.size = 1;
+    elemento.blur();
+}
 
-
-   // --- Lógica de Agregar al Carrito ---
-function agregarAlCarrito(productoId, redireccionar) {
+// --- 3. LÓGICA DE AGREGAR AL CARRITO (FETCH) ---
+function agregarAlCarrito(productoId, redireccionar = false) {
     const input = document.getElementById('cantidad-input');
     const cantidad = input ? input.value : 1;
     
-    // Forma segura de obtener el token (así no te da error de 'null')
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]') ? document.querySelector('[name=csrfmiddlewaretoken]').value : '';
+    // Obtención segura del token CSRF de Django
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
 
+    // El endpoint debe coincidir con tu urls.py
     fetch(`/carrito/agregar/${productoId}/`, {
         method: 'POST',
         headers: {
@@ -39,31 +58,32 @@ function agregarAlCarrito(productoId, redireccionar) {
     .then(response => response.json())
     .then(data => {
         
-        // 1. VALIDACIÓN: SI NO ESTÁ LOGUEADO
+        // A. SI EL USUARIO NO HA INICIADO SESIÓN
         if (data.status === 'unauthenticated') {
             Swal.fire({
                 icon: 'info',
-                title: '¡Hola!',
-                text: 'Debes iniciar sesión para agregar productos a tu carrito.',
+                title: '¡Casi listo!',
+                text: 'Debes iniciar sesión para gestionar tu carrito.',
                 showCancelButton: true,
-                confirmButtonColor: '#2d005f',
+                confirmButtonColor: 'var(--accent-color)',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ir a Iniciar Sesión',
+                confirmButtonText: 'Iniciar Sesión',
                 cancelButtonText: 'Seguir mirando'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // OJO AQUÍ: Asegúrate de que esta sea la ruta correcta a tu login
                     window.location.href = "/login/"; 
                 }
             });
-            return; // ESTO ES VITAL: Detiene el código para que no salgan más mensajes
+            return; 
         }
 
-        // 2. VALIDACIÓN: SI SE AGREGÓ CORRECTAMENTE
+        // B. SI TODO SALIÓ BIEN
         if (data.status === 'ok') {
             if (redireccionar) {
+                // Ir directo al carrito (Botón "Comprar ahora")
                 window.location.href = "/carrito/ver/"; 
             } else {
+                // Notificación rápida (Toast)
                 Swal.fire({
                     icon: 'success',
                     title: '¡Añadido!',
@@ -71,21 +91,28 @@ function agregarAlCarrito(productoId, redireccionar) {
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,
-                    timer: 2000
+                    timer: 2500,
+                    timerProgressBar: true
                 });
+                
+                // Actualizar el numerito del carrito en el header sin recargar
                 const cartCount = document.getElementById('cart-count');
                 if(cartCount) cartCount.innerText = data.carrito_total;
             }
         } 
         
-        // 3. VALIDACIÓN: SI ES UN ERROR DE STOCK REAL
+        // C. ERROR DE STOCK O LÍMITE
         else if (data.status === 'error') {
             Swal.fire({ 
                 icon: 'warning', 
-                title: 'Stock Límite', 
-                text: data.message 
+                title: 'Atención', 
+                text: data.message,
+                confirmButtonColor: 'var(--accent-color)'
             });
         }
     })
-    .catch(error => console.error('Error en fetch:', error));
+    .catch(error => {
+        console.error('Error en fetch:', error);
+        Swal.fire('Error', 'No se pudo procesar la solicitud.', 'error');
+    });
 }

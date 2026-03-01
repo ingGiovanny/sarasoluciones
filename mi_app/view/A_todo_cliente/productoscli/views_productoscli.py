@@ -7,8 +7,6 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 
-
-
 #def listar_productos_clientes(request):
     # Usar select_related es VITAL cuando quitaste el nombre del modelo principal
  #   productos = Producto.objects.select_related('id_presentacion').all().order_by('-fecha_creacion')
@@ -23,57 +21,45 @@ def eliminar_imagen_galeria(request, pk):
     return JsonResponse({'status': 'ok'})
 
 
+
+
 def listar_productos_publicos(request):
-    # 1. Base: Traer todos los productos ordenados
-    productos = Producto.objects.select_related('id_categoria', 'id_marca', 'id_presentacion').all().order_by('-id')
-
-    # --- LÓGICA DE FILTRADO (El Cerebro) ---
+    # 1. Obtener todos los productos base
+    productos = Producto.objects.all()
     
-    # A. Filtrar por Categoría
-    categoria_id = request.GET.get('categoria')
-    if categoria_id:
-        productos = productos.filter(id_categoria_id=categoria_id)
-
-    # B. Filtrar por Marca
+    # 2. Capturar los parámetros de la URL
+    cat_id = request.GET.get('categoria')
     marca_id = request.GET.get('marca')
+    color_nombre = request.GET.get('color') # Atrapamos el texto del color
+    query = request.GET.get('q')
+
+    # 3. Aplicar los filtros de forma acumulativa
+    if cat_id:
+        productos = productos.filter(id_categoria_id=cat_id)
     if marca_id:
         productos = productos.filter(id_marca_id=marca_id)
+    if color_nombre:
+        # MAGIA AQUÍ: Filtramos usando la relación con id_presentacion
+        productos = productos.filter(id_presentacion__color=color_nombre)
+    if query:
+        # Ejemplo de búsqueda por nombre de presentación
+        productos = productos.filter(id_presentacion__nombre__icontains=query)
 
-    # C. Filtrar por Estado (Nuevo/Usado/Reacondicionado)
-    estado = request.GET.get('estado')
-    if estado:
-        productos = productos.filter(estado_producto__iexact=estado)
-
-    # D. Filtrar por Color (Desde la relación Presentación)
-    color = request.GET.get('color')
-    if color:
-        productos = productos.filter(id_presentacion__color__iexact=color)
-
-    # E. Buscador Global (El input de texto)
-    busqueda = request.GET.get('q')
-    if busqueda:
-        productos = productos.filter(
-            Q(id_presentacion__nombre__icontains=busqueda) |
-            Q(id_marca__nombre_marca__icontains=busqueda)
-        )
-
-    # --- PREPARAR DATOS PARA LA BARRA LATERAL (Los contadores) ---
-    # Esto cuenta cuántos productos hay en cada categoría/marca disponibles actualmente
-    
+    # 4. Obtener las listas para el Sidebar con sus conteos
     categorias = Categoria.objects.annotate(total=Count('productos_categoria')).filter(total__gt=0)
     marcas = Marca.objects.annotate(total=Count('productos_marca')).filter(total__gt=0)
     
-    # Para colores y estados, obtenemos los valores únicos que existen en la BD
-    colores = Producto.objects.values_list('id_presentacion__color', flat=True).distinct().order_by('id_presentacion__color')
-    estados = Producto.objects.values_list('estado_producto', flat=True).distinct()
+    # MAGIA AQUÍ: Sacamos los colores únicos de la presentación de los productos y los contamos
+    colores_db = Producto.objects.values('id_presentacion__color').annotate(total=Count('id')).filter(total__gt=0)
+    
+    # Formateamos la lista de colores para que el HTML la lea fácil
+    colores = [{'nombre': c['id_presentacion__color'], 'total': c['total']} for c in colores_db]
 
     context = {
         'productos': productos,
         'categorias': categorias,
         'marcas': marcas,
-        'colores': colores,
-        'estados': estados,
-        'busqueda_actual': busqueda # Para mantener el texto en el input
+        'colores': colores, # Enviamos la lista de colores al template
     }
     
     return render(request, 'principalclientes/listar/listarproductos.html', context)
@@ -81,8 +67,11 @@ def listar_productos_publicos(request):
 
 
 
-
 def detalle_producto(request, pk):
-    # Buscamos el producto por su llave primaria (pk)
-    producto = get_object_or_404(Producto.objects.select_related('id_presentacion', 'id_marca'), pk=pk)
+    # Agregamos el filtro de estado_producto='ACTIVO' aquí también
+    producto = get_object_or_404(
+        Producto.objects.select_related('id_presentacion', 'id_marca'), 
+        pk=pk, 
+        estado_producto='ACTIVO'
+    )
     return render(request, 'principalclientes/listar/detalle_producto.html', {'producto': producto})

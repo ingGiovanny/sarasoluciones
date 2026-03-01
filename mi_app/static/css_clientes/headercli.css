@@ -1,102 +1,62 @@
-/* ================= VARIABLES GLOBALES ================= */
-:root {
-    /* --- COLORES DEL CUERPO (Cambiantes) --- */
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8f9fa;
-    --bg-card: #ffffff;
-    --text-primary: #2c3e50;
-    --text-secondary: #7f8c8d;
-    --accent-color: #0984e3;
-    --border-color: #f0f0f0;
-    
-    /* --- VARIABLES DEL NAVBAR (FIJAS - SIEMPRE OSCURO) --- */
-    /* Aquí está el cambio: Forzamos el negro y blanco desde el principio */
-    --navbar-bg: #111111;      /* Negro siempre */
-    --navbar-text: #ffffff;    /* Blanco siempre */
-    --navbar-shadow: 0 4px 15px rgba(0,0,0,0.3);
+/* =========================================================
+   ESTILOS ESPECÍFICOS DEL HEADER (NAVBAR)
+   ========================================================= */
 
-    /* Variables del Toggle Button */
-    --toggle-bg: linear-gradient(145deg, #2c3e50, #34495e);
-    --slider-bg: linear-gradient(145deg, #f39c12, #f1c40f);
-}
-
-/* --- MODO OSCURO (Solo cambia el cuerpo, NO el navbar) --- */
-body.dark-mode {
-    --bg-primary: #0f172a;   
-    --bg-secondary: #1e293b; 
-    --bg-card: #1e293b;      
-    
-    --text-primary: #f1f5f9; 
-    --text-secondary: #94a3b8; 
-    
-    --accent-color: #38bdf8; 
-    --border-color: rgba(255, 255, 255, 0.1); 
-
-    /* NOTA: Ya no sobreescribimos --navbar-bg aquí, 
-       porque queremos que siga siendo negro igual que en el root */
-    
-    /* Toggle Oscuro */
-    --toggle-bg: #334155;
-    --slider-bg: #38bdf8;
-}
-
-/* ================= APLICACIÓN DE ESTILOS ================= */
-
-
-
-/* --- NAVBAR (SIEMPRE NEGRO) --- */
+/* --- Contenedor Principal --- */
 .navbar {
-    background-color: var(--navbar-bg); /* Será #111111 siempre */
-    color: var(--navbar-text);          /* Será blanco siempre */
+    background-color: var(--navbar-bg);
+    color: var(--navbar-text);
     box-shadow: var(--navbar-shadow);
     padding: 15px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky; /* Opcional: para que se quede fijo al bajar */
+    position: sticky;
     top: 0;
     z-index: 1000;
+    transition: all 0.3s ease;
 }
 
-/* Logo */
 .navbar-logo {
-    color: var(--navbar-text) !important; /* Blanco */
+    color: var(--navbar-text) !important;
     text-decoration: none;
     font-weight: bold;
     font-size: 1.5rem;
+    letter-spacing: 1px;
 }
 
-/* Enlaces del Menú */
+/* --- Menú de Enlaces --- */
 .navbar-menu {
     list-style: none;
     display: flex;
-    gap: 20px;
+    gap: 25px;
     margin: 0;
     padding: 0;
+    align-items: center;
 }
 
 .navbar-menu a {
-    /* CAMBIO IMPORTANTE: Usamos navbar-text (blanco) en lugar de text-primary */
     color: var(--navbar-text); 
     text-decoration: none;
-    transition: color 0.3s;
+    transition: all 0.3s;
     font-weight: 500;
+    opacity: 0.85;
 }
 
 .navbar-menu a:hover {
-    color: var(--accent-color); /* Color de acento al pasar el mouse */
+    color: var(--accent-color);
+    opacity: 1;
 }
 
-/* Contenedor de acciones (Toggle + Carrito) */
+/* --- Acciones (Botones y Carrito) --- */
 .navbar-actions {
     display: flex;
     align-items: center;
     gap: 20px;
 }
 
-/* Carrito */
+/* Icono Carrito */
 .cart-icon-wrapper {
-    /* CAMBIO IMPORTANTE: Usamos navbar-text (blanco) */
     color: var(--navbar-text); 
     position: relative;
     font-size: 1.2rem;
@@ -106,10 +66,8 @@ body.dark-mode {
 
 .cart-icon-wrapper:hover {
     transform: scale(1.1);
-    color: var(--accent-color);
 }
 
-/* Badge del carrito (burbuja roja) */
 .cart-icon-wrapper .badge {
     position: absolute;
     top: -8px;
@@ -119,39 +77,26 @@ body.dark-mode {
     font-size: 0.7rem;
     padding: 3px 6px;
     border-radius: 50%;
-    font-weight: bold;
 }
 
-/* --- ESTILOS GENERALES (Cards, Títulos) --- */
-.card, .producto-container, .info-producto {
-    background-color: var(--bg-card);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-}
-
-h1, h2, h3, h4, h5, h6 {
-    color: var(--text-primary);
-}
-
-/* Botón Toggle (Simplificado) */
+/* --- Botón Toggle (Sol/Luna) --- */
 .dark-mode-toggle {
     position: relative;
-    width: 60px;
-    height: 30px;
+    width: 55px;
+    height: 28px;
     background: var(--toggle-bg);
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    transition: all 0.4s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .toggle-slider {
     position: absolute;
     top: 3px;
     left: 3px;
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     background: var(--slider-bg);
     border-radius: 50%;
     transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -160,66 +105,101 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
 }
 
-/* Animación del slider */
-body.dark-mode .toggle-slider {
-    transform: translateX(30px);
+
+
+
+/* --- MOVIMIENTO DEL SLIDER --- */
+/* Esta regla es la que mueve el circulito 27px a la derecha */
+body.dark-mode .dark-mode-toggle .toggle-slider {
+    transform: translateX(27px) !important;
 }
 
-/* Iconos dentro del toggle */
-.toggle-slider i {
-    font-size: 12px;
-    color: white;
+/* Transición obligatoria para que no salte, sino que deslice */
+.toggle-slider {
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
 }
-/* ==========================================================================
-   CORRECCIÓN RESPONSIVA PARA EL HEADER (MÓVIL)
-   ========================================================================== */
 
+/* =========================================================
+   RESPONSIVIDAD PREMIUM (MÓVIL)
+   ========================================================= */
 @media (max-width: 991px) {
-    
-    /* 1. Contenedor Principal del Navbar */
     .navbar {
-        flex-direction: column; /* Cambia de fila a columna (apilado) */
-        padding: 15px 20px;     /* Reducimos el padding lateral (40px es mucho para móvil) */
-        height: auto;           /* Dejamos que la altura crezca según el contenido */
-        gap: 20px;              /* Espacio vertical entre Logo, Menú y Botones */
-        
-        /* Aseguramos que ocupe el 100% real de la pantalla */
-        width: 100%; 
-        box-sizing: border-box; /* Evita que el padding rompa el ancho */
-    }
-
-    /* 2. Logo */
-    .navbar-logo {
-        margin-bottom: 5px;
-        font-size: 1.8rem; /* Un poquito más grande para destacar */
-    }
-
-    /* 3. Menú de Enlaces (Inicio, Productos...) */
-    .navbar-menu {
-        flex-direction: row;    /* Mantenemos horizontal, pero... */
-        flex-wrap: wrap;        /* ...permitimos que bajen si no caben */
-        justify-content: center; /* Centrados */
-        width: 100%;
+        flex-direction: column; 
+        padding: 15px 20px;
         gap: 15px;
     }
 
-    .navbar-menu li {
-        margin: 0 5px;
+    .navbar-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
     }
 
     .navbar-menu a {
-        font-size: 1rem;
-        padding: 5px 10px;      /* Más área táctil para el dedo */
-        display: block;         /* Mejora el clic */
-        background-color: rgba(255,255,255,0.05); /* Fondo sutil para separar visualmente */
-        border-radius: 8px;
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 20px;
     }
 
-    /* 4. Botones de Acción (Sol/Luna + Carrito) */
     .navbar-actions {
         width: 100%;
-        justify-content: center; /* Centrados */
-        margin-top: 5px;
-        gap: 30px; /* Más separados para no equivocarse al tocar */
+        justify-content: space-around;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 10px;
     }
+}
+/* --- ESTILOS DEL BOTÓN SARA --- */
+/* =========================================================
+   ESTILOS DEL BOTÓN TOGGLE SARA (SOLUCIONES SARA)
+   ========================================================= */
+
+/* El contenedor del botón */
+.sara-toggle-btn {
+    position: relative !important;
+    width: 55px !important;
+    height: 28px !important;
+    background: #333 !important; /* Fondo oscuro por defecto */
+    border: none !important;
+    border-radius: 30px !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+    transition: background 0.3s ease !important;
+}
+
+/* El círculo que se mueve */
+.sara-slider-circle {
+    position: absolute !important;
+    top: 3px !important;
+    left: 3px !important;
+    width: 22px !important;
+    height: 22px !important;
+    background: #f1c40f !important; /* Amarillo Sol */
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    /* Transición crítica para el deslizamiento */
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+    z-index: 2 !important;
+}
+
+/* --- REGLA DE ORO: EL MOVIMIENTO --- */
+/* Cuando el body tiene .dark-mode, el círculo se desplaza 27px */
+body.dark-mode .sara-slider-circle {
+    transform: translateX(27px) !important;
+    background: #38bdf8 !important; /* Azul Luna */
+}
+
+/* Cambio de color del fondo del botón al estar activo */
+body.dark-mode .sara-toggle-btn {
+    background: #475569 !important;
+}
+
+.sara-slider-circle i {
+    font-size: 12px !important;
+    color: #000 !important;
 }

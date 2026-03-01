@@ -1,41 +1,45 @@
+/* static/js_clientes/contenido.js */
+
+/**
+ * Controlador del Carrusel de Inicio - Soluciones Sara
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const track = document.getElementById('slides-wrapper');
     const slides = document.querySelectorAll('.slide');
-    const contenedorPrincipal = document.querySelector('.carrusel-container');
+    const container = document.querySelector('.carrusel-container');
     
-    let indiceActual = 0;
-    let intervaloID;
-    const totalSlides = slides.length;
+    let currentIndex = 0;
+    let autoPlayTimer;
+    const total = slides.length;
 
-    if (!track || totalSlides === 0) return;
+    if (!track || total === 0) return;
 
-    // Actualizar CSS
-    const actualizarCarrusel = () => {
-        track.style.transform = `translate3d(-${indiceActual * 100}%, 0, 0)`;
+    // Actualiza la posición visual del carrusel
+    const updatePosition = () => {
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
     };
 
-    // Función Global para los botones HTML
-    window.moverSlide = (direccion) => {
-        indiceActual = (indiceActual + direccion + totalSlides) % totalSlides;
-        actualizarCarrusel();
-        reiniciarTimer(); 
+    // Mueve al siguiente o anterior slide
+    window.moverSlide = (direction) => {
+        currentIndex = (currentIndex + direction + total) % total;
+        updatePosition();
+        resetTimer(); 
     };
 
-    // AutoPlay
-    const iniciarAutoPlay = () => {
-        intervaloID = setInterval(() => { window.moverSlide(1); }, 5000); 
+    const startAutoPlay = () => {
+        autoPlayTimer = setInterval(() => { window.moverSlide(1); }, 6000); 
     };
 
-    const detenerAutoPlay = () => { clearInterval(intervaloID); };
+    const stopAutoPlay = () => clearInterval(autoPlayTimer);
 
-    const reiniciarTimer = () => {
-        detenerAutoPlay();
-        iniciarAutoPlay();
+    const resetTimer = () => {
+        stopAutoPlay();
+        startAutoPlay();
     };
 
-    // Eventos Mouse
-    contenedorPrincipal.addEventListener('mouseenter', detenerAutoPlay);
-    contenedorPrincipal.addEventListener('mouseleave', iniciarAutoPlay);
+    // Pausar cuando el mouse está encima
+    container.addEventListener('mouseenter', stopAutoPlay);
+    container.addEventListener('mouseleave', startAutoPlay);
 
-    iniciarAutoPlay();
+    startAutoPlay();
 });

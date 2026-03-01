@@ -2,311 +2,7 @@
 {% load static %}
 
 {% block content %}
-
-<style>
-    /* ================= 1. LAYOUT PRINCIPAL (Dos Columnas) ================= */
-    .shop-layout {
-        display: grid;
-        grid-template-columns: 260px 1fr; /* Sidebar fijo 260px, resto flexible */
-        gap: 40px;
-        max-width: 1300px;
-        margin: 40px auto;
-        padding: 0 20px;
-        animation: fadeIn 0.5s ease-out;
-    }
-
-    /* Título principal fuera del grid para que abarque todo */
-    .shop-title-container {
-        max-width: 1300px;
-        margin: 30px auto 10px;
-        padding: 0 20px;
-    }
-    
-    .shop-title {
-        font-size: 2rem;
-        font-weight: 800;
-        color: var(--text-primary);
-        letter-spacing: -0.5px;
-        margin: 0;
-    }
-
-    /* ================= 2. SIDEBAR DE FILTROS ================= */
-    .filtros-sidebar {
-        align-self: start; 
-        position: sticky;
-        top: 100px; /* Se queda fijo al bajar */
-        padding-right: 20px;
-        border-right: 1px solid var(--border-color); /* Línea divisoria sutil */
-    }
-
-    .filtro-bloque {
-        margin-bottom: 30px;
-    }
-
-    .filtro-titulo {
-        font-size: 1rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--text-primary);
-        margin-bottom: 15px;
-    }
-
-    .filtro-lista {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .filtro-item {
-        margin-bottom: 8px;
-    }
-
-    .filtro-link {
-        text-decoration: none;
-        color: var(--text-secondary);
-        font-size: 0.95rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: all 0.2s ease;
-        padding: 2px 0;
-    }
-
-    .filtro-link:hover {
-        color: var(--accent-color);
-        transform: translateX(5px);
-    }
-
-    .filtro-link.activo {
-        font-weight: 700;
-        color: var(--text-primary); /* Se destaca en negrita */
-    }
-
-    .filtro-cantidad {
-        font-size: 0.8rem;
-        color: #999;
-        background: var(--bg-secondary);
-        padding: 2px 8px;
-        border-radius: 10px;
-    }
-
-    .btn-limpiar {
-        display: inline-block;
-        margin-bottom: 20px;
-        color: #e74c3c;
-        font-size: 0.9rem;
-        font-weight: 600;
-        text-decoration: none;
-        border: 1px solid #e74c3c;
-        padding: 8px 15px;
-        border-radius: 20px;
-        transition: all 0.3s;
-    }
-
-    .btn-limpiar:hover {
-        background: #e74c3c;
-        color: white;
-    }
-
-    /* ================= 3. AREA DE RESULTADOS (Derecha) ================= */
-    
-    /* Header (Buscador + Contador) */
-    .resultados-header {
-        display: flex;
-        gap: 20px;
-        align-items: center;
-        margin-bottom: 30px;
-        background: var(--bg-card);
-        padding: 15px;
-        border-radius: 12px;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    }
-
-    .buscador-interno {
-        flex: 1;
-        position: relative;
-    }
-
-    .buscador-interno input {
-        width: 100%;
-        padding: 10px 40px 10px 15px;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        background: var(--bg-body);
-        color: var(--text-primary);
-        transition: all 0.3s;
-    }
-
-    .buscador-interno input:focus {
-        border-color: var(--accent-color);
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
-    }
-
-    .resultados-contador {
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        font-weight: 600;
-        white-space: nowrap;
-    }
-
-    /* ================= 4. GRILLA DE PRODUCTOS ================= */
-    .productos-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 25px;
-    }
-
-    /* Tarjeta */
-    .producto-enlace-contenedor {
-        text-decoration: none;
-        color: inherit;
-        display: block;
-    }
-
-    .producto-card {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 16px;
-        overflow: hidden;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
-        position: relative;
-    }
-
-    .producto-enlace-contenedor:hover .producto-card {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.08);
-        border-color: var(--accent-color);
-    }
-
-    /* Imagen */
-    .producto-imagen {
-        height: 240px;
-        width: 100%;
-        background-color: #ffffff; /* Siempre blanco para resaltar producto */
-        position: relative;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 15px;
-    }
-
-    .producto-imagen img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain; /* Clave: No recorta la imagen, la ajusta */
-        transition: transform 0.5s ease;
-    }
-
-    .producto-enlace-contenedor:hover .producto-imagen img {
-        transform: scale(1.08);
-    }
-
-    .producto-imagen-icon {
-        font-size: 3rem;
-        color: #ddd;
-    }
-
-    /* Info */
-    .producto-info {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-    }
-
-    .producto-nombre {
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 8px;
-        line-height: 1.4;
-        /* Limitar texto a 2 líneas */
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .producto-meta {
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-        margin-bottom: 10px;
-    }
-
-    .producto-precio {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: var(--text-primary);
-        margin-top: auto; /* Empuja el precio hacia abajo si hay espacio */
-    }
-
-    .producto-precio span {
-        font-size: 0.9rem;
-        vertical-align: top;
-        margin-right: 2px;
-    }
-
-    /* Badges */
-    .badges-container {
-        margin-top: 10px;
-        display: flex;
-        gap: 5px;
-        flex-wrap: wrap;
-    }
-
-    .badge-stock {
-        font-size: 0.75rem;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-weight: 600;
-    }
-
-    .stock-bajo { color: #d35400; background: rgba(230, 126, 34, 0.15); }
-    .stock-agotado { color: var(--text-secondary); background: var(--bg-secondary); }
-
-    /* Estado Vacío */
-    .sin-productos {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: 60px;
-        background: var(--bg-card);
-        border-radius: 16px;
-        border: 2px dashed var(--border-color);
-        color: var(--text-secondary);
-    }
-
-    /* Animaciones */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ================= 5. RESPONSIVE ================= */
-    @media (max-width: 900px) {
-        .shop-layout {
-            grid-template-columns: 1fr; /* Una sola columna */
-            gap: 20px;
-        }
-        
-        .filtros-sidebar {
-            display: none; /* Ocultar sidebar en móvil (idealmente poner botón toggle) */
-        }
-        
-        /* Opcional: Mostrar filtros horizontalmente en móvil (avanzado) */
-    }
-    
-    /* Ajuste Modo Oscuro Específico */
-    body.dark-mode .producto-imagen {
-        filter: brightness(0.9); /* Atenuar brillo de fotos blancas */
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css_clientes/listar_producto.css' %}">
 
 <div class="shop-title-container">
     <h1 class="shop-title">Catálogo de Productos</h1>
@@ -314,111 +10,121 @@
 
 <div class="shop-layout">
 
-    <aside class="filtros-sidebar">
-        
-        {% if request.GET %}
-            <a href="{% url 'mi_app:productos_clientes' %}" class="btn-limpiar">
-                <i class="fas fa-trash-alt me-1"></i> Limpiar Filtros
-            </a>
-        {% endif %}
-
-        <div class="filtro-bloque">
-            <h3 class="filtro-titulo">Categorías</h3>
-            <ul class="filtro-lista">
-                {% for cat in categorias %}
-                <li class="filtro-item">
-                    <a href="?categoria={{ cat.id }}&marca={{ request.GET.marca }}&estado={{ request.GET.estado }}&color={{ request.GET.color }}" 
-                       class="filtro-link {% if request.GET.categoria|add:"0" == cat.id %}activo{% endif %}">
-                        {{ cat.nombre_categoria }}
-                        <span class="filtro-cantidad">{{ cat.total }}</span>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="filtro-bloque">
-            <h3 class="filtro-titulo">Marcas</h3>
-            <ul class="filtro-lista">
-                {% for marca in marcas %}
-                <li class="filtro-item">
-                    <a href="?marca={{ marca.id }}&categoria={{ request.GET.categoria }}&estado={{ request.GET.estado }}&color={{ request.GET.color }}" 
-                       class="filtro-link {% if request.GET.marca|add:"0" == marca.id %}activo{% endif %}">
-                        {{ marca.nombre_marca }}
-                        <span class="filtro-cantidad">{{ marca.total }}</span>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="filtro-bloque">
-            <h3 class="filtro-titulo">Condición</h3>
-            <ul class="filtro-lista">
-                {% for est in estados %}
-                <li class="filtro-item">
-                    <a href="?estado={{ est }}&categoria={{ request.GET.categoria }}&marca={{ request.GET.marca }}&color={{ request.GET.color }}" 
-                       class="filtro-link {% if request.GET.estado == est %}activo{% endif %}">
-                        {{ est|title }}
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="filtro-bloque">
-            <h3 class="filtro-titulo">Color</h3>
+   <aside class="filtros-sidebar">
+    
+    {% if request.GET.categoria or request.GET.marca or request.GET.color or request.GET.q %}
+        <div class="filtros-activos-bloque mb-4 p-3 rounded" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <h4 class="fs-6 fw-bold mb-3" style="color: var(--text-primary);">Filtros aplicados:</h4>
             <div class="d-flex flex-wrap gap-2">
-                {% for col in colores %}
-                    <a href="?color={{ col }}&categoria={{ request.GET.categoria }}&marca={{ request.GET.marca }}&estado={{ request.GET.estado }}" 
-                       class="badge bg-light text-dark border text-decoration-none p-2"
-                       style="border: {% if request.GET.color == col %}2px solid var(--accent-color){% else %}1px solid #ddd{% endif %} !important;">
-                        {{ col }}
+                
+                {% if request.GET.q %}
+                    <a href="?categoria={{ request.GET.categoria }}&marca={{ request.GET.marca }}&color={{ request.GET.color }}" class="badge rounded-pill text-decoration-none px-3 py-2" style="background-color: var(--accent-color); color: white;">
+                        Búsqueda: {{ request.GET.q }} <i class="fas fa-times ms-1"></i>
                     </a>
-                {% endfor %}
+                {% endif %}
+
+                {% if request.GET.categoria %}
+                    <a href="?q={{ request.GET.q }}&marca={{ request.GET.marca }}&color={{ request.GET.color }}" class="badge rounded-pill text-decoration-none px-3 py-2" style="background-color: var(--accent-color); color: white;">
+                        Categoría <i class="fas fa-times ms-1"></i>
+                    </a>
+                {% endif %}
+
+                {% if request.GET.marca %}
+                    <a href="?q={{ request.GET.q }}&categoria={{ request.GET.categoria }}&color={{ request.GET.color }}" class="badge rounded-pill text-decoration-none px-3 py-2" style="background-color: var(--accent-color); color: white;">
+                        Marca <i class="fas fa-times ms-1"></i>
+                    </a>
+                {% endif %}
+
+                {% if request.GET.color %}
+                    <a href="?q={{ request.GET.q }}&categoria={{ request.GET.categoria }}&marca={{ request.GET.marca }}" class="badge rounded-pill text-decoration-none px-3 py-2" style="background-color: var(--accent-color); color: white;">
+                        Color: {{ request.GET.color }} <i class="fas fa-times ms-1"></i>
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'mi_app:productos_clientes' %}" class="badge rounded-pill bg-danger text-white text-decoration-none px-3 py-2">
+                    Borrar todos
+                </a>
             </div>
         </div>
+    {% endif %}
 
-    </aside>
+    <div class="filtro-bloque">
+        <h3 class="filtro-titulo">Categorías</h3>
+        <ul class="filtro-lista">
+            {% for cat in categorias %}
+            <li class="filtro-item">
+                <a href="?categoria={{ cat.id }}&marca={{ request.GET.marca }}&color={{ request.GET.color }}&q={{ request.GET.q }}" 
+                   class="filtro-link {% if request.GET.categoria|add:'0' == cat.id %}activo fw-bold text-primary{% endif %}">
+                    {{ cat.nombre_categoria }}
+                    <span class="filtro-cantidad">{{ cat.total }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 
+    <div class="filtro-bloque">
+        <h3 class="filtro-titulo">Marcas</h3>
+        <ul class="filtro-lista">
+            {% for marca in marcas %}
+            <li class="filtro-item">
+                <a href="?marca={{ marca.id }}&categoria={{ request.GET.categoria }}&color={{ request.GET.color }}&q={{ request.GET.q }}" 
+                   class="filtro-link {% if request.GET.marca|add:'0' == marca.id %}activo fw-bold text-primary{% endif %}">
+                    {{ marca.nombre_marca }}
+                    <span class="filtro-cantidad">{{ marca.total }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="filtro-bloque">
+        <h3 class="filtro-titulo">Colores</h3>
+        <ul class="filtro-lista">
+            {% for color in colores %}
+            <li class="filtro-item">
+                <a href="?color={{ color.nombre }}&categoria={{ request.GET.categoria }}&marca={{ request.GET.marca }}&q={{ request.GET.q }}" 
+                   class="filtro-link {% if request.GET.color == color.nombre %}activo fw-bold text-primary{% endif %}">
+                    {{ color.nombre }}
+                    <span class="filtro-cantidad">{{ color.total }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+   </aside>
 
     <main>
-        
         <div class="resultados-header">
             <div class="buscador-interno">
-                <form action="" method="GET">
-                    <input type="hidden" name="categoria" value="{{ request.GET.categoria }}">
-                    <input type="hidden" name="marca" value="{{ request.GET.marca }}">
-                    <input type="hidden" name="estado" value="{{ request.GET.estado }}">
-                    <input type="hidden" name="color" value="{{ request.GET.color }}">
+                <form action="" method="GET" style="position: relative;">
+                    <input type="hidden" name="categoria" value="{{ request.GET.categoria|default:'' }}">
+                    <input type="hidden" name="marca" value="{{ request.GET.marca|default:'' }}">
+                    <input type="hidden" name="color" value="{{ request.GET.color|default:'' }}">
                     
-                    <input type="text" name="q" id="buscarProductoLocal" 
-                           value="{{ busqueda_actual|default:'' }}" 
-                           placeholder="Buscar en estos resultados..." autocomplete="off">
+                    <input type="text" name="q" value="{{ request.GET.q|default:'' }}" 
+                           placeholder="¿Qué estás buscando hoy?" autocomplete="off" class="form-control" style="padding-right: 40px;">
                     
                     <button type="submit" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-secondary);">
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
             </div>
-            
-            <div class="resultados-contador" id="contadorProductos">
-                {{ productos|length }} resultado{{ productos|length|pluralize }}
+            <div class="resultados-contador">
+                {{ productos|length }} productos encontrados
             </div>
         </div>
 
-        <div class="productos-grid" id="productosGrid">
+        <div class="productos-grid">
             {% for producto in productos %}
             <a href="{% url 'mi_app:detalle_producto' producto.id %}" class="producto-enlace-contenedor">
-                <div class="producto-card"
-                     data-nombre="{{ producto.id_presentacion.nombre|lower }}"
-                     data-precio="{{ producto.valor_unitario }}">
-                    
+                <div class="producto-card">
                     <div class="producto-imagen">
                         {% if producto.logo_producto %}
                             <img src="{{ producto.logo_producto.url }}" alt="{{ producto.id_presentacion.nombre }}">
                         {% else %}
-                            <div class="producto-imagen-icon"><i class="fas fa-box-open"></i></div>
+                            <i class="fas fa-box-open fa-3x text-muted"></i>
                         {% endif %}
                     </div>
                     
@@ -426,44 +132,32 @@
                         <div class="producto-nombre">
                              {{ producto.id_presentacion.nombre }}
                         </div>
-
-                        <div class="producto-meta">
-                            {{ producto.id_presentacion.modelo }} | {{ producto.id_presentacion.color }}
+                        <div class="producto-meta small">
+                            {{ producto.id_marca.nombre_marca }} | {{ producto.id_presentacion.color }}
                         </div>
-
-                        <div class="producto-precio">
-                            <span>$</span>{{ producto.valor_unitario|floatformat:0 }}
+                        <div class="producto-precio text-primary">
+                            <small>$</small>{{ producto.valor_unitario|floatformat:0 }}
                         </div>
                         
-                        <div class="badges-container">
+                        <div class="badges-container mt-2">
                             {% if producto.cantidad_producto <= 5 and producto.cantidad_producto > 0 %}
-                                <span class="badge-stock stock-bajo">
-                                    ¡Quedan {{ producto.cantidad_producto }}!
-                                </span>
+                                <span class="badge bg-warning text-dark" style="font-size: 0.65rem;">¡Últimas {{ producto.cantidad_producto }}!</span>
                             {% elif producto.cantidad_producto == 0 %}
-                                <span class="badge-stock stock-agotado">Agotado</span>
-                            {% endif %}
-                            
-                            {% if producto.estado_producto == 'Nuevo' %}
-                                <span class="badge bg-success" style="font-size: 0.7rem;">Nuevo</span>
+                                <span class="badge bg-secondary" style="font-size: 0.65rem;">Agotado</span>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             </a>
             {% empty %}
-            <div class="sin-productos">
-                <div style="font-size: 4rem; margin-bottom: 20px;">🤷‍♂️</div>
-                <h3>No encontramos productos</h3>
-                <p>Intenta limpiar los filtros o buscar con otra palabra.</p>
-                <a href="{% url 'mi_app:productos_clientes' %}" class="btn btn-outline-primary mt-3">Ver Todo</a>
+            <div class="sin-productos w-100 text-center py-5">
+                <i class="fas fa-search fa-3x mb-3 opacity-20"></i>
+                <h3>No hay coincidencias</h3>
+                <p>Prueba con otros filtros o términos de búsqueda.</p>
+                <a href="{% url 'mi_app:productos_clientes' %}" class="btn btn-primary mt-3">Ver todo el catálogo</a>
             </div>
             {% endfor %}
         </div>
-
     </main>
 </div>
-
-
-
 {% endblock %}

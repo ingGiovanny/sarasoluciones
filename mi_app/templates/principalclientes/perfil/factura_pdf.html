@@ -4,70 +4,141 @@
     <meta charset="UTF-8">
     <title>Factura {{ pedido_base.comprobante_pago }}</title>
     <style>
-        body { font-family: Helvetica, sans-serif; font-size: 14px; color: #333; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .title { font-size: 24px; color: #2d005f; font-weight: bold; }
-        .subtitle { font-size: 12px; color: #777; }
-        .details-box { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .details-box td { padding: 5px; }
-        .table-items { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .table-items th { background-color: #2d005f; color: white; padding: 10px; text-align: left; }
-        .table-items td { padding: 10px; border-bottom: 1px solid #ddd; }
-        .total-row { font-weight: bold; font-size: 16px; background-color: #f9f9f9; }
-        .footer { text-align: center; font-size: 10px; color: #888; margin-top: 50px; border-top: 1px solid #ddd; padding-top: 10px; }
+        @page {
+            size: letter portrait;
+            margin: 2cm;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            color: #333333;
+        }
+        .header {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .logo-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .invoice-details {
+            text-align: right;
+        }
+        .info-section {
+            width: 100%;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        .info-table {
+            width: 100%;
+        }
+        .info-table td {
+            vertical-align: top;
+        }
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .products-table th {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 8px;
+            text-align: left;
+            font-weight: bold;
+        }
+        .products-table td {
+            border-bottom: 1px solid #dddddd;
+            padding: 8px;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .total-row td {
+            font-size: 14px;
+            font-weight: bold;
+            background-color: #f8f9fa;
+            border-top: 2px solid #2c3e50;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 10px;
+            color: #777777;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="title">SOLUCIONES SARA</div>
-        <div class="subtitle">NIT: 900.123.456-7 | Dirección: Sogamoso, Boyacá</div>
-        <br>
-        <h2>Factura Electrónica de Venta</h2>
-    </div>
-
-    <table class="details-box">
+    <table class="header">
         <tr>
-            <td><strong>Cliente:</strong> {{ pedido_base.id_cliente.nombre_completo }}</td>
-            <td style="text-align: right;"><strong>Comprobante:</strong> {{ pedido_base.comprobante_pago }}</td>
-        </tr>
-        <tr>
-            <td><strong>Documento/NIT:</strong> {{ pedido_base.id_cliente.numero_documento }}</td>
-            <td style="text-align: right;"><strong>Fecha:</strong> {% if factura %}{{ factura.fecha_factura }}{% else %}Reciente{% endif %}</td>
-        </tr>
-        <tr>
-            <td><strong>Email:</strong> {{ pedido_base.email }}</td>
-            <td style="text-align: right;"><strong>Estado:</strong> Pagado</td>
+            <td width="50%">
+                <span class="logo-title">SOLUCIONES SARA</span><br>
+                Venta de Productos y Servicios<br>
+                Sogamoso, Boyacá
+            </td>
+            <td width="50%" class="invoice-details">
+                <h2 style="margin: 0; color: #e74c3c;">FACTURA ELECTRÓNICA</h2>
+                <b>Transacción (TX):</b> {{ pedido_base.comprobante_pago }}<br>
+                
+                <b>Fecha y Hora:</b> {{ pedido_base.fecha_pedido|date:"d/m/Y - h:i A" }}<br>
+                
+                <b>Estado:</b> <span style="color: green;">{{ pedido_base.estado_pedido }}</span>
+            </td>
         </tr>
     </table>
 
-    <table class="table-items">
+    <div class="info-section">
+        <table class="info-table">
+            <tr>
+                <td width="50%">
+                    <b>Facturado a:</b><br>
+                    {{ pedido_base.id_cliente.nombre_completo }}<br>
+                    NIT/CC: {{ pedido_base.id_cliente.numero_documento }}<br>
+                    Correo: {{ pedido_base.id_cliente.correo_electronico }}
+                </td>
+                <td width="50%">
+                    <b>Lugar de Entrega:</b><br>
+                    {{ pedido_base.direccion_entrega }}<br>
+                    </td>
+            </tr>
+        </table>
+    </div>
+
+    <table class="products-table">
         <thead>
             <tr>
-                <th>Producto</th>
-                <th>Cant.</th>
-                <th>Subtotal</th>
+                <th width="5%">#</th>
+                <th width="45%">Descripción del Producto</th>
+                <th width="15%" class="text-center">Cantidad</th>
+                <th width="35%" class="text-right">Subtotal</th>
             </tr>
         </thead>
         <tbody>
-            {% for p in pedidos %}
+            {% for item in pedidos %}
             <tr>
-                <td>{{ p.id_producto.id_presentacion.nombre }}</td>
-                <td>{{ p.cantidad }}</td>
-                <td>$ {{ p.valor_total|floatformat:0 }}</td>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.id_producto.id_presentacion.nombre }}</td>
+                <td class="text-center">{{ item.cantidad }}</td>
+                <td class="text-right">$ {{ item.valor_total|floatformat:0 }}</td>
             </tr>
             {% endfor %}
+            
             <tr class="total-row">
-                <td colspan="2" style="text-align: right; padding-right: 20px;">TOTAL A PAGAR:</td>
-                <td>$ {{ total_final|floatformat:0 }}</td>
+                <td colspan="3" class="text-right">TOTAL A PAGAR:</td>
+                <td class="text-right">$ {{ total_final|floatformat:0 }}</td>
             </tr>
         </tbody>
     </table>
 
     <div class="footer">
-        Esta es una representación gráfica de la factura de venta.<br>
-        {% if factura %}{{ factura.terminos_condiciones }}{% endif %}<br>
-        ¡Gracias por su compra!
+        <p>Gracias por su compra en Soluciones Sara.</p>
+        <p>Esta factura es un documento válido para efectos de garantía. Los productos tienen garantía de 30 días calendario.</p>
     </div>
 
 </body>

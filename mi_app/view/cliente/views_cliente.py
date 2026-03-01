@@ -77,3 +77,4 @@ class ClienteDeleteView(AdminRequiredMixin,DeleteView):
         context['entidad'] = 'Clientes'
         context['listar_url'] = reverse_lazy('mi_app:cliente_lista')
         return context
+    

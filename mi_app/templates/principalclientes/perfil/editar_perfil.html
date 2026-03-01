@@ -1,0 +1,125 @@
+{% extends 'principalclientes/layout.html' %}
+{% load static %}
+
+{% block body %}
+<style>
+    /* Estilos específicos para la selección de Avatar */
+    .avatar-selection {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+    
+    .avatar-option {
+        cursor: pointer;
+        position: relative;
+    }
+    
+    /* Ocultamos el radio button real */
+    .avatar-option input[type="radio"] {
+        display: none;
+    }
+    
+    /* Estilo de la imagen */
+    .avatar-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        transition: all 0.3s ease;
+        opacity: 0.6;
+        background-color: var(--bg-secondary);
+    }
+    
+    /* Cuando se selecciona un avatar o se pasa el mouse */
+    .avatar-option input[type="radio"]:checked + .avatar-img {
+        border-color: var(--accent-color);
+        opacity: 1;
+        transform: scale(1.1);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+    
+    .avatar-option:hover .avatar-img {
+        opacity: 1;
+    }
+
+    .edit-card {
+        max-width: 600px;
+        margin: 40px auto;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+</style>
+
+<div class="container">
+    <div class="edit-card">
+        <h2 class="text-center mb-2 fw-bold" style="color: var(--text-primary);">Editar Perfil</h2>
+        <p class="text-center text-muted mb-4">Personaliza tu cuenta de Soluciones Sara</p>
+
+        <form method="POST" id="editProfileForm">
+            {% csrf_token %}
+            
+            <h5 class="text-center mb-3" style="color: var(--text-primary);">Elige tu Avatar</h5>
+            <div class="avatar-selection">
+                {% for i in '12345'|make_list %}
+                <label class="avatar-option">
+                    <input type="radio" name="avatar" value="avatar{{ i }}.png" 
+                           {% if cliente.avatar == 'avatar'|add:i|add:'.png' %}checked{% endif %}>
+                    <img src="{% static 'img/avatares/avatar'|add:i|add:'.png' %}" class="avatar-img" alt="Avatar {{ i }}">
+                </label>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" style="color: var(--text-primary);"><i class="fas fa-envelope me-2"></i>Correo Electrónico</label>
+                <input type="email" name="email" class="form-control" value="{{ cliente.correo_electronico }}" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label" style="color: var(--text-primary);"><i class="fas fa-phone me-2"></i>Teléfono</label>
+                <input type="tel" name="telefono" class="form-control" value="{{ cliente.numero_telefonico }}" required>
+            </div>
+
+            <hr class="my-4" style="border-color: var(--border-color);">
+            <h5 class="mb-3" style="color: var(--text-primary);">Cambiar Contraseña <small class="text-muted fs-6">(Opcional)</small></h5>
+            
+            <div class="mb-3">
+                <input type="password" name="password" id="password" class="form-control" placeholder="Nueva contraseña">
+            </div>
+            
+            <div class="mb-4">
+                <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirmar nueva contraseña">
+                <div class="text-danger small mt-1 d-none" id="passError">Las contraseñas no coinciden</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold" style="background-color: var(--accent-color); border: none;">
+                Guardar Cambios
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Validación sencilla para asegurar que las contraseñas coincidan antes de enviar
+    const form = document.getElementById('editProfileForm');
+    const pass = document.getElementById('password');
+    const confirmPass = document.getElementById('confirm_password');
+    const errorMsg = document.getElementById('passError');
+
+    form.addEventListener('submit', function(e) {
+        if (pass.value !== '' || confirmPass.value !== '') {
+            if (pass.value !== confirmPass.value) {
+                e.preventDefault();
+                errorMsg.classList.remove('d-none');
+            } else {
+                errorMsg.classList.add('d-none');
+            }
+        }
+    });
+</script>
+{% endblock %}

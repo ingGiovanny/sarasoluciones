@@ -17,7 +17,7 @@
 {% block columnas %}
 
                 <th>N°</th>
-                        <th>ID Factura</th>
+                        <th>ID Pedido</th>
                         <th>Descripción Garantía</th>
                         <th>Fecha De Garantía</th>
                          <th>Estado De Garantía</th>
@@ -29,7 +29,7 @@
             {% for a in object_list %}
                     <tr>
                         <td>{{ a.id }}</td>
-                        <td>{{ a.id_factura }}</td>
+                        <td>{{ a.id_Pedido }}</td>
                         <td>{{ a.descripcion_garantia }}</td>
                         <td>{{ a.fecha_garantia }}</td>
                         <td>{{ a.estado_garantia }}</td>

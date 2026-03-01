@@ -1,98 +1,71 @@
 {% extends 'principalclientes/body.html' %}
+{% load static %}
 
 {% block content %}
-<div style="display:none;">{% csrf_token %}</div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+<link rel="stylesheet" href="{% static 'css_clientes/carrito_compras.css' %}">
+{% csrf_token %}
 
 <div class="cart-container">
     <div class="cart-header">
-        <h2><i class="fas fa-shopping-cart me-3"></i>Mi Carrito</h2>
+        <h2 class="fw-bold"><i class="fas fa-shopping-cart me-2 text-primary"></i> Mi Carrito</h2>
         {% if request.session.carrito %}
-        <p class="cart-items-count">
-            <i class="fas fa-box me-2"></i>
-            {{ request.session.carrito|length }} producto{{ request.session.carrito|length|pluralize }}
-        </p>
+        <span>
+            <i class="fas fa-box me-1"></i> {{ request.session.carrito|length }} Items seleccionados
+        </span>
         {% endif %}
     </div>
 
     {% if request.session.carrito %}
-    <div class="row">
+    <div class="row g-4">
         <div class="col-lg-8">
-            <div class="card cart-card">
+            <div class="card cart-card border-0">
                 <div class="table-responsive">
-                    <table class="table align-middle mb-0 w-100">
+                    <table class="table align-middle mb-0">
                         <thead>
                             <tr>
-                                <th class="col-check"></th> 
-                                <th class="p-3" style="width: 30%;">Producto</th>
-                                <th class="p-3" style="width: 35%;">Precio</th>
-                                <th class="p-3 text-center" style="width: 15%;">Cantidad</th>
-                                <th class="p-3 text-center" style="width: 20%;">Subtotal</th>
-                                <th class="p-3 text-center" style="width: 15%;">Acción</th>
+                                <th class="ps-4" style="width: 50px;">Comprar</th>
+                                <th>Producto</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-end pe-4">Subtotal</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for key, value in request.session.carrito.items %}
-                            <tr id="row-{{ value.producto_id }}" 
-                                class="producto-row {% if value.activo == False %}row-desactivada{% endif %}" 
-                                data-id="{{ value.producto_id }}"
-                                data-nombre="{{ value.nombre }}"
-                                data-precio="{{ value.precio }}"
-                                data-cantidad="{{ value.cantidad }}"
-                                data-activo="{% if value.activo == False %}false{% else %}true{% endif %}">
-                                
-                                <td class="p-4 text-center">
-                                    <input type="checkbox" 
-                                           class="producto-check" 
+                            <tr id="row-{{ value.producto_id }}" class="producto-row {% if value.activo == False %}row-desactivada{% endif %}">
+                                <td class="ps-4 text-center">
+                                    <input type="checkbox" class="producto-check" 
                                            onclick="toggleProducto('{{ value.producto_id }}')"
                                            {% if value.activo != False %}checked{% endif %}>
                                 </td>
-
-                                <td class="p-4">
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ value.imagen }}" class="img-cart me-4">
+                                <td>
+                                    <div class="d-flex align-items-center py-2">
+                                        <img src="{{ value.imagen }}" class="img-cart me-3">
                                         <div>
                                             <div class="product-name">{{ value.nombre }}</div>
-                                            <small class="text-muted">ID: #{{ value.producto_id }}</small>
+                                            <small class="text-muted d-block">$ {{ value.precio|floatformat:0 }} unitario</small>
+                                            <button class="btn-delete p-0 mt-1" onclick="confirmarEliminar('{{ value.producto_id }}', '{{ value.nombre }}')">
+                                                <i class="fas fa-trash-alt me-1"></i> Quitar
+                                            </button>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="p-4">
-                                    <span class="product-price">$ {{ value.precio|floatformat:0 }}</span>
-                                </td>
-                                <td class="p-4">
+                                <td>
                                     <div class="d-flex justify-content-center">
-                                        <div class="quantity-control">
-                                            <div class="input-group input-group-sm" style="width: 100px;">
-                                                <button class="btn btn-outline-secondary" type="button" 
-                                                        id="btn-restar-{{ value.producto_id }}"
-                                                        onclick="modificarCantidad('{{ value.producto_id }}', 'restar')"
-                                                        {% if value.cantidad <= 1 %} disabled style="opacity: 0.5; pointer-events: none;" {% endif %}>
-                                                    <i class="fas fa-minus"></i>
-                                                </button>
-
-                                                <span class="form-control text-center px-0 item-cantidad-{{ value.producto_id }}">
+                                        <div class="input-group input-group-sm" style="width: 110px;">
+                                            <button class="btn btn-outline-secondary" onclick="modificarCantidad('{{ value.producto_id }}', 'restar')">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <span class="form-control text-center px-0 item-cantidad-{{ value.producto_id }}">
                                                     {{ value.cantidad }}
                                                 </span>
-
-                                                <button class="btn btn-outline-secondary" type="button" 
-                                                        onclick="modificarCantidad('{{ value.producto_id }}', 'sumar')">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </div>
+                                            <button class="btn btn-outline-secondary" onclick="modificarCantidad('{{ value.producto_id }}', 'sumar')">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="p-4 text-center">
-                                    <span class="product-price subtotal-{{ value.producto_id }}">
-                                        $ {{ value.total|floatformat:0 }}
-                                    </span>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <button class="btn-delete" onclick="confirmarEliminar('{{ value.producto_id }}', '{{ value.nombre }}')">
-                                        <i class="fas fa-trash-alt me-2"></i>Eliminar
-                                    </button>
+                                <td class="text-end pe-4">
+                                    <span class="fw-bold product-price">$ {{ value.total|floatformat:0 }}</span>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -103,71 +76,60 @@
         </div>
 
         <div class="col-lg-4">
-            <br>
-            <div class="summary-card p-4 border rounded shadow-sm bg-white">
-                <h4 class="border-bottom pb-2 mb-3"><i class="fas fa-receipt me-2"></i>Resumen del Pedido</h4>
-
-                <div class="mb-4 text-start">
-                    <label class="fw-bold mb-2"><i class="fas fa-map-marker-alt text-danger me-2"></i>Dirección de Envío:</label>
+            <div class="summary-card p-4">
+                <h4 class="fw-bold mb-4">Resumen del Pedido</h4>
+                
+                <div class="mb-4">
+                    <label class="small fw-bold text-muted text-uppercase mb-2 d-block">Dirección de Entrega:</label>
                     {% if direcciones %}
-                        <select id="selector_direccion" class="form-select border-primary shadow-sm">
-                            <option value="" disabled selected>Selecciona una dirección...</option>
+                        <select id="selector_direccion" class="form-select rounded-pill border-2">
+                            <option value="" disabled selected>Selecciona una ubicación...</option>
                             {% for dir in direcciones %}
-                                <option value="{{ dir.id }}">{{ dir.alias }} - {{ dir.direccion_detallada }} ({{ dir.ciudad }})</option>
+                                <option value="{{ dir.id }}">{{ dir.alias }} ({{ dir.ciudad }})</option>
                             {% endfor %}
                         </select>
                     {% else %}
-                        <div class="alert alert-warning p-2 text-center" style="font-size: 14px;">
-                            <i class="fas fa-exclamation-triangle me-1"></i> No tienes direcciones.<br>
-                            <a href="{% url 'mi_app:mi_perfil' %}" class="fw-bold text-danger">Ve a tu perfil para crear una.</a>
+                        <div class="alert alert-warning py-2 small">
+                            <i class="fas fa-exclamation-circle me-1"></i> No tienes direcciones guardadas.<br>
+                            <a href="{% url 'mi_app:mi_perfil' %}" class="fw-bold">Crear una ahora</a>
                         </div>
                     {% endif %}
                 </div>
 
-                <div class="summary-row d-flex justify-content-between mb-2">
-                    <span class="summary-label text-muted">Productos:</span>
-                    <span class="summary-value fw-bold" id="cart-count">{{ request.session.carrito|length }}</span>
+                <hr class="opacity-10">
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Subtotal:</span>
+                    <span class="total-compra-span fw-bold">$ {{ total_compra|floatformat:0 }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top mb-4">
+                    <span class="h5 fw-bold mb-0">Total:</span>
+                    <span class="h4 fw-bold mb-0 text-success total-compra-span">$ {{ total_compra|floatformat:0 }}</span>
                 </div>
 
-                <div class="summary-row d-flex justify-content-between mb-2">
-                    <span class="summary-label text-muted">Subtotal:</span>
-                    <span class="summary-value total-compra-span fw-bold">$ {{ total_compra|floatformat:0 }}</span>
-                </div>
-
-                <div class="summary-row d-flex justify-content-between mt-3 pt-3 border-top mb-4">
-                    <span class="summary-label h5 mb-0">Total a Pagar:</span>
-                    <span class="summary-value summary-total total-compra-span h5 mb-0 text-success fw-bold">$ {{ total_compra|floatformat:0 }}</span>
-                </div>
-
-            <button onclick="simularPago()" class="btn btn-primary btn-lg w-100 fw-bold shadow mb-3" style="background-color: #2d005f; border-color: #2d005f;">
-                <i class="fas fa-credit-card me-2"></i> Procesar Pago Seguro
-            </button>
-                <button onclick="enviarWhatsApp()" class="btn btn-success btn-lg w-100 fw-bold text-white shadow-sm">
+                <button onclick="simularPago()" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm mb-3 py-3" style="background: var(--accent-color); border:none;">
+                    <i class="fas fa-lock me-2"></i> Pagar Ahora
+                </button>
+                
+                <button onclick="enviarWhatsApp()" class="btn btn-outline-success btn-lg w-100 rounded-pill fw-bold py-3">
                     <i class="fab fa-whatsapp me-2"></i> Pedir por WhatsApp
                 </button>
 
-                <div class="text-center mt-3">
-                    <small class="text-muted">
-                        <i class="fas fa-shield-alt me-1 text-success"></i>
-                        Compra 100% Segura
-                    </small>
+                <div class="text-center mt-4 opacity-50">
+                    <i class="fas fa-shield-alt text-success"></i> <small>Transacciones encriptadas y seguras</small>
                 </div>
             </div>
         </div>
     </div> 
     {% else %}
-    <div class="empty-cart">
-        <i class="fas fa-shopping-basket"></i>
-  
-        <h3>Tu carrito está vacío</h3>
-        <p class="text-muted mb-4">¡Agrega productos y comienza a comprar!</p>
-        <br><br><br>
-        <a href="{% url 'mi_app:productos_clientes' %}" class="btn-shop">
-            Explorar Productos
-        </a>
+    <div class="empty-cart card py-5 border-0 shadow-sm">
+        <i class="fas fa-shopping-basket mb-3"></i>
+        <h3 class="fw-bold">Tu carrito está vacío</h3>
+        <p class="text-muted mb-4">Aún no has añadido productos a tu carrito de compras.</p>
+        <a href="{% url 'mi_app:productos_clientes' %}" class="btn-shop">Volver a la tienda</a>
     </div>
     {% endif %}
 </div>
 
-
+<script src="{% static 'js_clientes/carrito_compras.js' %}"></script>
 {% endblock %}

@@ -5,14 +5,14 @@ from mi_app.models import Garantia
 class GarantiaForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['id_factura'].widget.attrs['autofocus'] = True
+        self.fields['id_Pedido'].widget.attrs['autofocus'] = True
     
     class Meta:
         model = Garantia
         
         fields = '__all__'
         widgets = {
-            'id_factura': Select(
+            'id_Pedido': Select(
                 attrs={
                     'class': 'form-control',
                 }

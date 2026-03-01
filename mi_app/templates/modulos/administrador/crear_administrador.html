@@ -6,32 +6,29 @@
 
     {% for field in form.visible_fields %}
     <div class="form-group mb-3">
-        <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+        <label for="{{ field.id_for_label }}" class="fw-bold">{{ field.label }}:</label>
         
         {% if field.name == 'contrasena' %}
-            <!-- Campo especial para contraseña con botón de mostrar/ocultar -->
             <div class="input-group">
-                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                {{ field|add_class:'form-control'|attr:'autocomplete:new-password' }}
                 <button type="button" class="btn btn-outline-secondary" id="togglePassword">
                     <i class="fas fa-eye" id="eyeIcon"></i>
                 </button>
             </div>
         {% else %}
-            <!-- Campos normales -->
             {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
         {% endif %}
 
         {% if field.errors %}
             <div class="invalid-feedback d-block">
                 {% for error in field.errors %}
-                    <small>{{ error }}</small><br>
+                    <small class="text-danger">{{ error }}</small><br>
                 {% endfor %}
             </div>
         {% endif %}
     </div>
     {% endfor %}
 
-    <!-- JavaScript inline -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const togglePassword = document.getElementById('togglePassword');
@@ -58,13 +55,11 @@
             }
         });
     </script>
-
- 
 {% endblock %}
 
 {% block Cancelar %}
     <button type="submit" class="btn btn-primary btn-flat">
-        <i class="fas fa-save"></i> Agregar
+        <i class="fas fa-save"></i> Guardar Administrador
     </button>
     <a href="{% url 'mi_app:administrador_lista' %}" class="btn btn-danger btn-flat float-right">
         <i class="fas fa-times"></i> Cancelar

@@ -1,0 +1,67 @@
+{% extends "listar.html" %} {% block titulo %}
+    <h1 class="text-center"><i class="fas fa-tools text-warning"></i> Gestión de Garantías</h1>
+{% endblock titulo %}
+
+{% block agregar %}
+    <a href="{% url 'mi_app:panel_logistica' %}" class="btn btn-secondary btn-sm">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+{% endblock %}
+
+{% block columnas %}
+    <th>Fecha</th>
+    <th>Cliente y TX</th>
+    <th>Motivo y Foto</th>
+    <th>Tu Respuesta</th>
+    <th>Acción Rápida</th>
+{% endblock %}
+
+{% block iterar %}
+    {% for gar in garantias %}
+        <tr>
+            <td>{{ gar.fecha_garantia|date:"d/m/Y" }}</td>
+            
+            <td>
+                <b>{{ gar.id_Pedido.id_cliente.nombre_completo }}</b><br>
+                <small class="text-muted">TX: {{ gar.id_Pedido.comprobante_pago }}</small><br>
+                <small class="text-primary">{{ gar.id_Pedido.id_producto.id_presentacion.nombre }}</small>
+            </td>
+            
+            <td style="max-width: 250px;">
+                <p class="small mb-1" style="white-space: normal;">"{{ gar.descripcion_garantia }}"</p>
+                {% if gar.evidencia %}
+                    <a href="{{ gar.evidencia.url }}" target="_blank" class="badge bg-info text-dark text-decoration-none">
+                        <i class="fas fa-image"></i> Ver Foto
+                    </a>
+                {% else %}
+                    <span class="badge bg-light text-muted border">Sin foto</span>
+                {% endif %}
+            </td>
+            
+            <form action="{% url 'mi_app:gestionar_garantias' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="garantia_id" value="{{ gar.id }}">
+                
+                <td>
+                    <textarea name="respuesta_admin" class="form-control form-control-sm" rows="2" 
+                              placeholder="Escribe el por qué de tu decisión...">{{ gar.respuesta_admin|default:"" }}</textarea>
+                </td>
+                
+                <td>
+                    <select name="estado_garantia" class="form-select form-select-sm mb-2 fw-bold 
+                        {% if gar.estado_garantia == 'PENDIENTE' %}text-warning{% elif gar.estado_garantia == 'APROBADO' %}text-success{% else %}text-danger{% endif %}">
+                        <option value="PENDIENTE" {% if gar.estado_garantia == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
+                        <option value="APROBADO" {% if gar.estado_garantia == 'APROBADO' %}selected{% endif %}>Aprobar (Cambio/Devolución)</option>
+                        <option value="RECHAZADO" {% if gar.estado_garantia == 'RECHAZADO' %}selected{% endif %}>Rechazar</option>
+                    </select>
+                    
+                    <button type="submit" class="btn btn-success btn-sm w-100 fw-bold">Guardar</button>
+                </td>
+            </form>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="5" class="text-center py-4 text-muted">No hay solicitudes de garantía en el sistema.</td>
+        </tr>
+    {% endfor %}
+{% endblock %}

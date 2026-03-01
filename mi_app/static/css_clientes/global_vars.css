@@ -1,0 +1,66 @@
+/* =========================================================
+   CEREBRO DE COLORES: VARIABLES GLOBALES DEL SISTEMA
+   ========================================================= */
+:root {
+    /* --- COLORES DEL CUERPO (Modo Claro) --- */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f4f6f9;
+    --bg-card: #ffffff;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --accent-color: #2d005f; /* Tu morado original */
+    --border-color: #e0e0e0;
+    
+    /* --- NAVBAR (Fijo - Siempre Oscuro) --- */
+    --navbar-bg: #111111;
+    --navbar-text: #ffffff;
+    --navbar-shadow: 0 4px 15px rgba(0,0,0,0.3);
+
+    /* --- BOTÓN TOGGLE --- */
+    --toggle-bg: linear-gradient(145deg, #2c3e50, #34495e);
+    --slider-bg: linear-gradient(145deg, #f39c12, #f1c40f);
+}
+
+body.dark-mode {
+    /* --- COLORES DEL CUERPO (Modo Oscuro) --- */
+    --bg-primary: #0f172a;   
+    --bg-secondary: #1e293b; 
+    --bg-card: #1e293b;      
+    --text-primary: #f1f5f9; 
+    --text-secondary: #94a3b8; 
+    --accent-color: #8c52ff; /* Morado brillante */
+    --border-color: rgba(255, 255, 255, 0.1); 
+
+    /* Toggle en Modo Oscuro */
+    --toggle-bg: #334155;
+    --slider-bg: #38bdf8;
+}
+
+/* Aplicación base */
+html, body {
+    height: 100%;
+    margin: 0;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
+}
+:root {
+    --bg-body: #f4f6f9;
+    --text-primary: #2c3e50;
+    /* ... tus otras variables de modo claro ... */
+}
+
+/* ESTO ES LO QUE CAMBIA LOS COLORES DE LA WEB */
+body.dark-mode {
+    --bg-body: #000000 !important;
+    --text-primary: #ffffff !important;
+    background-color: #000000 !important; /* Fuerza el color de fondo */
+    color: #ffffff !important;
+}
+
+/* Aplicación global */
+body {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease;
+}
