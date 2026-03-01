@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -154,17 +155,19 @@ LOGIN_URL = 'login:login'
 LOGIN_REDIRECT_URL = 'mi_app:principal'
 LOGOUT_REDIRECT_URL = ''
 
-# -----------------------------------------------------
-# ✅ CONFIGURACIÓN DE CORREO CORREGIDA Y FINAL (La de tu compañera)
-# -----------------------------------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
+
+# --- CONFIGURACIÓN DE CORREOS REALES ---
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # <- COMENTADA O BORRADA
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+# Asegúrate de tener tu archivo .env configurado y la librería python-dotenv cargada
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-#para la conexcion con ngrok para pruebas en el celular 
+# Para la conexión con ngrok (¡Excelente práctica, por cierto!)
 CSRF_TRUSTED_ORIGINS = [
     'https://botchy-arboreally-britney.ngrok-free.dev',
 ]
