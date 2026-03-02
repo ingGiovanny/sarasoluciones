@@ -158,20 +158,18 @@ LOGOUT_REDIRECT_URL = 'mi_app:contenido_cliente'
 
 
 # --- CONFIGURACIÓN DE CORREOS REALES ---
+# --- CONFIGURACIÓN DE CORREOS REALES ---
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # <- COMENTADA O BORRADA
-
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-# Asegúrate de tener tu archivo .env configurado y la librería python-dotenv cargada
+
+# Estos vienen de tu archivo .env
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-# Para la conexión con ngrok (¡Excelente práctica, por cierto!)
-CSRF_TRUSTED_ORIGINS = [
-    'https://botchy-arboreally-britney.ngrok-free.dev',
-]
+# IMPORTANTE: Remitente por defecto (para que no salga como spam)
+DEFAULT_FROM_EMAIL = f'Soluciones Sara <{EMAIL_HOST_USER}>'
 
 
 # CONFIGURACIÓN DE CORREOS (MODO PRUEBA EN CONSOLA)
