@@ -22,4 +22,7 @@ __pycache__/
 .vscode/
 .idea/
 #archivo .env
+oauth_credentials.json
+oauth_credentials.json.json
+token.json
 .env
