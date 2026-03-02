@@ -7,6 +7,9 @@ from decimal import Decimal
 from django.db.models.signals import post_save
 from django.utils import timezone
 from datetime import timedelta
+# Importaciones necesarias para las señales (ponlas arriba si prefieres, o déjalas aquí)
+
+
 
 
 
@@ -29,11 +32,29 @@ class Administrador(models.Model):
     def __str__(self):
         return self.nombre_completo
 
+
 # Señal para que si borras al Administrador de tu panel, se borre de Django también
 @receiver(post_delete, sender=Administrador)
 def eliminar_admin_vinculado(sender, instance, **kwargs):
     if instance.user:
         instance.user.delete()
+
+
+
+# Este es el gatillo automático
+@receiver(post_save, sender=User)
+def crear_perfil_administrador(sender, instance, created, **kwargs):
+    # Si el usuario se acaba de crear y es un superusuario (staff)
+    if created and instance.is_superuser:
+        Administrador.objects.get_or_create(
+            user=instance,
+            defaults={
+                'nombre_completo': instance.username, # Temporalmente toma el apodo
+                'correo_electronico': instance.email,
+                'numero_documento': '000000000', # Valores por defecto para que no falle
+                'telefono': '0000000000'
+            }
+        )
 
 
 

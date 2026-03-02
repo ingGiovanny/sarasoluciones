@@ -65,7 +65,14 @@
             <li class="nav-item dropdown">
                 <div class="user-menu-container" style="display: flex; align-items: center; height: 100%; padding: 0 10px;">
                     <div class="user-trigger" onclick="toggleMenu()" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                        <span style="font-size: 14px; font-weight: 600;">Söfîå <i class="fas fa-chevron-down" style="font-size: 10px;"></i></span>
+                        <span style="font-size: 14px; font-weight: 600;">
+                            {% if user.first_name %}
+                                {{ user.first_name }}
+                            {% else %}
+                                {{ user.username }}
+                            {% endif %}
+                            <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
+                        </span>
                     </div>
                     
 <div id="dropdownMenu" class="dropdown-content-custom">
@@ -74,15 +81,18 @@
     <a href="/perfil/" class="menu-item-custom">
         <i class="fas fa-user"></i> Mi perfil
     </a>
-    <a href="#" class="menu-item-custom"><i class="fas fa-cog"></i> Configuración</a>
+   
 <hr>
     <a href="/ayuda/" class="menu-item-custom">
         <i class="fas fa-question-circle"></i> Ayuda
     </a>
+<form action="{% url 'logout' %}" method="post" id="logout-form" style="display: none;">
+    {% csrf_token %}
+</form>
 
-<a href="/login/" class="menu-item-custom login-custom">
-        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-    </a>
+<a href="#" class="menu-item-custom login-custom" onclick="document.getElementById('logout-form').submit(); return false;">
+    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+</a>
 </div>
                 </div>
             </li>

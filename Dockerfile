@@ -37,8 +37,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Etapa 6: Copiar el Código de la Aplicación
 COPY . .
 
-# Etapa 7: Exponer el Puerto
-EXPOSE 8000
+
 
 # Etapa 8: Comando de Ejecución
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -13,6 +13,7 @@
     width: 100%;
 }
 
+
 .selector-available, .selector-chosen {
     display: flex;
     flex-direction: column;

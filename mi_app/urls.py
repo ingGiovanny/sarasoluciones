@@ -6,6 +6,7 @@ from mi_app.views import *
 # IMPORTACIONES DE TUS MÓDULOS
 # ==========================================
 from mi_app.view.administrador.views_administrador import *
+from mi_app.view.administrador.perfil_admin import *
 from mi_app.view.cliente.views_cliente import *
 from mi_app.view.proveedor.views_proveedor import *
 from mi_app.view.marca.views_marca import *
@@ -74,6 +75,8 @@ urlpatterns = [
     path('administradores/crear/', AdministradorCreateView.as_view(), name='administrador_crear'),
     path('administradores/editar/<int:pk>/', AdministradorUpdateView.as_view(), name='administrador_editar'),
     path('administradores/eliminar/<int:pk>/', AdministradorDeleteView.as_view(), name='administrador_eliminar'),
+    path('editar-perfil/', editar_perfil, name='editar_perfil'), # Ruta para editar el perfil del administrador (tarjeta azul bonita)
+    
 
     # Clientes
     path('clientes/listar/', ClienteListView.as_view(), name='cliente_lista'),

@@ -127,9 +127,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'es-es'
+LANGUAGE_CODE = 'es-co'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 
@@ -154,7 +154,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login:login'
 LOGIN_REDIRECT_URL = 'mi_app:principal'
-LOGOUT_REDIRECT_URL = ''
+LOGOUT_REDIRECT_URL = 'mi_app:contenido_cliente'
 
 
 # --- CONFIGURACIÓN DE CORREOS REALES ---
