@@ -82,7 +82,7 @@ services:
       PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
-      - "8030:80" # El puerto asigando por el Instructor
+      - "8040:80" # El puerto asigando por el Instructor
     networks:
       - sarasoluciones_network
     depends_on:

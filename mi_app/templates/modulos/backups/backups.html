@@ -1,4 +1,4 @@
-{% extends "aside/body.html" %}
+{% extends "listar.html" %}
 
 {% block content %}
 <div class="container-fluid">
@@ -19,12 +19,11 @@
                     <ul>
                         <li>Exportar la base de datos actual (MySQL).</li>
                         <li>Comprimir el archivo con <strong>Gzip</strong>.</li>
-                        <li>Encriptar con algoritmo <strong>AES-256 (OpenSSL)</strong>.</li>
-                        <li>Subir el archivo protegido a Google Drive.</li>
+                        <li>Subir el archivo comprimido a Google Drive.</li>
                     </ul>
 
                     <div class="alert alert-info" role="alert">
-                        <strong>Nota:</strong> Tus datos viajan cifrados y seguros a la nube.
+                        <strong>Nota:</strong> El archivo se comprime antes de subirse a la nube.
                     </div>
 
                     {% if autenticado %}
@@ -43,9 +42,9 @@
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
                             <span>No hay cuenta vinculada. Debes autenticarte antes de continuar.</span>
                         </div>
-                        <button type="button" id="btnVincular" class="btn btn-warning btn-lg w-100">
+                        <a href="{% url 'backups:google_auth' %}" class="btn btn-warning btn-lg w-100">
                             <i class="bi bi-google me-2"></i> Vincular cuenta de Google
-                        </button>
+                        </a>
                     {% endif %}
                 </div>
             </div>
@@ -67,9 +66,9 @@
                     <form id="formRestaurar" method="post" action="{% url 'backups:restaurar_backup' %}" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Archivo de respaldo (.enc)</label>
-                            <input type="file" name="archivo_backup" id="inputBackup" class="form-control" accept=".enc" required>
-                            <small class="text-muted">Selecciona el archivo encriptado descargado de Drive.</small>
+                            <label class="form-label fw-bold">Archivo de respaldo</label>
+                            <input type="file" name="archivo_backup" id="inputBackup" class="form-control" required>
+                            <small class="text-muted">Selecciona el archivo .gz descargado de Drive.</small>
                         </div>
                         <button type="button" id="btnRestaurar" class="btn btn-warning w-100">
                             <i class="bi bi-arrow-counterclockwise me-2"></i> Subir y Restaurar Datos
@@ -81,54 +80,49 @@
             <div class="card shadow mb-4">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs fw-bold text-success text-uppercase mb-1">Seguridad de Grado Bancario</div>
-                        <div class="h5 fw-bold">AES-256 activado</div>
-                        <p class="mt-1 mb-0 small text-muted">Tus backups se encriptan localmente antes de subirse a Drive.</p>
+                        <div class="text-xs fw-bold text-success text-uppercase mb-1">Respaldo Seguro en la Nube</div>
+                        <div class="h5 fw-bold">Gzip + Google Drive</div>
+                        <p class="mt-1 mb-0 small text-muted">Tus backups se comprimen y suben automáticamente a tu Google Drive.</p>
                     </div>
-                    <i class="bi bi-lock-fill text-secondary" style="font-size: 2.5rem;"></i>
+                    <i class="bi bi-cloud-check-fill text-secondary" style="font-size: 2.5rem;"></i>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-{% if not autenticado %}
-document.getElementById("btnVincular").addEventListener("click", function () {
-    Swal.fire({
-        title: 'Vincular Google Drive',
-        text: "Serás redirigido para autorizar la subida de archivos.",
-        icon: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#4e73df',
-        confirmButtonText: 'Continuar'
-    }).then((result) => {
-        if (result.isConfirmed) window.location.href = "{% url 'backups:google_auth' %}";
-    });
-});
-{% endif %}
-
+// ── GENERAR BACKUP ──
 {% if autenticado %}
 document.getElementById("btnGenerar").addEventListener("click", function () {
     Swal.fire({
         title: '¿Iniciar respaldo?',
-        text: "Se generará un dump encriptado y se subirá a Drive.",
+        text: "Se generará un dump comprimido y se subirá a Drive.",
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#4e73df',
-        confirmButtonText: 'Sí, comenzar'
+        confirmButtonText: 'Sí, comenzar',
+        cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({ title: 'Procesando...', html: 'Encriptando y subiendo a la nube...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            Swal.fire({
+                title: 'Procesando...',
+                html: 'Comprimiendo y subiendo a la nube...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
             document.getElementById("formBackup").submit();
         }
     });
 });
 {% endif %}
 
+// ── RESTAURAR BACKUP ──
 document.getElementById("btnRestaurar").addEventListener("click", function () {
     if (!document.getElementById("inputBackup").files.length) {
-        Swal.fire('Error', 'Por favor selecciona un archivo .enc primero.', 'error');
+        Swal.fire('Error', 'Por favor selecciona un archivo de backup primero.', 'error');
         return;
     }
     Swal.fire({
@@ -137,15 +131,22 @@ document.getElementById("btnRestaurar").addEventListener("click", function () {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#e74a3b',
-        confirmButtonText: 'Sí, restaurar todo'
+        confirmButtonText: 'Sí, restaurar todo',
+        cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({ title: 'Restaurando...', html: 'Desencriptando e inyectando datos...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            Swal.fire({
+                title: 'Restaurando...',
+                html: 'Descomprimiendo e inyectando datos...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
             document.getElementById("formRestaurar").submit();
         }
     });
 });
 
+// ── MENSAJES DE DJANGO ──
 {% if messages %}
     {% for message in messages %}
         Swal.fire({
@@ -157,4 +158,6 @@ document.getElementById("btnRestaurar").addEventListener("click", function () {
     {% endfor %}
 {% endif %}
 </script>
+{% endblock %}
+
 {% endblock %}
