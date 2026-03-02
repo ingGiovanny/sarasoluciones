@@ -1,0 +1,139 @@
+/* ═══════════════════════════════════════════════════════════════
+   CENTRO DE COPIAS DE SEGURIDAD — Adaptive Industrial CSS
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap');
+
+:root {
+  /* --- COLORES MODO CLARO (Default) --- */
+  --bg-deep:        #f4f7f6;
+  --bg-surface:     #ffffff;
+  --bg-elevated:    #ffffff;
+  
+  --text-primary:   #1a1d23;
+  --text-secondary: #4a5568;
+  --text-muted:     #718096;
+
+  --border-subtle:  #e2e8f0;
+  --border-normal:  #cbd5e0;
+  
+  --blue-vivid:     #3182ce;
+  --green-vivid:    #38a169;
+  --amber-vivid:    #d69e2e;
+  --red-vivid:      #e53e3e;
+
+  --shadow-card:    0 4px 12px rgba(0,0,0,0.05);
+  --transition:     0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius-card:    14px;
+}
+
+/* --- COLORES MODO OSCURO (Activado por Sofia) --- */
+body.dark-mode {
+  --bg-deep:        #1e1e2f;
+  --bg-surface:     #2b2b3b;
+  --bg-elevated:    #2b2b3b;
+  
+  --text-primary:   #ffffff;
+  --text-secondary: #f1f1f1;
+  --text-muted:     #aaa;
+
+  --border-subtle:  #444444;
+  --border-normal:  #555555;
+  
+  --blue-vivid:     #5b8fff;
+  --shadow-card:    0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* ── Base Reset ── */
+.backup-wrapper {
+  color: var(--text-secondary);
+  font-family: 'Syne', sans-serif;
+}
+
+/* ── Page Header ── */
+.backup-wrapper h1.h3 {
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.backup-wrapper h1.h3::after {
+  content: '';
+  display: block;
+  margin-top: 6px;
+  width: 40px;
+  height: 4px;
+  background: var(--blue-vivid);
+  border-radius: 2px;
+}
+
+/* ── Cards ── */
+.backup-wrapper .card {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.backup-wrapper .card:hover {
+  transform: translateY(-3px);
+}
+
+.backup-wrapper .card-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  padding: 1.2rem;
+}
+
+/* ── Form Controls (Inputs y Files) ── */
+.backup-wrapper .form-control {
+  background: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-normal) !important;
+}
+
+.backup-wrapper .form-control:focus {
+  border-color: var(--blue-vivid) !important;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+}
+
+/* ── Feature List ── */
+.backup-wrapper ul li {
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 8px 0;
+}
+
+.backup-wrapper ul li strong {
+  color: var(--text-primary);
+}
+
+/* ── Alerts con mejor visibilidad ── */
+.backup-wrapper .alert-info {
+  background: rgba(49, 130, 206, 0.1) !important;
+  color: #2b6cb0 !important;
+  border: 1px solid rgba(49, 130, 206, 0.2) !important;
+}
+
+body.dark-mode .backup-wrapper .alert-info {
+  color: #8eb4ff !important;
+}
+
+.backup-wrapper .alert-danger {
+  background: rgba(229, 62, 62, 0.1) !important;
+  color: #c53030 !important;
+  border: 1px solid rgba(229, 62, 62, 0.2) !important;
+}
+
+body.dark-mode .backup-wrapper .alert-danger {
+  color: #f07070 !important;
+}
+
+/* ── Iconos ── */
+.backup-wrapper .bi {
+  filter: drop-shadow(0 0 4px rgba(0,0,0,0.1));
+}
+
+body.dark-mode .backup-wrapper .bi {
+  filter: drop-shadow(0 0 8px currentColor);
+}

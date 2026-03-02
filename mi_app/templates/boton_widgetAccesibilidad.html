@@ -1,6 +1,33 @@
+<style>
+  /* Movemos el contenedor raíz a la derecha */
+  .asw-widget, 
+  div[class*="asw-widget"] {
+    left: auto !important;
+    right: 20px !important;
+    margin-left: 0 !important;
+  }
+
+  /* El botón circular azul */
+  .asw-menu-btn,
+  div[class*="asw-menu-btn"] {
+    left: auto !important;
+    right: 0 !important;
+  }
+
+  /* El panel que se abre */
+  .asw-menu,
+  div[class*="asw-menu"] {
+    left: auto !important;
+    right: 0 !important;
+    /* Si el menú se sale de la pantalla, ajustamos su posición */
+    transform: translateX(0) !important;
+  }
+</style>
+
 <div class="asw-widget">
   <div class="asw-menu-btn">
     <svg>...</svg>
+  </div>
   </div>
   <div class="asw-menu">
     <div class="asw-menu-header">

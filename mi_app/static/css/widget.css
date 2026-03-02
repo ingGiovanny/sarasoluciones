@@ -1,7 +1,0 @@
-.asw-widget {
-    position: fixed !important;
-    bottom: 30px !important;  /* Distancia desde abajo */
-    right: 30px !important;   /* Distancia desde la derecha */
-    left: auto !important;    /* ESTO ES CLAVE: Borra la posición izquierda que trae por defecto */
-    z-index: 9999 !important; /* Lo mantiene flotando por encima de todo */
-}

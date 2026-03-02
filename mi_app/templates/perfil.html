@@ -2,13 +2,14 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid pt-4">
+<div class="container-fluid pt-5 pb-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="card shadow border-0" style="border-radius: 15px;">
                 <div class="card-header bg-primary text-white text-center" style="border-radius: 15px 15px 0 0; padding: 20px;">
                     <h4 class="mb-0"><i class="fas fa-id-card"></i> Información de mi Perfil</h4>
                 </div>
+                
                 <div class="card-body p-4">
                     <div class="text-center mb-4">
                         <img src="https://via.placeholder.com/100" class="rounded-circle img-thumbnail shadow-sm" alt="Foto de perfil">
@@ -16,36 +17,45 @@
                         <span class="badge bg-success">Usuario Activo</span>
                     </div>
 
-                    <div class="row">
+                    <div class="row text-center text-sm-start">
                         <div class="col-sm-6 mb-3">
-                            <label class="text-muted small">Nombre completo</label>
-                            <p class="border-bottom pb-2"><strong>{{ user.first_name }} {{ user.last_name }}
-                                        {% if user.first_name %}
-            {{ user.first_name }} {{ user.last_name }}
-        {% else %}
-            {{ user.username }}
-        {% endif %}
+                            <label class="text-muted small d-block">Nombre completo</label>
+                            <p class="border-bottom pb-2"><strong>
+                                {% if user.first_name %}
+                                    {{ user.first_name }} {{ user.last_name }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
                             </strong></p>
-</p>
                         </div>
                         <div class="col-sm-6 mb-3">
-                            <label class="text-muted small">Correo Electrónico</label>
+                            <label class="text-muted small d-block">Correo Electrónico</label>
                             <p class="border-bottom pb-2"><strong>{{ user.email }}</strong></p>
                         </div>
                         <div class="col-sm-6 mb-3">
-                            <label class="text-muted small">Fecha de registro</label>
+                            <label class="text-muted small d-block">Fecha de registro</label>
                             <p class="border-bottom pb-2"><strong>{{ user.date_joined|date:"d M, Y" }}</strong></p>
                         </div>
                         <div class="col-sm-6 mb-3">
-                            <label class="text-muted small">Último acceso</label>
+                            <label class="text-muted small d-block">Último acceso</label>
                             <p class="border-bottom pb-2"><strong>{{ user.last_login|date:"d M, Y" }}</strong></p>
                         </div>
                     </div>
 
+                    <div class="text-center mt-4">
+                        <a href="{% url 'mi_app:principal' %}" class="btn btn-outline-primary shadow-sm" style="border-radius: 10px;">
+                            <i class="fas fa-home"></i> Volver a la página principal
+                        </a>
                     </div>
+                </div>
+
+                <div class="card-footer bg-light text-center text-muted small" style="border-radius: 0 0 15px 15px;">
+                    Sesión iniciada como {{ user.username }}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 {% endblock %}

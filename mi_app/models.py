@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 from datetime import timedelta
 # Importaciones necesarias para las señales (ponlas arriba si prefieres, o déjalas aquí)
+from django.db.models.signals import post_save
 
 
 

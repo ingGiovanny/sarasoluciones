@@ -1,36 +1,48 @@
-
-from django.shortcuts import redirect , render 
-from mi_app.models import Pedido
+from django.shortcuts import redirect, render 
+from mi_app.models import Pedido, Administrador
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.cache import never_cache
 
+# ==========================================
+# VALIDACIÓN DE ADMINISTRADOR
+# ==========================================
+def es_administrador(user):
+    """ Verifica si el usuario es superusuario o es un Administrador registrado """
+    if user.is_authenticated:
+        return user.is_superuser or Administrador.objects.filter(user=user).exists()
+    return False
 
-
+# ==========================================
+# PANEL DE LOGÍSTICA (LISTADO)
+# ==========================================
 @login_required(login_url='login:login')
+@user_passes_test(es_administrador, login_url='mi_app:inicio')
+@never_cache
 def panel_logistica(request):
-    # Seguridad: Solo los Administradores
-    if not request.user.is_superuser and not request.user.is_staff:
-        messages.error(request, "Acceso denegado. Área exclusiva para administradores.")
-        return redirect('mi_app:ver_carrito')
-    
-    # Traemos todos los pedidos
+    # Traemos todos los pedidos ordenados por fecha (ID descendente)
     todos_los_pedidos = Pedido.objects.all().order_by('-id')
     
-    # Asegúrate de poner la ruta correcta hacia tu nuevo archivo HTML
     return render(request, 'modulos/panel_pedidos/listar_logistica.html', {
-        'object_list': todos_los_pedidos # IMPORTANTE: Se debe llamar object_list
+        'object_list': todos_los_pedidos,
+        'titulo': 'Panel de Logística y Despachos'
     })
 
+# ==========================================
+# CAMBIAR ESTADO (ACCIÓN)
+# ==========================================
 @login_required(login_url='login:login')
+@user_passes_test(es_administrador, login_url='mi_app:inicio')
+@never_cache
 def cambiar_estado_pedido(request, transaction_id, nuevo_estado):
-    # Seguridad de nuevo
-    if not request.user.is_superuser and not request.user.is_staff:
-        return redirect('mi_app:ver_carrito')
-        
-    # Buscamos todos los productos que pertenezcan a esa transacción y los actualizamos
+    # Buscamos todos los productos que pertenezcan a esa transacción
     pedidos = Pedido.objects.filter(comprobante_pago=transaction_id)
+    
     if pedidos.exists():
+        # Actualizamos el estado de toda la orden en la BD
         pedidos.update(estado_pedido=nuevo_estado)
-        messages.success(request, f"El estado de la orden {transaction_id} cambió a: {nuevo_estado}")
+        messages.success(request, f"La orden {transaction_id} ahora está en estado: {nuevo_estado}")
+    else:
+        messages.error(request, "No se encontró la orden especificada.")
     
     return redirect('mi_app:panel_logistica')

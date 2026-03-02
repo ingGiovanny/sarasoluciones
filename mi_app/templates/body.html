@@ -30,5 +30,26 @@
         });
     }
 </script>
+<script>
+  function moverWidgetDerecha() {
+    const widgets = document.querySelectorAll('.asw-widget, .asw-menu-btn');
+    widgets.forEach(el => {
+      el.style.setProperty('left', 'auto', 'important');
+      el.style.setProperty('right', '20px', 'important');
+    });
+  }
+
+  // Lo ejecutamos al cargar
+  window.addEventListener('load', moverWidgetDerecha);
+
+  // Lo ejecutamos cada vez que se haga clic (por si el widget se resetea)
+  document.addEventListener('click', () => {
+    setTimeout(moverWidgetDerecha, 100);
+  });
+
+  // Usamos un observador por si el widget se crea dinámicamente
+  const observer = new MutationObserver(moverWidgetDerecha);
+  observer.observe(document.body, { childList: true, subtree: true });
+</script>
 </body>
 {% endblock %}
