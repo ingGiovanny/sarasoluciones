@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+ {% block content %}
+<div class="container mt-5">
+    <div class="card" style="max-width: 500px; margin: auto; padding: 20px;">
+        <h2>Mi Perfil</h2>
+        <hr>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Usuario:</strong> {{ user.username }}</p>
+        <p><strong>Telefono:</strong> {{ user.profile.telefono }}</p>
+        <a href="{% url 'configuracion' %}" class="btn btn-success mt-3">Editar Datos</a>
+    </div>
+</div>
+
+{% endblock %}

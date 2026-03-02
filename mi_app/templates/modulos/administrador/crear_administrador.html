@@ -1,0 +1,67 @@
+{% extends "crear.html" %}
+{% load widget_tweaks %}
+
+{% block form %}
+    {% csrf_token %}
+
+    {% for field in form.visible_fields %}
+    <div class="form-group mb-3">
+        <label for="{{ field.id_for_label }}" class="fw-bold">{{ field.label }}:</label>
+        
+        {% if field.name == 'contrasena' %}
+            <div class="input-group">
+                {{ field|add_class:'form-control'|attr:'autocomplete:new-password' }}
+                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                    <i class="fas fa-eye" id="eyeIcon"></i>
+                </button>
+            </div>
+        {% else %}
+            {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+        {% endif %}
+
+        {% if field.errors %}
+            <div class="invalid-feedback d-block">
+                {% for error in field.errors %}
+                    <small class="text-danger">{{ error }}</small><br>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.querySelector('input[name="contrasena"]');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    if (type === 'text') {
+                        eyeIcon.classList.remove('fa-eye');
+                        eyeIcon.classList.add('fa-eye-slash');
+                        togglePassword.setAttribute('title', 'Ocultar contraseña');
+                    } else {
+                        eyeIcon.classList.remove('fa-eye-slash');
+                        eyeIcon.classList.add('fa-eye');
+                        togglePassword.setAttribute('title', 'Mostrar contraseña');
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block Cancelar %}
+    <button type="submit" class="btn btn-primary btn-flat">
+        <i class="fas fa-save"></i> Guardar Administrador
+    </button>
+    <a href="{% url 'mi_app:administrador_lista' %}" class="btn btn-danger btn-flat float-right">
+        <i class="fas fa-times"></i> Cancelar
+    </a>
+{% endblock %}

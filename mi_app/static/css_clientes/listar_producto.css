@@ -1,0 +1,167 @@
+/* static/css_clientes/listar_producto.css */
+
+/* --- RESET DE LINKS (Quita la línea de abajo) --- */
+a, .card-link, .producto-enlace-contenedor {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+/* ================= 1. LAYOUT PRINCIPAL ================= */
+.shop-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 30px;
+    max-width: 1300px;
+    margin: 40px auto;
+    padding: 0 20px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.shop-title-container {
+    max-width: 1300px;
+    margin: 30px auto 10px;
+    padding: 0 20px;
+}
+
+.shop-title {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+/* ================= 2. SIDEBAR DE FILTROS ================= */
+.filtros-sidebar {
+    align-self: start; 
+    position: sticky;
+    top: 100px; 
+    padding-right: 15px;
+    border-right: 1px solid var(--border-color);
+}
+
+.filtro-bloque { margin-bottom: 25px; }
+
+.filtro-titulo {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.filtro-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.filtro-link:hover, .filtro-link.activo {
+    color: var(--accent-color);
+    transform: translateX(5px);
+}
+
+.filtro-cantidad {
+    font-size: 0.75rem;
+    background: var(--bg-secondary);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+/* ================= 3. AREA DE RESULTADOS ================= */
+.resultados-header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 25px;
+    background: var(--bg-card);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.buscador-interno { flex: 1; position: relative; }
+
+.buscador-interno input {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-body);
+    color: var(--text-primary);
+}
+
+/* ================= 4. GRILLA Y TARJETAS ================= */
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.producto-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.producto-enlace-contenedor:hover .producto-card {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-card);
+    border-color: var(--accent-color);
+}
+
+.producto-imagen {
+    height: 200px;
+    background: #fff; /* Resalta el producto */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.producto-imagen img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s;
+}
+
+.producto-info {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.producto-precio {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: auto;
+}
+
+/* ================= 5. RESPONSIVE PREMIUM ================= */
+@media (max-width: 991px) {
+    .shop-layout {
+        grid-template-columns: 1fr;
+    }
+    .filtros-sidebar {
+        display: none; /* En móvil usamos el buscador superior únicamente */
+    }
+    .productos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 15px;
+    }
+    .producto-imagen { height: 160px; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

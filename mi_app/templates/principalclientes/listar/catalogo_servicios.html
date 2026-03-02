@@ -1,0 +1,51 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css_clientes/listar_servicios.css' %}">
+
+<div class="container">
+    <h1 class="titulo text-center my-5 fw-bold">Nuestras Capacitaciones</h1>
+
+    <section class="servicios-container">
+        {% for s in servicios %}
+        <a href="{% url 'mi_app:detalle_servicio_cliente' s.pk %}" class="servicio-card">
+            <div class="servicio-img-wrapper">
+                <span class="badge-cat" style="position: absolute; top: 15px; left: 15px; z-index: 2;">
+                    {{ s.categoria }}
+                </span>
+                
+                {% if s.imagen %}
+                    <img src="{{ s.imagen.url }}" alt="Capacitación: {{ s.nombre_servicio }}">
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <i class="fas fa-chalkboard-teacher fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="servicio-content">
+                <h3 class="mb-2">{{ s.nombre_servicio }}</h3>
+                <p class="text-muted small mb-4">
+                    {{ s.descripcion_detallada|striptags|truncatechars:120 }}
+                </p>
+                
+                <div class="servicio-precio">
+                    <small class="fs-6 fw-normal text-muted">Inversión:</small><br>
+                    $ {{ s.valor|floatformat:0 }}
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-calendar-times fa-4x opacity-25"></i>
+            </div>
+            <h3 class="text-muted">Próximamente nuevas fechas disponibles</h3>
+            <p>Estamos programando nuestras próximas capacitaciones. ¡Vuelve pronto!</p>
+            <a href="{% url 'mi_app:contenido_cliente' %}" class="btn btn-primary rounded-pill px-4 mt-3">Volver al inicio</a>
+        </div>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

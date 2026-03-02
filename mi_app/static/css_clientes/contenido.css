@@ -1,0 +1,146 @@
+/* static/css_clientes/contenido.css */
+
+/* ================= 1. AJUSTES GLOBALES DE PÁGINA ================= */
+* { box-sizing: border-box; }
+
+.contenido-principal {
+    width: 100%;
+    overflow-x: hidden;
+    background-color: var(--bg-body);
+}
+
+/* ================= 2. CARRUSEL PREMIUM ================= */
+.carrusel-container {
+    position: relative;
+    width: 100%;
+    height: 65vh; /* Altura dinámica basada en la pantalla */
+    min-height: 400px;
+    overflow: hidden;
+    background: #000;
+}
+
+.carrusel-slides {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.5); /* Oscurece la imagen para que el texto resalte */
+}
+
+.slide-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: #ffffff !important;
+    padding: 20px;
+    max-width: 900px;
+}
+
+.slide h1 {
+    font-size: clamp(2rem, 8vw, 4.5rem); /* Tamaño fluido: se ajusta solo */
+    font-weight: 900;
+    margin-bottom: 10px;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    letter-spacing: 2px;
+}
+
+.slide p {
+    font-size: clamp(1rem, 3vw, 1.8rem);
+    color: #f1f1f1 !important;
+}
+
+/* Botones de Navegación */
+.carrusel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.carrusel-btn:hover { background: white; color: black; }
+.carrusel-btn.prev { left: 20px; }
+.carrusel-btn.next { right: 20px; }
+
+/* ================= 3. SECCIÓN DE TARJETAS (PRODUCTOS/SERVICIOS) ================= */
+.titulo-seccion {
+    text-align: center;
+    margin: 60px 0 40px;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.grid-ofertas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto 80px;
+    padding: 0 20px;
+}
+
+.producto-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-link:hover .producto-card {
+    transform: translateY(-12px);
+    border-color: var(--accent-color);
+}
+
+.producto-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 18px;
+    margin-bottom: 20px;
+}
+
+.producto-card h3 {
+    font-size: 1.6rem;
+    margin: 10px 0;
+    font-weight: 700;
+}
+
+.cta-tag {
+    color: var(--accent-color) !important;
+    font-weight: 700;
+    background: rgba(45, 0, 95, 0.08); /* Morado muy suave */
+    padding: 8px 20px;
+    border-radius: 50px;
+    display: inline-block;
+    margin-top: auto;
+}

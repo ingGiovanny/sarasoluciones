@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú de Usuario</title>
+    <link rel="stylesheet" href="{% static 'css/modo_oscuro.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<nav class="app-header navbar navbar-expand bg-body">
+        <!--begin::Container-->
+        <div class="container-fluid">
+          <!--begin::Start Navbar Links-->
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                <i class="bi bi-list"></i>
+              </a>
+            </li>
+            <li class="nav-item d-none d-md-block">
+              <a href="https://wa.me/573125338803?text=Hola,%20me%20gustaría%20más%20información%20sobre%20el%20producto%20A" 
+                target="_blank" 
+                class="btn btn-primary"><i class="bi bi-whatsapp"></i>&nbsp;Contáctanos por WhatsApp</a>
+                        
+            </li>
+
+          </ul>
+    
+          <ul class="navbar-nav ms-auto">
+            <!--begin::Navbar Search-->
+            <li class="nav-item"></li>
+            <!--end::Navbar Search-->
+ <li class="nav-item d-flex align-items-center me-2">
+    <input type="checkbox" id="mode-toggle" style="display: none;">
+    <label for="mode-toggle" class="switch-label">
+        <div class="ball">
+            <i id="mode-icon" class="bi bi-brightness-high"></i>
+        </div>
+            <span class="status-text" id="mode-text">claro</span>
+    </label>
+</li>
+
+
+            
+
+            <!--begin::Fullscreen Toggle-->
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+                <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+                <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+              </a>
+            </li>
+            
+            <!--end::Fullscreen Toggle-->
+
+            
+           
+                <li class="user-body">
+               
+                </li>
+              </ul>
+            
+            <li class="nav-item dropdown">
+                <div class="user-menu-container" style="display: flex; align-items: center; height: 100%; padding: 0 10px;">
+                    <div class="user-trigger" onclick="toggleMenu()" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <span style="font-size: 14px; font-weight: 600;">Söfîå <i class="fas fa-chevron-down" style="font-size: 10px;"></i></span>
+                    </div>
+                    
+<div id="dropdownMenu" class="dropdown-content-custom">
+    <div class="menu-header-custom">BIENVENIDOS</div>
+    
+    <a href="/perfil/" class="menu-item-custom">
+        <i class="fas fa-user"></i> Mi perfil
+    </a>
+    <a href="#" class="menu-item-custom"><i class="fas fa-cog"></i> Configuración</a>
+<hr>
+    <a href="/ayuda/" class="menu-item-custom">
+        <i class="fas fa-question-circle"></i> Ayuda
+    </a>
+
+<a href="/login/" class="menu-item-custom login-custom">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+    </a>
+</div>
+                </div>
+            </li>
+          </ul>
+    
+  </nav>
+  </body>
+</html>

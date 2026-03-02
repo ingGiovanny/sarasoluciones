@@ -1,0 +1,55 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+
+{% block content %}
+<div class="carrusel-container">
+    <div class="carrusel-slides" id="slides-wrapper">
+        <div class="slide">
+            <img src="{% static 'img/capacitaciones.png' %}" alt="Promoción Capacitaciones">
+            <div class="slide-content">
+                <h1>BLACK DAYS</h1>
+                <p>Hasta 55% de descuento en capacitaciones de seguridad</p>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <img src="{% static 'img/altura.jpg' %}" alt="Cursos de Alturas">
+            <div class="slide-content">
+                <h1>ALTURAS</h1>
+                <p>Certifícate con los expertos en seguridad industrial</p>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <img src="{% static 'img/ocupacional.jpg' %}" alt="Seguridad Ocupacional">
+            <div class="slide-content">
+                <h1>SEGURIDAD</h1>
+                <p>Toda la dotación ocupacional que tu empresa necesita</p>
+            </div>
+        </div>
+    </div>
+    
+    <button class="carrusel-btn prev" onclick="moverSlide(-1)" aria-label="Anterior">&#10094;</button>
+    <button class="carrusel-btn next" onclick="moverSlide(1)" aria-label="Siguiente">&#10095;</button>
+</div>
+
+<h1 class="titulo-seccion">Te ofrecemos</h1>
+
+<section class="grid-ofertas">
+    <a href="{% url 'mi_app:productos_clientes' %}" class="card-link">
+        <div class="producto-card">
+            <img src="{% static 'img/ocupacional.jpg' %}" alt="Acceder al catálogo de productos">
+            <h3>Productos</h3>
+            <span class="cta-tag">Ver Catálogo <i class="fas fa-arrow-right ms-1"></i></span>
+        </div>
+    </a>
+
+    <a href="{% url 'mi_app:catalogo_servicios' %}" class="card-link">
+        <div class="producto-card">
+            <img src="{% static 'img/capacitaconimg.png' %}" alt="Acceder al catálogo de servicios">
+            <h3>Servicios</h3>
+            <span class="cta-tag">Ver Cursos <i class="fas fa-arrow-right ms-1"></i></span>
+        </div>
+    </a>
+</section>
+{% endblock %}

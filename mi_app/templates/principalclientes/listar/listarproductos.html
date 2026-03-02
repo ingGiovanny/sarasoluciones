@@ -1,0 +1,163 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css_clientes/listar_producto.css' %}">
+
+<div class="shop-title-container">
+    <h1 class="shop-title">Catálogo de Productos</h1>
+</div>
+
+<div class="shop-layout">
+
+   <aside class="filtros-sidebar">
+    
+    {% if request.GET.categoria or request.GET.marca or request.GET.color or request.GET.q %}
+        <div class="filtros-activos-bloque mb-4 p-3 rounded" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <h4 class="fs-6 fw-bold mb-3" style="color: var(--text-primary);">Filtros aplicados:</h4>
+            <div class="d-flex flex-wrap gap-2">
+                
+                {% if request.GET.q %}
+                    <a href="?categoria={{ request.GET.categoria }}&marca={{ request.GET.marca }}&color={{ request.GET.color }}" class="badge rounded-pill text-decoration-none px-3 py-2" style="background-color: var(--accent-color); color: white;">
+                        Búsqueda: {{ request.GET.q }} <i class="fas fa-times ms-1"></i>
+                    </a>
+                {% endif %}
+
+                {% if request.GET.categoria %}
+                    <a href="?q={{ request.GET.q }}&marca={{ request.GET.marca }}&color={{ request.GET.color }}" class="badge rounded-pill text-decoration-none px-3 py-2" style="background-color: var(--accent-color); color: white;">
+                        Categoría <i class="fas fa-times ms-1"></i>
+                    </a>
+                {% endif %}
+
+                {% if request.GET.marca %}
+                    <a href="?q={{ request.GET.q }}&categoria={{ request.GET.categoria }}&color={{ request.GET.color }}" class="badge rounded-pill text-decoration-none px-3 py-2" style="background-color: var(--accent-color); color: white;">
+                        Marca <i class="fas fa-times ms-1"></i>
+                    </a>
+                {% endif %}
+
+                {% if request.GET.color %}
+                    <a href="?q={{ request.GET.q }}&categoria={{ request.GET.categoria }}&marca={{ request.GET.marca }}" class="badge rounded-pill text-decoration-none px-3 py-2" style="background-color: var(--accent-color); color: white;">
+                        Color: {{ request.GET.color }} <i class="fas fa-times ms-1"></i>
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'mi_app:productos_clientes' %}" class="badge rounded-pill bg-danger text-white text-decoration-none px-3 py-2">
+                    Borrar todos
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="filtro-bloque">
+        <h3 class="filtro-titulo">Categorías</h3>
+        <ul class="filtro-lista">
+            {% for cat in categorias %}
+            <li class="filtro-item">
+                <a href="?categoria={{ cat.id }}&marca={{ request.GET.marca }}&color={{ request.GET.color }}&q={{ request.GET.q }}" 
+                   class="filtro-link {% if request.GET.categoria|add:'0' == cat.id %}activo fw-bold text-primary{% endif %}">
+                    {{ cat.nombre_categoria }}
+                    <span class="filtro-cantidad">{{ cat.total }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="filtro-bloque">
+        <h3 class="filtro-titulo">Marcas</h3>
+        <ul class="filtro-lista">
+            {% for marca in marcas %}
+            <li class="filtro-item">
+                <a href="?marca={{ marca.id }}&categoria={{ request.GET.categoria }}&color={{ request.GET.color }}&q={{ request.GET.q }}" 
+                   class="filtro-link {% if request.GET.marca|add:'0' == marca.id %}activo fw-bold text-primary{% endif %}">
+                    {{ marca.nombre_marca }}
+                    <span class="filtro-cantidad">{{ marca.total }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="filtro-bloque">
+        <h3 class="filtro-titulo">Colores</h3>
+        <ul class="filtro-lista">
+            {% for color in colores %}
+            <li class="filtro-item">
+                <a href="?color={{ color.nombre }}&categoria={{ request.GET.categoria }}&marca={{ request.GET.marca }}&q={{ request.GET.q }}" 
+                   class="filtro-link {% if request.GET.color == color.nombre %}activo fw-bold text-primary{% endif %}">
+                    {{ color.nombre }}
+                    <span class="filtro-cantidad">{{ color.total }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+   </aside>
+
+    <main>
+        <div class="resultados-header">
+            <div class="buscador-interno">
+                <form action="" method="GET" style="position: relative;">
+                    <input type="hidden" name="categoria" value="{{ request.GET.categoria|default:'' }}">
+                    <input type="hidden" name="marca" value="{{ request.GET.marca|default:'' }}">
+                    <input type="hidden" name="color" value="{{ request.GET.color|default:'' }}">
+                    
+                    <input type="text" name="q" value="{{ request.GET.q|default:'' }}" 
+                           placeholder="¿Qué estás buscando hoy?" autocomplete="off" class="form-control" style="padding-right: 40px;">
+                    
+                    <button type="submit" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-secondary);">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="resultados-contador">
+                {{ productos|length }} productos encontrados
+            </div>
+        </div>
+
+        <div class="productos-grid">
+            {% for producto in productos %}
+            <a href="{% url 'mi_app:detalle_producto' producto.id %}" class="producto-enlace-contenedor">
+                <div class="producto-card">
+                    <div class="producto-imagen">
+                        {% if producto.logo_producto %}
+                            <img src="{{ producto.logo_producto.url }}" alt="{{ producto.id_presentacion.nombre }}">
+                        {% else %}
+                            <i class="fas fa-box-open fa-3x text-muted"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="producto-info">
+                        <div class="producto-nombre">
+                             {{ producto.id_presentacion.nombre }}
+                        </div>
+                        <div class="producto-meta small">
+                            {{ producto.id_marca.nombre_marca }} | {{ producto.id_presentacion.color }}
+                        </div>
+                        <div class="producto-precio text-primary">
+                            <small>$</small>{{ producto.valor_unitario|floatformat:0 }}
+                        </div>
+                        
+                        <div class="badges-container mt-2">
+                            {% if producto.cantidad_producto <= 5 and producto.cantidad_producto > 0 %}
+                                <span class="badge bg-warning text-dark" style="font-size: 0.65rem;">¡Últimas {{ producto.cantidad_producto }}!</span>
+                            {% elif producto.cantidad_producto == 0 %}
+                                <span class="badge bg-secondary" style="font-size: 0.65rem;">Agotado</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="sin-productos w-100 text-center py-5">
+                <i class="fas fa-search fa-3x mb-3 opacity-20"></i>
+                <h3>No hay coincidencias</h3>
+                <p>Prueba con otros filtros o términos de búsqueda.</p>
+                <a href="{% url 'mi_app:productos_clientes' %}" class="btn btn-primary mt-3">Ver todo el catálogo</a>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+{% endblock %}

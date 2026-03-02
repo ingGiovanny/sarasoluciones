@@ -1,0 +1,137 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css_clientes/detalle_producto.css' %}">
+
+<div class="dash-wrap">
+    <div class="dash-card">
+        <div class="producto-grid">
+            
+            <div class="producto-galeria">
+                <div class="imagen-principal-wrapper">
+                    {% if producto.logo_producto %}
+                        <img id="img-principal" src="{{ producto.logo_producto.url }}" alt="{{ producto.id_presentacion.nombre }}">
+                    {% else %}
+                        <div class="text-center text-muted">
+                            <i class="fas fa-box-open fa-5x opacity-25"></i>
+                            <p class="mt-2">Sin imagen</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="miniaturas-container">
+                    {% if producto.logo_producto %}
+                        <img src="{{ producto.logo_producto.url }}" class="miniatura-item active" onclick="cambiarImagen(this.src, this)">
+                    {% endif %}
+                    {% for img in producto.imagenes.all %}
+                        {% if img.imagen %} 
+                            <img src="{{ img.imagen.url }}" class="miniatura-item" onclick="cambiarImagen(this.src, this)">
+                        {% endif %} 
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="info-producto-col">
+                <span class="marca-badge">{{ producto.id_marca.nombre_marca }}</span>
+                <h1 class="producto-titulo text-decoration-none">{{ producto.id_presentacion.nombre }}</h1>
+
+                <div class="precio-detalle-box">
+                    <span class="text-muted small fw-bold text-uppercase d-block mb-1">Precio Unitario:</span>
+                    <div class="producto-precio-valor">
+                        $ {{ producto.valor_unitario|floatformat:0 }}
+                    </div>
+                </div>
+
+                <div class="descripcion-texto mt-4">
+                    <h5 class="fw-bold"><i class="fas fa-info-circle me-2"></i> Especificaciones Técnicas</h5>
+                    <p class="text-muted">{{ producto.id_presentacion.descripcion }}</p>
+                    <div class="row g-2 mt-2">
+                        <div class="col-6">
+                            <div class="p-2 border rounded bg-light small">
+                                <strong>Modelo:</strong> {{ producto.id_presentacion.modelo }}
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 border rounded bg-light small">
+                                <strong>Color:</strong> {{ producto.id_presentacion.color }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="compra-box">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        {% if producto.cantidad_producto > 0 %}
+                            <span class="badge bg-success-soft py-2 px-3">
+                                <i class="fas fa-check-circle me-1"></i> {{ producto.cantidad_producto }} Unidades en stock
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger-soft py-2 px-3">
+                                <i class="fas fa-times-circle me-1"></i> Agotado temporalmente
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    {% if producto.cantidad_producto > 0 %}
+                        <form action="{% url 'mi_app:agregar_carrito' producto.id %}" method="POST">
+                            {% csrf_token %}           
+                                <div class="selector-cantidad mb-4">
+                                        <span class="fw-bold small text-muted text-uppercase d-block mb-2">Cantidad a comprar:</span>
+                                        <div class="amazon-select-wrapper">
+                                            <select id="cantidad-input" class="select-amazon-style" 
+                                                    onmousedown="abrirSelector(this)" 
+                                                    onchange="cerrarSelector(this)" 
+                                                    onblur="cerrarSelector(this)">
+                                                
+                                                {% with ''|center:producto.cantidad_producto as range %}
+                                                {% for _ in range %}
+                                                    <option value="{{ forloop.counter }}">{{ forloop.counter }} unidad{% if not forloop.first %}es{% endif %}</option>
+                                                {% endfor %}
+                                                {% endwith %}
+                                                
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                <div class="d-grid gap-2">
+                                    <button type="button" onclick="agregarAlCarrito('{{ producto.id }}', false)" class="btn-carrito">
+                                        <i class="fas fa-cart-plus me-2"></i> Añadir al carrito
+                                    </button>
+
+                                    <button type="button" onclick="agregarAlCarrito('{{ producto.id }}', true)" class="btn-comprar-ahora">
+                                        <i class="fas fa-bolt me-2"></i> Comprar ahora
+                                    </button>
+                                </div>
+
+                                {% csrf_token %}
+                        </form>
+                    {% else %}
+                        <button type="button" class="btn w-100 py-3 rounded-pill btn-secondary opacity-50" disabled>No disponible</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js_clientes/detalle_producto.js' %}"></script>
+
+{% if messages %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        {% for message in messages %}
+            Swal.fire({
+                icon: '{% if message.tags == "error" %}error{% elif message.tags == "warning" %}warning{% else %}success{% endif %}',
+                title: '{% if message.tags == "error" %}Error{% elif message.tags == "warning" %}Aviso{% else %}¡Éxito!{% endif %}',
+                text: '{{ message|escapejs }}',
+                confirmButtonColor: 'var(--accent-color)',
+                confirmButtonText: 'Continuar comprando',
+                background: document.body.classList.contains('dark-mode') ? '#1e1e1e' : '#ffffff',
+                color: document.body.classList.contains('dark-mode') ? '#ffffff' : '#000000'
+            });
+        {% endfor %}
+    });
+</script>
+{% endif %}
+{% endblock %}

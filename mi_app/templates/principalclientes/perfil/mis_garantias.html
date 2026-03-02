@@ -1,0 +1,238 @@
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* ============================================================
+   SISTEMA DE VARIABLES — BLANCO Y NEGRO MINIMALISTA
+   ============================================================ */
+:root {
+    /* MODO DÍA */
+    --page-bg:        #f9f9f9; /* Gris ultra claro para dar profundidad a la tarjeta */
+    --card-bg:        #ffffff;
+    --card-border:    rgba(0, 0, 0, 0.1);
+    --card-shadow:    0 4px 24px rgba(0, 0, 0, 0.05);
+    --card-hover:     0 12px 40px rgba(0, 0, 0, 0.08);
+
+    --accent:         #000000; /* Acentos en negro puro */
+    --accent-light:   #f0f0f0; /* Gris muy suave para fondos de iconos */
+    --accent-glow:    rgba(0, 0, 0, 0.1);
+
+    --text-h:         #000000; /* Títulos negros */
+    --text-body:      #222222; /* Texto normal casi negro */
+    --text-muted:     #666666; /* Texto secundario gris */
+    
+    --border:         rgba(0, 0, 0, 0.12);
+    --divider:        rgba(0, 0, 0, 0.06);
+
+    /* Colores Semánticos (Solo para los estados) */
+    --success-bg:     #eaf7ee;
+    --success-text:   #1a7a3a;
+    --warning-bg:     #fff8e1;
+    --warning-text:   #c07800;
+    --danger-soft:    rgba(180, 30, 30, 0.08);
+    --danger-text:    #b41e1e;
+
+    --font-main:      'Sora', sans-serif;
+    --font-mono:      'DM Mono', monospace;
+
+    --radius-card:    18px;
+    --radius-pill:    999px;
+    --transition:     0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark-mode {
+    /* MODO OSCURO */
+    --page-bg:        #000000; /* Fondo negro puro */
+    --card-bg:        #121212; /* Tarjetas gris muy oscuro para separar del fondo */
+    --card-border:    rgba(255, 255, 255, 0.15);
+    --card-shadow:    0 4px 24px rgba(255, 255, 255, 0.05);
+    --card-hover:     0 12px 40px rgba(255, 255, 255, 0.1);
+
+    --accent:         #ffffff; /* Acentos en blanco puro */
+    --accent-light:   rgba(255, 255, 255, 0.1); /* Blanco transparente para fondos */
+    
+    --text-h:         #ffffff; /* Títulos blancos */
+    --text-body:      #e0e0e0; /* Texto normal gris claro */
+    --text-muted:     #9e9e9e; /* Texto secundario gris medio */
+
+    --border:         rgba(255, 255, 255, 0.15);
+    --divider:        rgba(255, 255, 255, 0.08);
+
+    /* Colores Semánticos adaptados a la oscuridad */
+    --success-bg:     rgba(46, 125, 50, 0.2);
+    --success-text:   #81c784;
+    --warning-bg:     rgba(239, 108, 0, 0.2);
+    --warning-text:   #ffb74d;
+    --danger-soft:    rgba(239, 83, 80, 0.15);
+    --danger-text:    #e57373;
+}
+
+/* ============================================================
+   ESTILOS BASE DE TARJETA Y TABLA
+   ============================================================ */
+body { font-family: var(--font-main); background: var(--page-bg); color: var(--text-body); }
+
+.dash-wrap { max-width: 1200px; margin: 0 auto; padding: 48px 20px 80px; }
+
+.dash-card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: var(--radius-card); box-shadow: var(--card-shadow);
+    overflow: hidden; animation: fadeUp 0.45s ease both;
+}
+
+.dash-card .card-head {
+    padding: 20px 24px; border-bottom: 1px solid var(--divider);
+    display: flex; align-items: center; justify-content: space-between;
+}
+.dash-card .card-head h5 {
+    font-size: 1.1rem; font-weight: 700; color: var(--text-h); margin: 0;
+    display: flex; align-items: center; gap: 10px;
+}
+.dash-card .card-head h5 .icon-wrap {
+    width: 36px; height: 36px; background: var(--accent-light);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    color: var(--accent); font-size: 1rem;
+}
+
+/* ============================================================
+   ESTILOS DE LA TABLA Y BADGES
+   ============================================================ */
+.orders-table-wrap { overflow-x: auto; }
+table.orders-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+table.orders-table thead tr { border-bottom: 2px solid var(--border); }
+table.orders-table th {
+    padding: 12px 16px; text-align: left; font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted);
+}
+table.orders-table tbody tr { border-bottom: 1px solid var(--divider); transition: background var(--transition); }
+table.orders-table tbody tr:hover { background: var(--accent-light); }
+table.orders-table td { padding: 16px; color: var(--text-body); vertical-align: middle; }
+
+.comprobante-code {
+    font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+    color: var(--text-h); background: var(--accent-light); padding: 3px 8px; border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+.status-badge {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 0.73rem;
+    font-weight: 700; padding: 5px 12px; border-radius: var(--radius-pill); white-space: nowrap;
+}
+.status-revision { background: var(--warning-bg); color: var(--warning-text); }
+.status-aprobado { background: var(--success-bg); color: var(--success-text); }
+.status-rechazado { background: var(--danger-soft); color: var(--danger-text); }
+
+/* ESTADO VACÍO */
+.empty-state { text-align: center; padding: 60px 24px; color: var(--text-muted); }
+.empty-icon {
+    width: 72px; height: 72px; background: var(--accent-light); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+    color: var(--accent); margin: 0 auto 20px; opacity: 0.7;
+}
+.empty-state h5 { font-size: 1rem; font-weight: 700; color: var(--text-h); margin-bottom: 8px; }
+
+/* BOTÓN VOLVER */
+.btn-volver {
+    display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px;
+    background: transparent; color: var(--text-h); border: 1px solid var(--border);
+    border-radius: var(--radius-pill); text-decoration: none; font-weight: 600; font-size: 0.8rem;
+    transition: all var(--transition);
+}
+.btn-volver:hover { background: var(--accent); color: var(--page-bg); border-color: var(--accent); }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+</style>
+
+<div class="dash-wrap">
+    <div class="dash-card">
+        
+        <div class="card-head">
+            <h5>
+                <div class="icon-wrap"><i class="fas fa-shield-alt"></i></div>
+                Mis Solicitudes de Garantía
+            </h5>
+            <a href="{% url 'mi_app:mi_perfil' %}" class="btn-volver">
+                <i class="fas fa-arrow-left"></i> Volver a mis compras
+            </a>
+        </div>
+
+        <div class="orders-table-wrap">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Fecha</th>
+                        <th>Producto / Transacción</th>
+                        <th>Mi Motivo</th>
+                        <th>Estado</th>
+                        <th>Respuesta Soluciones Sara</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gar in garantias %}
+                        <tr>
+                            <td class="ps-4" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">
+                                {{ gar.fecha_garantia|date:"d/m/Y" }}
+                            </td>
+                            
+                            <td>
+                                <div style="font-weight: 700; color: var(--text-h); margin-bottom: 6px;">
+                                    {{ gar.id_Pedido.id_producto.id_presentacion.nombre }}
+                                </div>
+                                <span class="comprobante-code">TX: {{ gar.id_Pedido.comprobante_pago }}</span>
+                            </td>
+                            
+                            <td style="max-width: 280px; white-space: normal; line-height: 1.5; font-size: 0.8rem;">
+                                <i class="fas fa-quote-left" style="color: var(--text-muted); opacity: 0.5; margin-right: 4px;"></i>
+                                {{ gar.descripcion_garantia }}
+                            </td>
+                            
+                            <td>
+                                {% if gar.estado_garantia == 'PENDIENTE' %}
+                                    <span class="status-badge status-revision"><i class="fas fa-clock"></i> En Revisión</span>
+                                {% elif gar.estado_garantia == 'APROBADO' %}
+                                    <span class="status-badge status-aprobado"><i class="fas fa-check"></i> Aprobada</span>
+                                {% else %}
+                                    <span class="status-badge status-rechazado"><i class="fas fa-times"></i> Rechazada</span>
+                                {% endif %}
+                            </td>
+                            
+                            <td>
+                                {% if gar.respuesta_admin %}
+                                    <div style="color: var(--text-h); font-weight: 700; font-size: 0.8rem; max-width: 250px; white-space: normal;">
+                                        {{ gar.respuesta_admin }}
+                                    </div>
+                                {% else %}
+                                    <span style="color: var(--text-muted); font-size: 0.8rem; font-style: italic;">
+                                        <i class="fas fa-hourglass-half me-1"></i> Esperando respuesta...
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <div class="empty-icon"><i class="fas fa-clipboard-check"></i></div>
+                                    <h5>No hay solicitudes</h5>
+                                    <p style="font-size: 0.85rem;">No has realizado ninguna solicitud de garantía hasta el momento.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

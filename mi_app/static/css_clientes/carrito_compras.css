@@ -1,0 +1,214 @@
+/* static/css_clientes/carrito_compras.css */
+
+/* --- RESET DE LINKS --- */
+a, .btn-shop { text-decoration: none !important; }
+
+:root {
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.cart-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* --- ENCABEZADO --- */
+.cart-header {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-header h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+/* --- TARJETAS --- */
+/* Aseguramos que usen la variable de fondo */
+.cart-card, .summary-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    color: var(--text-primary);
+}
+
+/* --- TABLA Y FILAS --- */
+.table { color: var(--text-primary) !important; }
+
+.table thead th {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table td { border-bottom: 1px solid var(--border-color); }
+
+.producto-row {
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+.row-desactivada {
+    opacity: 0.4;
+    filter: grayscale(100%);
+    background-color: var(--bg-secondary) !important;
+}
+
+.img-cart {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 12px;
+    background: #ffffff; /* La imagen de producto siempre necesita fondo blanco para verse bien */
+    border: 1px solid var(--border-color);
+}
+
+/* Forzamos atenuación de la imagen en modo oscuro para que no deslumbre */
+body.dark-mode .img-cart { filter: brightness(0.85); }
+
+.product-name { font-weight: 700; color: var(--text-primary); font-size: 1.1rem; }
+.product-price { font-weight: 800; color: #27ae60; font-size: 1.2rem; }
+
+/* --- CONTROLES --- */
+.quantity-control {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    padding: 4px;
+}
+
+/* --- RESUMEN DE PAGO (Sticky) --- */
+.summary-card {
+    padding: 30px;
+    position: sticky;
+    top: 100px;
+}
+
+/* Fix para el selector (dropdown) en modo oscuro */
+body.dark-mode select.form-select {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Textos fijos en el resumen */
+.text-muted { color: var(--text-secondary) !important; }
+
+.summary-total {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px dashed var(--border-color);
+    font-size: 1.8rem;
+    color: #27ae60 !important;
+    font-weight: 900;
+}
+
+/* --- BOTONES --- */
+.btn-delete {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-delete:hover {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn-whatsapp {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    color: white !important;
+    width: 100%;
+    padding: 16px;
+    border-radius: 50px;
+    font-weight: 800;
+    text-transform: uppercase;
+    border: none;
+    transition: transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-whatsapp:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 991px) {
+    .summary-card { position: static; margin-top: 30px; }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+/* =======================================================
+   RECALIBRACIÓN FINAL - SOLUCIONES SARA
+   ======================================================= */
+body.dark-mode .product-name {
+    color: #ffffff !important;
+}
+
+body.dark-mode .summary-card h4,
+body.dark-mode label,
+body.dark-mode .summary-label {
+    color: #ffffff !important;
+}
+
+/* 2. Textos secundarios (como "$ XXX unitario" o "Dirección de Entrega:") */
+body.dark-mode .text-muted,
+body.dark-mode small {
+    color: #b0b0b0 !important; /* Un gris claro legible */
+}
+
+/* 3. FIX DE LOS NÚMEROS DE CANTIDAD */
+body.dark-mode .form-control {
+    background-color: #2b2b2b !important;
+    color: #ffffff !important;
+    border-color: #444 !important;
+}
+
+/* 4. Evitar fondos blancos residuales */
+body.dark-mode .table,
+body.dark-mode .table td,
+body.dark-mode .table th,
+body.dark-mode .cart-card {
+    background-color: var(--bg-card) !important;
+    color: #ffffff !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 5. Colores de precios */
+body.dark-mode .product-price,
+body.dark-mode .total-compra-span,
+body.dark-mode .summary-total {
+    color: #2ecc71 !important;
+}
+
+/* 6. Botones de acciones */
+body.dark-mode .btn-delete {
+    background-color: rgba(231, 76, 60, 0.2) !important;
+    color: #ff6b6b !important; /* Rojo más brillante en modo oscuro */
+}
+
+body.dark-mode .btn-outline-secondary {
+    color: #ffffff !important;
+    border-color: #666 !important;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+    background-color: #444 !important;
+}

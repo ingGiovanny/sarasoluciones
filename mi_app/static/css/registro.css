@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+/* Importar fuente moderna Poppins arriba */
+/* Elimina el fondo azul del autocompletado */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body.login-page {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0d1b2a; /* Fondo exterior oscuro */
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Contenedor principal (Ventana de la imagen) */
+.login-box {
+    width: 95%;
+    max-width: 950px;
+    background-color: #102131; /* Fondo azul muy oscuro del formulario */
+    display: flex;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    min-height: 600px;
+}
+
+/* Lado izquierdo: Diseño geométrico con flechas */
+.login-box::before {
+    content: "Let's Make it Happen Together!";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 45%;
+    height: 100%;
+    /* Gradiente para los colores turquesa y gris de la imagen */
+    background: 
+        linear-gradient(135deg, #a4a4a4 50%, transparent 50%) 0 0 / 100% 50% no-repeat,
+        #1ab3a3;
+    clip-path: polygon(0 0, 100% 0, 75% 50%, 100% 100%, 0 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: 50px;
+    color: white;
+    font-size: 2.2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+/* Contenedor del contenido del formulario */
+.card {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.card-body {
+    width: 55%;
+    padding: 50px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    color: #1ab3a3; /* Título color Turquesa */
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: #8892b0;
+    font-size: 0.85rem;
+    margin-bottom: 30px;
+}
+
+/* Cuadrícula para organizar los campos en dos columnas */
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    color: #ffffff;
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+    font-weight: 400;
+}
+
+.form-group input {
+    background: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+}
+
+/* Resaltado para el campo de usuario */
+input.highlight {
+    box-shadow: 0 0 0 2px #1ab3a3;
+}
+
+/* Elementos que ocupan el ancho total de la grilla */
+.terms-group, .btn-container, .btn-submit, .social-buttons {
+    grid-column: span 2;
+}
+
+.terms-group {
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: white;
+}
+
+.terms-group a {
+    color: #1ab3a3;
+    text-decoration: none;
+}
+
+/* Botón principal */
+.btn-submit {
+    background-color: #1ab3a3;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background-color: #159487;
+}
+
+/* Botones de redes sociales (opcionales como en la imagen) */
+.social-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-social {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* Ajustes para dispositivos móviles */
+@media (max-width: 800px) {
+    .login-box::before {
+        display: none; /* Ocultar parte visual en móviles */
+    }
+    .card-body {
+        width: 100%;
+        padding: 30px;
+    }
+    form {
+        grid-template-columns: 1fr; /* Una columna en móvil */
+    }
+    .terms-group, .btn-submit, .social-buttons {
+        grid-column: span 1;
+    }
+}

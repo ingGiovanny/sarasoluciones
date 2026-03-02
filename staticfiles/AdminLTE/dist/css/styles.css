@@ -1,0 +1,158 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-image: url("../imagen/CAMION 1.jpg");
+    background-repeat: no-repeat;  /* Evita la repetición */
+    background-size: cover;        /* Ajusta la imagen al tamaño de la pantalla */
+    background-position: center;   /* Centra la imagen */
+}
+
+
+/* --------------BARRA LATERAL ---------------------------------------------------------------------------*/
+/* Botón de menú (solo visible en móvil) */
+.menu-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 20px;
+    cursor: pointer;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+/* Barra lateral */
+.sidebar {
+    width: 250px;
+    background: linear-gradient(180deg, #007bff, #003d99);
+    color: white;
+    padding: 15px;
+    position: fixed;
+    height: 100%;
+    left: -250px; /* Oculta la barra en móvil */
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+    
+}
+
+/* Cuando la barra está abierta */
+.sidebar.open {
+    left: 0;
+}
+
+/* Botón de cerrar */
+.close-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 50%; /* Para que ocupe todo el ancho */
+    position: absolute;
+    bottom: 10px; /* Lo manda hasta abajo */
+    left: 0;
+}
+
+/* Ocultar el botón en pantallas grandes */
+@media (min-width: 768px) {
+    .close-btn {
+        display: none;
+    }
+}
+
+.close-btn:hover {
+    background: #cc0000;
+}
+
+/* Lista de opciones */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 10px; /* Redondea las opciones */
+    margin: 5px 0; /* Añade margen para que no se vean pegadas */
+    transition: background 0.3s ease-in-out;
+}
+
+
+
+.sidebar ul li:hover {
+    background: #0056b3;
+}
+
+/* Submenús */
+.submenu {
+    
+    display: none;
+    background: white;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    opacity: 0; /* Oculto por defecto */
+    transform: scaleY(0); /* Colapsado en vertical */
+    transform-origin: top;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Cuando se abre un submenú */
+.submenu.open {
+    display: block;
+    opacity: 1;
+    transform: scaleY(1); /* Se expande verticalmente */
+}
+
+.submenu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.submenu ul li {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    border-radius: 10px; /* Redondea las opciones del submenú */
+    margin: 5px 0; /* Espaciado entre opciones */
+    transition: background 0.3s ease-in-out;
+}
+
+.submenu ul li a {
+    color: black !important; /* Color negro para el texto */
+    text-decoration: none !important; /* Quita el subrayado */
+    display: block; /* Hace que el enlace ocupe todo el ancho */
+    padding: 8px;
+    border-radius: 5px; /* Redondea los bordes */
+    transition: background 0.3s ease-in-out;
+}
+
+.submenu ul li a:hover {
+    background: #d1e7ff; /* Color de fondo al pasar el mouse */
+    color: #0056b3 !important; /* Color del texto al pasar el mouse */
+}
+
+.submenu ul li:hover {
+    background: #f0f0f0;
+}
+
+/* En pantallas grandes, la barra siempre está abierta */
+@media (min-width: 768px) {
+    .sidebar {
+        left: 0;
+    }
+    .menu-btn {
+        display: none;
+    }
+}
+/*---------- FIN BARRA LATERAL ---------------------------------------------------*/

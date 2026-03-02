@@ -1,0 +1,83 @@
+{% extends "listar.html" %}
+
+{% block titulo %}
+    <h1 class="text-center">Gestión De Servicios</h1>
+{% endblock titulo %}
+
+{% block agregar %}
+<a href="{{ crear_url }}" class="btn btn-primary btn-xs">
+    <i class="fas fa-plus"></i> Agregar Servicio
+</a>
+  <a href="{% url 'mi_app:pdf_servicios' %}" class="btn btn-danger">
+    <i class="fas fa-file-pdf"></i> Descargar Reporte
+</a>
+
+{% endblock %}
+
+{% block columnas %}
+    <th>Imagen</th>
+    <th>Servicio</th>
+    <th>Categoría</th>
+    <th>Precio</th>
+    <th class="text-center">Estado</th>
+    <th class="text-center">Destacado</th>
+    <th>Acciones</th>
+{% endblock %}
+
+{% block iterar %}
+    {% for s in object_list %}
+        <tr>
+            <td>
+                {% if s.imagen %}
+                    <img src="{{ s.imagen.url }}" alt="img" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">
+                {% else %}
+                    <i class="fas fa-image text-muted"></i>
+                {% endif %}
+            </td>
+            <td>{{ s.nombre_servicio }}</td>
+            <td>{{ s.categoria }}</td>
+            <td>$ {{ s.valor|floatformat:0 }}</td>
+            
+            <td class="text-center">
+                {% if s.activo %}
+                    <span class="badge badge-success" style="color: green;"><i class="fas fa-check"></i></span>
+                {% else %}
+                    <span class="badge badge-danger" style="color: red;"><i class="fas fa-times"></i></span>
+                {% endif %}
+            </td>
+            
+            <td class="text-center">
+                {% if s.destacado %}
+                    <span class="badge badge-warning text-dark">⭐</span>
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{% url 'mi_app:servicio_editar' s.id %}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
+                    <i class="bi bi-pen-fill"></i>
+                </a>
+                <a href="{% url 'mi_app:servicio_eliminar' s.id %}" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Eliminar">
+                    <i class="bi bi-trash3-fill"></i>
+                </a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="7" class="text-center">No hay servicios registrados.</td>
+        </tr>
+    {% endfor %}
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      {% if messages %}
+        {% for message in messages %}
+          Swal.fire({
+            icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
+            title: '{{ message|escapejs }}',
+            timer: 2500,
+            showConfirmButton: false
+          });
+        {% endfor %}
+      {% endif %}
+    </script>
+{% endblock %}

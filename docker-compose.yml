@@ -1,0 +1,109 @@
+# =================================================================
+#  Archivo Docker Compose hace uso de las variables en .en
+#  Versión optimizada con documentación y buenas prácticas.
+# =================================================================
+
+services:
+  # --- Servicio de la Aplicación Django ---
+  web:
+    # Construye la imagen apartir del Dockerfile en la ruta actual
+    build: .
+    image: sarasoluciones_web # Nombre de la imagen Docker construida
+    container_name: sarasoluciones_app # Nombre del contenedor
+    env_file: .env
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      # Montal el codigo del proyecto dentro del contenedor en la carpeta /app
+      - .:/app
+      # Monta un "volumen nombrado" para los archivos estáticos.
+      - sarasoluciones_static_volume:/app/staticfiles
+      - sarasoluciones_media_volume:/app/media
+    ports:
+      # Mapea el puerto 8000 dentro del contenedor al puerto 8015 afuera, 
+      # en tu máquina. Así, puedes acceder a tu app desde http://localhost:8015.
+      - "8015:8000" # OJO Puerto del Proxy Inverso.. (8015)
+    networks:
+      # Asegura que este contenedor pueda comunicarse con otros contenedores
+      # en la misma red
+      - sarasoluciones_network # Se conecta a la red definida abajo
+    environment:
+      # Carga las variables del archivo .env
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=db
+      - DB_PORT=3306
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+    # This service will not start until the 'db' service reports as healthy
+    depends_on:
+      # Define el orden de arranque de los servicios.
+      # Le dice al servicio web que no intente arrancar hasta que el servicio 
+      # db no solo se haya iniciado
+      db:
+        # db debe estar reportando un estado "saludable" (healthcheck)
+        condition: service_healthy
+
+  # --- Servicio de Base de Datos MySQL ---
+  db:
+    image: mysql:8.0
+    container_name: sarasoluciones_mysql_db
+    env_file: .env
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      # Usa un volumen nombrado para persistir la BD
+      - sarasoluciones_mysql_data:/var/lib/mysql
+    networks:
+      - sarasoluciones_network
+    ports:
+      - "3315:3306" # El puerto asigando por el Instructor
+    # Define un comando que Docker ejecuta periódicamente para verificar 
+    # si el servicio está realmente funcionando.
+    healthcheck:
+      # Es una forma ligera de preguntar a MySQL "¿estás vivo y aceptas conexiones?".
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s # Cada cuanto pregunta
+      timeout: 5s # Cuanto debe esperar por la respuesta
+      retries: 5 # Cuantos intentos debe hacer
+
+  # --- Servicio Opcional: phpMyAdmin ---
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: sarasoluciones_phpmyadmin_gui
+    env_file: .env
+    environment:
+      PMA_HOST: db # Points to the database service
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - "8030:80" # El puerto asigando por el Instructor
+    networks:
+      - sarasoluciones_network
+    depends_on:
+      db:
+        condition: service_healthy
+
+# --- Network Definition ---
+# A dedicated network for the project's services to communicate
+networks:
+  sarasoluciones_network:
+    name: sarasoluciones_network
+    driver: bridge
+
+# --- Volume Definitions ---
+# Definimos los volumenes de persistencia de datos
+# --- Volume Definitions ---
+volumes:
+  sarasoluciones_mysql_data:
+    name: sarasoluciones_mysql_data
+  # CAMBIO AQUÍ: El nombre debe ser igual al que usaste en el servicio 'web'
+  sarasoluciones_static_volume:
+    name: sarasoluciones_static_volume
+  sarasoluciones_media_volume:
+    name: sarasoluciones_media_volume

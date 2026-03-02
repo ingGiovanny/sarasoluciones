@@ -1,0 +1,98 @@
+/* static/css_clientes/listar_servicios.css */
+
+/* --- RESET DE LINKS --- */
+.servicio-card {
+    text-decoration: none !important; /* Quita la línea de abajo */
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- CONTENEDOR DE GRILLA --- */
+.servicios-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+}
+
+/* --- TARJETA DE SERVICIO --- */
+.servicio-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: var(--shadow-card);
+    height: 100%;
+}
+
+.servicio-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent-color);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+}
+
+/* --- ENVOLTORIO DE IMAGEN --- */
+.servicio-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+.servicio-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que la imagen llene el espacio sin deformarse */
+    transition: transform 0.6s ease;
+}
+
+.servicio-card:hover .servicio-img-wrapper img {
+    transform: scale(1.1);
+}
+
+/* --- BADGE DE CATEGORÍA --- */
+.badge-cat {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* --- CONTENIDO DE TEXTO --- */
+.servicio-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.servicio-precio {
+    margin-top: auto;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- RESPONSIVIDAD --- */
+@media (max-width: 768px) {
+    .servicios-container {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+    
+    .titulo {
+        font-size: 2rem !important;
+        margin: 30px 0 !important;
+    }
+}

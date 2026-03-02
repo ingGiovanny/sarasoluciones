@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Barra superior */
+.topbar {
+    width: 100%; /* Ocupar todo el ancho de la pantalla */
+    height: 60px;
+    background: linear-gradient(180deg, #2a6aff, #1362b7);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 900; /* Un z-index menor que la barra lateral */
+}
+
+/* Botón de cerrar sesión */
+.salirboton {
+    padding: 8px 15px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, #fd3e3e, #b34040);
+    transition: background 0.3s ease;
+    margin-right: 30px; /* Aumenta el espacio a la derecha */
+}
+
+.salirboton a {
+    color: white; /* Texto blanco */
+    text-decoration: none; /* Quita el subrayado */
+    font-weight: bold;
+}
+
+.salirboton:hover {
+    background: linear-gradient(180deg, #b63636, #993737);
+}
+
+/* Información del usuario */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre la imagen y el nombre */
+    max-width: 250px; /* Espacio máximo para evitar cortes */
+    padding-right: 20px; /* Espaciado para no chocar con el borde */
+}
+
+.user-info span {
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap; /* Evita que se corte */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Agrega "..." si es muy largo */
+    max-width: 100px; /* Asegura que no se pegue */
+}
+
+
+
+.user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* En pantallas pequeñas (menos de 768px) ocultamos el nombre */
+@media (max-width: 768px) {
+    .user-info span {
+        display: none; /* Oculta el nombre del usuario */
+    }
+}

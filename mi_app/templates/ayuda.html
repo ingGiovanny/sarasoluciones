@@ -1,0 +1,78 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="main-content" style="padding: 20px; padding-top: 70px; padding-bottom: 80px; width: 100%;">
+  <div class="col-md-12">
+    <div class="card card-default">
+      <div class="card-header">
+        </div>
+
+      <div class="card-body" style="line-height: 1.8; font-size: 16px;">
+        <p>
+          Bienvenido a la pagina <strong> Sara Soluciones</strong>.  
+          Este sistema permite administrar todas las áreas de la pagina según el rol de cada usuario.
+          A continuación encontrarás una guía breve para aprovecharlo al máximo.
+        </p>
+
+        <h4>🔐 Inicio de Sesión y Recuperación de Contraseña</h4>
+        <p>
+          Ingresa con tu usuario y contraseña asignados.  
+          Si la olvidas, usa la opción <strong>“¿Olvidaste tu contraseña?”</strong> para recibir un correo con las instrucciones de recuperación.
+        </p>
+
+        <h4>🏠 Navegación General</h4>
+        <p>
+          En el <strong>sidebar izquierdo</strong> podrás encontrar los accesos a todos los módulos: Facturas, Producto, Categoria, Compra, Proveedor, Cliente, entre otros.  
+          Puedes cambiar entre ellos haciendo clic.
+        </p>
+
+        <h4>👥 Roles de Usuario</h4>
+        <p>
+          Cada usuario tiene permisos específicos según su rol:
+          <br> 
+          - <strong>Administrador:</strong> Puede crear, editar, eliminar y ver todos los registros.
+          <br>  
+          - <strong>Cliente:</strong> Puede ver y realizar compras según el área de capacitaciones y gustos personales.   
+        </p>
+
+        <h4>⚙ Accesibilidad</h4>
+        <p>
+          El sistema incluye un <strong>módulo de accesibilidad</strong> con herramientas para adaptar la interfaz:
+        </p>
+        <ul>
+          <li>Modo claro / oscuro</li>
+          <li>Ajuste de tamaño de fuente</li>
+          <li>Resaltado de texto, enlaces y títulos</li>
+          <li>Alta o baja saturación, monocromo</li>
+          <li>Guía de lectura, cursor grande y detener animaciones</li>
+        </ul>
+
+        <h4>👨‍💻 Gestión de Clientes</h4>
+        <p>
+          Desde el módulo <strong>Clientes</strong> puedes consultar la lista del sistema, editar nombres del cliente o restablecer contraseñas según permisos.
+        </p>
+
+        <h4>💡 Recomendaciones Generales</h4>
+        <ul>
+          <li>Guarda tus cambios antes de salir del formulario.</li>
+          <li>No cierres el navegador mientras se esté enviando información.</li>
+          <li>Revisa tus permisos antes de intentar editar o eliminar registros.</li>
+        </ul>
+
+        <div class="alert alert-info mt-4">
+          <strong>¿Problemas o dudas?</strong> Contacta al administrador del sistema para asistencia técnica.
+        </div>
+        <div class="card-body">
+            <h5>¿Necesitas ayuda?</h5>
+            <p>Si tienes alguna duda o problema, no dudes en contactarnos a través de los siguientes medios:</p>
+            <ul>
+                <li>Email:  sarasoluciones55@gmail.com</li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

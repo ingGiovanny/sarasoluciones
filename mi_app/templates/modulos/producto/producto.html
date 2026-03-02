@@ -1,0 +1,93 @@
+{% extends "listar.html" %}
+
+{% block titulo %}
+        <h1 class="text-center">Gestion De Productos</h1>
+{% endblock titulo %}
+
+{% block agregar %}
+<a href="{{crear_url}}" class=" btn btn-primary btn btn-xs"><i class="fas fa-plus"></i>
+          Agregar
+</a>
+
+       <a href="{% url 'mi_app:pdf_productos' %}" class="btn btn-danger">
+    <i class="fas fa-file-pdf"></i> Descargar Reporte
+</a>
+{% endblock %}
+
+{% block columnas %}
+
+                <th>N°</th>
+                        <th>ID Categoría</th>
+                        <th>ID Marca</th>
+                        <th>ID Presentación</th>
+                        <th>Nombre</th>
+                        <th>visualizacion</th>
+                        <th>Cantidad Producto</th>
+                        <th>Valor Unitario</th>
+                        <th>Estado Producto</th>
+                        <th>Fecha De Creación</th>
+                        <th>Fecha De Modificación</th>
+                         <th>Acciones</th>
+{% endblock %}
+
+{% block iterar %}
+
+            {% for producto in object_list %}
+<tr>
+    <td>{{ producto.id }}</td>
+    <td>{{ producto.id_categoria }}</td>
+    <td>{{ producto.id_marca }}</td>
+    <td>{{ producto.id_presentacion }}</td>
+    <td>{{ producto.id_presentacion.nombre }}</td>
+    <td>
+        {% if producto.logo_producto %}
+            <img src="{{ producto.logo_producto.url }}" alt="Logo {{ producto.nombre_producto }}" width="100">
+        {% else %}
+            Sin logo
+        {% endif %}
+    <td>{{ producto.cantidad_producto }}</td>
+    <td>{{ producto.valor_unitario }}</td>
+    <td>{{ producto.estado_producto }}</td>
+    <td>{{ producto.fecha_creacion }}</td>
+    <td>{{ producto.fecha_modificacion }}</td>
+
+    <td>
+        <a href="{% url 'mi_app:producto_editar' producto.id %}" class="btn btn-warning btn-sm" title="Editar">
+            <i class="fas fa-edit"></i>
+        </a>
+
+        <a href="{% url 'mi_app:producto_cambiar_estado' producto.id %}" 
+           class="btn {% if producto.estado_producto == 'ACTIVO' %}btn-success{% else %}btn-secondary{% endif %} btn-sm" 
+           title="{% if producto.estado_producto == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %}">
+            {% if producto.estado_producto == 'ACTIVO' %}
+                <i class="fas fa-eye"></i> {% else %}
+                <i class="fas fa-eye-slash"></i> {% endif %}
+        </a>
+
+        <a href="{% url 'mi_app:producto_eliminar' producto.id %}" class="btn btn-danger btn-sm" title="Eliminar">
+            <i class="fas fa-trash"></i>
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="11">No hay productos registrados.</td>
+</tr>
+{% endfor %}
+
+<!-- Mensajes con SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  {% if messages %}
+    {% for message in messages %}
+      Swal.fire({
+        icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
+        title: '{{ message|escapejs }}',
+        timer: 2500,
+        showConfirmButton: false
+      });
+    {% endfor %}
+  {% endif %}
+</script>
+
+{% endblock %}
