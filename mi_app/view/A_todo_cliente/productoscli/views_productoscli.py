@@ -24,48 +24,54 @@ def eliminar_imagen_galeria(request, pk):
 
 
 def listar_productos_publicos(request):
-    # 1. Obtener todos los productos base
-    productos = Producto.objects.all()
+    # 1. BASE: Solo productos ACTIVOS
+    productos = Producto.objects.filter(estado_producto='ACTIVO').select_related('id_presentacion', 'id_marca', 'id_categoria')
     
     # 2. Capturar los parámetros de la URL
     cat_id = request.GET.get('categoria')
     marca_id = request.GET.get('marca')
-    color_nombre = request.GET.get('color') # Atrapamos el texto del color
+    color_nombre = request.GET.get('color')
     query = request.GET.get('q')
 
-    # 3. Aplicar los filtros de forma acumulativa
+    # 3. Aplicar los filtros
     if cat_id:
         productos = productos.filter(id_categoria_id=cat_id)
     if marca_id:
         productos = productos.filter(id_marca_id=marca_id)
     if color_nombre:
-        # MAGIA AQUÍ: Filtramos usando la relación con id_presentacion
         productos = productos.filter(id_presentacion__color=color_nombre)
     if query:
-        # Ejemplo de búsqueda por nombre de presentación
-        productos = productos.filter(id_presentacion__nombre__icontains=query)
+        productos = productos.filter(
+            Q(id_presentacion__nombre__icontains=query) | 
+            Q(id_marca__nombre_marca__icontains=query)
+        )
 
-    # 4. Obtener las listas para el Sidebar con sus conteos
-    categorias = Categoria.objects.annotate(total=Count('productos_categoria')).filter(total__gt=0)
-    marcas = Marca.objects.annotate(total=Count('productos_marca')).filter(total__gt=0)
+    # 4. Sidebar con conteos (CORREGIDO SEGÚN TU ERROR)
+    # Tu error dice que el campo se llama 'productos_categoria' y 'productos_marca'
+    categorias = Categoria.objects.filter(
+        productos_categoria__estado_producto='ACTIVO'
+    ).annotate(total=Count('productos_categoria')).filter(total__gt=0)
+
+    marcas = Marca.objects.filter(
+        productos_marca__estado_producto='ACTIVO'
+    ).annotate(total=Count('productos_marca')).filter(total__gt=0)
     
-    # MAGIA AQUÍ: Sacamos los colores únicos de la presentación de los productos y los contamos
-    colores_db = Producto.objects.values('id_presentacion__color').annotate(total=Count('id')).filter(total__gt=0)
+    # Colores únicos
+    colores_db = Producto.objects.filter(
+        estado_producto='ACTIVO'
+    ).values('id_presentacion__color').annotate(total=Count('id')).filter(total__gt=0)
     
-    # Formateamos la lista de colores para que el HTML la lea fácil
     colores = [{'nombre': c['id_presentacion__color'], 'total': c['total']} for c in colores_db]
 
     context = {
         'productos': productos,
         'categorias': categorias,
         'marcas': marcas,
-        'colores': colores, # Enviamos la lista de colores al template
+        'colores': colores,
+        'titulo': 'Catálogo de Productos'
     }
     
     return render(request, 'principalclientes/listar/listarproductos.html', context)
-
-
-
 
 def detalle_producto(request, pk):
     # Agregamos el filtro de estado_producto='ACTIVO' aquí también

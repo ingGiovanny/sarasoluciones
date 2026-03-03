@@ -185,6 +185,65 @@ def procesar_pago_simulado(request):
         request.session.modified = True
         
         # ... (lógica de facturación y correos igual que antes) ...
+        # ==========================================
+        # 🚨 LÓGICA DE CORREOS (CLIENTE Y ADMINISTRADORES) 🚨
+        # ==========================================
+        try:
+            # 1. Datos para los correos
+            cliente_email = request.user.email
+            nombre_cliente = cliente_actual.nombre_completo
+            
+            # 2. Obtenemos los correos de TODOS los administradores registrados
+            # Excluimos a los que no tengan correo para evitar errores
+            admins = Administrador.objects.exclude(correo_electronico="").values_list('correo_electronico', flat=True)
+            lista_admins = list(admins)
+            
+            # 3. Preparar correo para el CLIENTE
+            asunto_cliente = f"¡Compra exitosa! - Soluciones Sara (TX: {transaction_id})"
+            mensaje_cliente = f"""Hola {nombre_cliente},
+
+¡Gracias por tu compra en Soluciones Sara!
+Hemos recibido tu pedido correctamente.
+
+Código de transacción: {transaction_id}
+Total pagado: ${total_compra:,.0f}
+
+Pronto te notificaremos cuando tu pedido pase a estado de preparación.
+Si tienes alguna duda, puedes contactarnos respondiendo a este correo.
+"""
+            
+            # 4. Preparar correo para los ADMINISTRADORES
+            asunto_admin = f"🚨 NUEVA VENTA: Pedido {transaction_id}"
+            mensaje_admin = f"""Hola Equipo Administrativo,
+
+El cliente {nombre_cliente} acaba de realizar una nueva compra en la plataforma.
+
+Detalles de la compra:
+- Código de transacción: {transaction_id}
+- Total de la venta: ${total_compra:,.0f}
+- Correo del cliente: {cliente_email}
+
+Por favor, ingresen al panel de administración para revisar los detalles de los productos y proceder con el despacho.
+"""
+            
+            # 5. ENVIAR CORREOS (Usamos fail_silently=False para atrapar el error si Google falla)
+            # Primero al cliente
+            send_mail(asunto_cliente, mensaje_cliente, settings.EMAIL_HOST_USER, [cliente_email], fail_silently=False)
+            
+            # Luego a todos los administradores (si hay alguno registrado con correo)
+            if lista_admins:
+                send_mail(asunto_admin, mensaje_admin, settings.EMAIL_HOST_USER, lista_admins, fail_silently=False)
+                
+        except Exception as e:
+            # Si el correo falla (ej. contraseña de Google vencida), no rompe la página de pago,
+            # pero te avisa con una alerta roja en la pantalla de éxito.
+            messages.error(request, f"⚠️ La compra fue exitosa, pero hubo un problema enviando los correos de notificación. Detalle técnico: {e}")
+            print(f"🚨 ERROR FATAL DE CORREO: {e}")
+
+        # ==========================================
+        
+        request.session.modified = True
+    
         return redirect('mi_app:pago_exitoso', transaction_id=transaction_id)
 
 
