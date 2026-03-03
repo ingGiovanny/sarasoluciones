@@ -78,20 +78,32 @@ class AdministradorCreateView(AdminRequiredMixin, CreateView):
             return self.form_invalid(form)
 
         try:
-            # Creamos el User de Django
+            # 1. Creamos el User de Django
             nuevo_user = User.objects.create_user(
                 username=username, email=email, password=password
             )
             nuevo_user.is_staff = True 
             nuevo_user.is_superuser = True 
+            
+            # 🚨 CAMBIO CLAVE: Usuario inactivo hasta que valide email
+            nuevo_user.is_active = False 
             nuevo_user.save() 
 
-            # Vinculamos con el modelo Administrador
+            # 2. Vinculamos con el modelo Administrador
             administrador = form.save(commit=False)
             administrador.user = nuevo_user 
+            # Si tu modelo Administrador tiene correo, asegúrate que sea el mismo
+            administrador.correo_electronico = email 
             administrador.save()
 
-            messages.success(self.request, "¡Administrador creado con éxito!")
+            # 3. ENVIAMOS EL CORREO DE VERIFICACIÓN
+            try:
+                enviar_verificacion_email(self.request, nuevo_user)
+                messages.success(self.request, f"¡Administrador creado! Se ha enviado un enlace de activación a {email}.")
+            except Exception as mail_error:
+                messages.warning(self.request, "Administrador creado, pero hubo un error enviando el correo de activación.")
+                print(f"Error de correo: {mail_error}")
+
             return redirect(self.success_url)
 
         except Exception as e:

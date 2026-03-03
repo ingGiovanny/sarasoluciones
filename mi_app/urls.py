@@ -21,6 +21,10 @@ from mi_app.view.panel_pedidos.panel_logistica import *
 from mi_app.view.A_todo_cliente.productoscli.views_productoscli import *
 from mi_app.view.A_todo_cliente.servicio_cli.detalle_servicio import *
 from mi_app.view.A_todo_cliente.principalcliente.views_principal_cliente import *
+from mi_app.view.A_todo_cliente.principalcliente.cuenta_email import *
+from mi_app.view.A_todo_cliente.principalcliente.descargar_factura_pdf import *
+from mi_app.view.A_todo_cliente.principalcliente.direccion_cli import *
+from mi_app.view.A_todo_cliente.principalcliente.garantia import *
 from mi_app.view.A_todo_cliente.carrito_compras.views_carrito import *
 from mi_app.view.A_todo_cliente.carrito_compras.check import *
 from mi_app.view.compra.views_compra import *
@@ -65,6 +69,9 @@ urlpatterns = [
     path('mis-pedidos/garantia/<int:pedido_id>/', solicitar_garantia, name='solicitar_garantia'),
     path('logistica/garantias/', gestionar_garantias, name='gestionar_garantias'),
     path('mis-garantias/', mis_garantias, name='mis_garantias'),
+    
+    #activar cuenta 
+    path('activar/<str:uidb64>/<str:token>/', activar_cuenta, name='activar'),
 
     # ==========================================
     # MÓDULOS DEL ADMINISTRADOR (CRUDs)
@@ -128,7 +135,7 @@ urlpatterns = [
       
     # Facturación
     path('facturar/listar/', FacturaListView.as_view(), name='factura_lista'),      
-    path('factura/<str:transaction_id>/', descargar_factura_pdf, name='descargar_factura_pdf'),   
+    path('factura/<str:transaction_id>/', descargar_factura_pdf, name='descargar_factura_pdf'),  
         
     # Compras
     path('compras/listar/', CompraListView.as_view(), name='compras_lista'),

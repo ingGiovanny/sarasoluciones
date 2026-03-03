@@ -1,0 +1,21 @@
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; border-radius: 10px; padding: 20px;">
+    <div style="text-align: center; background-color: #0d6efd; padding: 10px; border-radius: 10px 10px 0 0;">
+        <h2 style="color: white; margin: 0;">Soluciones Sara</h2>
+    </div>
+    <div style="padding: 20px;">
+       <h3>¡Hola, {{ user.username }}!</h3>
+        <p>Gracias por registrarte en nuestra plataforma de gestión. Para comenzar a adquirir nuestros servicios, necesitamos confirmar que esta dirección de correo te pertenece.</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="http://{{ domain }}{% url 'mi_app:activar' uidb64=uid token=token %}" 
+               style="background-color: #198754; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
+                Confirmar mi correo electrónico
+            </a>
+        </div>
+        
+        <p style="color: #666; font-size: 14px;">Si no has creado una cuenta en Soluciones Sara, puedes ignorar este mensaje de forma segura.</p>
+    </div>
+    <div style="text-align: center; border-top: 1px solid #eee; padding-top: 20px; color: #999; font-size: 12px;">
+        © 2026 Soluciones Sara - sogamoso, Boyacá, Colombia
+    </div>
+</div>

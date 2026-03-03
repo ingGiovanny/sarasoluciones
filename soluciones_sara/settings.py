@@ -157,7 +157,10 @@ LOGIN_REDIRECT_URL = 'mi_app:principal'
 LOGOUT_REDIRECT_URL = 'mi_app:contenido_cliente'
 
 
-# --- CONFIGURACIÓN DE CORREOS REALES ---
+
+# Tiempo de vida del enlace de confirmación (en segundos)
+# 86400 segundos = 1 día. 
+PASSWORD_RESET_TIMEOUT = 86400
 # --- CONFIGURACIÓN DE CORREOS REALES ---
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

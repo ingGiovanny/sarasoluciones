@@ -10,11 +10,6 @@ from datetime import timedelta
 # Importaciones necesarias para las señales (ponlas arriba si prefieres, o déjalas aquí)
 from django.db.models.signals import post_save
 
-
-
-
-
-
 class Administrador(models.Model):
     # La conexión vital con Django
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil_admin')
@@ -82,6 +77,7 @@ class GestionCliente(models.Model):
     numero_telefonico = models.CharField(max_length=50, null=True, blank=True, verbose_name="Número Telefónico")
     numero_documento = models.CharField(max_length=50, unique=True, verbose_name="Número Documento")
     correo_electronico = models.EmailField(max_length=50, verbose_name="Correo Electrónico")
+    email_pendiente = models.EmailField(null=True, blank=True)
     
     # --- NUEVO CAMPO DE AVATAR ---
     avatar = models.CharField(max_length=30, default='avatar1.png', verbose_name="Avatar")
