@@ -7,11 +7,18 @@
     <title>Registro - Soluciones Sara</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'custom.css' %}">
+    
 </head>
 <body>
 
 <div class="register-wrapper">
     <div class="register-container">
+        <div class="back-button-container">
+            <a href="{% url 'mi_app:contenido_cliente' %}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Volver al inicio
+            </a>
+        </div>
+        
         <div class="register-header">
             <h2>Crear Cuenta</h2>
             <p>Únete a Soluciones Sara</p>
@@ -19,76 +26,75 @@
 
         <form method="POST" id="registerForm" novalidate>
             {% csrf_token %}
-            
-            <!-- Nombre Completo -->
+
             <div class="input-group">
                 <input type="text" 
                        name="first_name" 
                        id="first_name"
                        placeholder="Nombres" 
+                       value="{{ request.POST.first_name|default:'' }}"
                        required>
                 <i class="fas fa-user"></i>
                 <div class="error-message">Por favor ingresa tu nombre</div>
             </div>
 
-            <!-- Apellidos -->
             <div class="input-group">
                 <input type="text" 
                        name="last_name" 
                        id="last_name"
                        placeholder="Apellidos" 
+                       value="{{ request.POST.last_name|default:'' }}"
                        required>
                 <i class="fas fa-user"></i>
                 <div class="error-message">Por favor ingresa tus apellidos</div>
             </div>
 
-            <!-- Cédula -->
             <div class="input-group">
                 <input type="text" 
                        name="cedula" 
                        id="cedula"
                        placeholder="Número de documento" 
                        pattern="[0-9]+"
+                       value="{{ request.POST.cedula|default:'' }}"
                        required>
                 <i class="fas fa-id-card"></i>
                 <div class="error-message">Ingresa un documento válido (solo números)</div>
             </div>
 
-            <!-- Email -->
             <div class="input-group">
                 <input type="email" 
                        name="email" 
                        id="email"
                        placeholder="Correo electrónico" 
+                       value="{{ request.POST.email|default:'' }}"
                        required>
                 <i class="fas fa-envelope"></i>
                 <div class="error-message">Ingresa un correo válido</div>
             </div>
 
-            <!-- Teléfono -->
             <div class="input-group">
-                <input type="tel" 
-                       name="telefono" 
-                       id="telefono"
-                       placeholder="Número de teléfono"
-                       pattern="[0-9]{10}"
-                       required>
-                <i class="fas fa-phone"></i>
-                <div class="error-message">Ingresa un teléfono válido (10 dígitos)</div>
-            </div>
+                    <input type="tel" 
+                        name="telefono" 
+                        id="telefono"
+                        placeholder="Número de teléfono (ej. 310...)"
+                        pattern="3[0-9]{9}"
+                        value="{{ request.POST.telefono|default:'' }}"
+                        required>
+                    <i class="fas fa-phone"></i>
+                    <div class="error-message">Ingresa un número válido (debe empezar por 3 y tener 10 dígitos)</div>
+                </div>
 
-            <!-- Username -->
             <div class="input-group">
                 <input type="text" 
                        name="username" 
                        id="username"
                        placeholder="Nombre de usuario" 
+                       value="{{ request.POST.username|default:'' }}"
                        required>
                 <i class="fas fa-at"></i>
                 <div class="error-message">Elige un nombre de usuario</div>
             </div>
 
-            <!-- Contraseña -->
             <div class="input-group">
                 <input type="password" 
                        name="password" 
@@ -100,10 +106,9 @@
                 <div class="password-strength">
                     <div class="password-strength-bar"></div>
                 </div>
-                <div class="error-message">Mínimo 8 caracteres, incluye mayúsculas, números y símbolos</div>
+                <div class="error-message">Mínimo 8 caracteres</div>
             </div>
 
-            <!-- Confirmar Contraseña -->
             <div class="input-group">
                 <input type="password" 
                        name="confirm_password" 
@@ -114,145 +119,137 @@
                 <div class="error-message">Las contraseñas no coinciden</div>
             </div>
 
-            <!-- Botón Submit -->
             <button type="submit" class="btn-register" id="btnRegister">
                 <span class="btn-text">REGISTRARSE</span>
-                <div class="spinner"></div>
             </button>
 
-            <!-- Link a Login -->
             <div class="login-link">
-    ¿Ya tienes cuenta? <a href="{% url 'login:login' %}">Inicia sesión aquí</a>
-</div>
+                ¿Ya tienes cuenta? <a href="{% url 'login:login' %}">Inicia sesión aquí</a>
+            </div>
         </form>
-
-        <!-- Mensajes de Django -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert-message {{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-const form = document.getElementById('registerForm');
-const inputs = form.querySelectorAll('input[required]');
-const passwordInput = document.getElementById('password');
-const confirmPasswordInput = document.getElementById('confirm_password');
-const btnRegister = document.getElementById('btnRegister');
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('registerForm');
+    const inputs = form.querySelectorAll('input[required]');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    const btnRegister = document.getElementById('btnRegister');
+    const telefonoInput = document.getElementById('telefono');
+    const cedulaInput = document.getElementById('cedula');
 
-// Validación en tiempo real
-inputs.forEach(input => {
-    input.addEventListener('blur', () => validateField(input));
-    input.addEventListener('input', () => {
-        if (input.classList.contains('invalid')) {
-            validateField(input);
+    // Limpieza agresiva al cargar
+    inputs.forEach(input => {
+        const group = input.closest('.input-group');
+        group.classList.remove('invalid', 'valid'); // Asegura que nazcan limpios
+        
+        input.addEventListener('blur', () => {
+            if (input.value.trim() !== '') validateField(input);
+        });
+        
+        input.addEventListener('input', () => {
+            if (group.classList.contains('invalid')) validateField(input);
+        });
+    });
+
+    function validateField(input) {
+        const group = input.closest('.input-group');
+        if (input.value.trim() === '') {
+            group.classList.remove('invalid', 'valid');
+            return false;
+        }
+
+        const patternValid = input.hasAttribute('pattern') 
+                             ? new RegExp('^' + input.getAttribute('pattern') + '$').test(input.value)
+                             : true;
+
+        if (input.validity.valid && patternValid) {
+            group.classList.remove('invalid');
+            group.classList.add('valid');
+            return true;
+        } else {
+            group.classList.remove('valid');
+            group.classList.add('invalid');
+            return false;
+        }
+    }
+    
+
+    [telefonoInput, cedulaInput].forEach(input => {
+        input.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (input.id === 'telefono' && this.value.length > 10) this.value = this.value.slice(0, 10);
+            if(this.value.length > 0) validateField(this);
+        });
+    });
+
+    passwordInput.addEventListener('input', () => {
+        const password = passwordInput.value;
+        const group = passwordInput.closest('.input-group');
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        
+        group.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+        group.classList.add('has-password');
+        if (strength <= 1) group.classList.add('strength-weak');
+        else if (strength <= 3) group.classList.add('strength-medium');
+        else group.classList.add('strength-strong');
+    });
+
+    confirmPasswordInput.addEventListener('input', () => {
+        const group = confirmPasswordInput.closest('.input-group');
+        if (confirmPasswordInput.value === passwordInput.value && confirmPasswordInput.value !== '') {
+            group.classList.remove('invalid');
+            group.classList.add('valid');
+        } else if (confirmPasswordInput.value !== '') {
+            group.classList.remove('valid');
+            group.classList.add('invalid');
         }
     });
-});
 
-// Validar campo individual
-function validateField(input) {
-    const group = input.closest('.input-group');
-    
-    if (input.validity.valid && input.value.trim() !== '') {
-        group.classList.remove('invalid');
-        group.classList.add('valid');
-        return true;
-    } else {
-        group.classList.remove('valid');
-        group.classList.add('invalid');
-        return false;
-    }
-}
-
-// Validar contraseña especial
-passwordInput.addEventListener('input', () => {
-    const password = passwordInput.value;
-    const group = passwordInput.closest('.input-group');
-    
-    // Calcular fuerza
-    let strength = 0;
-    if (password.length >= 8) strength++;
-    if (/[A-Z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    if (/[^A-Za-z0-9]/.test(password)) strength++;
-    
-    group.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
-    group.classList.add('has-password');
-    
-    if (strength <= 1) {
-        group.classList.add('strength-weak');
-    } else if (strength <= 3) {
-        group.classList.add('strength-medium');
-    } else {
-        group.classList.add('strength-strong');
-    }
-});
-
-// Validar que las contraseñas coincidan
-confirmPasswordInput.addEventListener('input', () => {
-    const group = confirmPasswordInput.closest('.input-group');
-    
-    if (confirmPasswordInput.value === passwordInput.value && confirmPasswordInput.value !== '') {
-        group.classList.remove('invalid');
-        group.classList.add('valid');
-    } else {
-        group.classList.remove('valid');
-        group.classList.add('invalid');
-    }
-});
-
-// Submit del formulario
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    // Validar todos los campos
-    let isValid = true;
-    inputs.forEach(input => {
-        if (!validateField(input)) {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (!validateField(input)) {
+                isValid = false;
+                input.closest('.input-group').classList.add('invalid'); // Fuerza visualización de error si intentan enviar vacío
+            }
+        });
+        
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            confirmPasswordInput.closest('.input-group').classList.add('invalid');
             isValid = false;
         }
-    });
-    
-    // Validar que las contraseñas coincidan
-    if (passwordInput.value !== confirmPasswordInput.value) {
-        confirmPasswordInput.closest('.input-group').classList.add('invalid');
-        isValid = false;
-    }
-    
-    if (isValid) {
-        // Mostrar loading
-        btnRegister.classList.add('loading');
-        btnRegister.disabled = true;
         
-        // Enviar formulario
-        form.submit();
-    } else {
-        Swal.fire({
-            icon: 'error',
-            title: 'Errores en el formulario',
-            text: 'Por favor corrige los campos marcados',
-            confirmButtonColor: '#667eea'
-        });
-    }
+        if (isValid) {
+            btnRegister.disabled = true;
+            btnRegister.innerHTML = 'PROCESANDO...';
+            form.submit();
+        } else {
+            Swal.fire({ icon: 'error', title: 'Campos incompletos', text: 'Por favor, revisa los datos marcados', confirmButtonColor: '#000' });
+        }
+    });
 });
 
-// Mostrar mensajes de Django con SweetAlert
+// Mensajes de Django
 {% if messages %}
     {% for message in messages %}
         Swal.fire({
             icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
-            title: '{{ message|escapejs }}',
-            confirmButtonColor: '#667eea'
+            title: 'Soluciones Sara',
+            text: '{{ message|escapejs }}',
+            confirmButtonColor: '#000'
         });
     {% endfor %}
 {% endif %}
 </script>
-
 </body>
 </html>

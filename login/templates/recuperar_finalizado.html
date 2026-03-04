@@ -2,30 +2,66 @@
 <!doctype html>
 <html lang="es">
 <head>
-    <title>¡Éxito! | Sara Soluciones</title>
-    <meta charset="utf-8"> 
+    <title>¡Contraseña Actualizada! | Sara Soluciones</title>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'AdminLTE/dist/css/adminlte.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'login/css/custom.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'login/css/login_style.css' %}">
+    <style>
+        /* Checkmark animation */
+        @keyframes checkPop {
+            0%   { transform: scale(0); opacity: 0; }
+            70%  { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .status-icon-success { animation: checkPop 0.5s 0.3s cubic-bezier(0.4,0,0.2,1) both; }
+    </style>
 </head>
-<body class="hold-transition login-page"> 
-    <div id="slideshow-background"></div>
-    
-    <div class="login-box">
-        <div class="card shadow-lg border-0">
-            <div class="card-body text-center p-5">
-                <i class="fas fa-check-circle text-primary" style="font-size: 4rem; margin-bottom: 20px;"></i>
-                <h3 class="font-weight-bold">¡Contraseña Actualizada!</h3>
-                <p class="text-muted mt-3">
-                    Tu cuenta ahora está segura. Ya puedes acceder con tus nuevas credenciales.
-                </p>
+<body>
 
-                <a href="{% url 'login:login' %}" class="btn btn-primary btn-block mt-4 font-weight-bold btn-lg">
-                    <i class="fas fa-sign-in-alt mr-2"></i> Iniciar Sesión
-                </a>
+    <div class="auth-wrapper">
+
+        <!-- Panel Izquierdo -->
+        <div class="auth-panel">
+            <div class="panel-logo">
+                <div class="panel-logo-mark">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <span class="panel-logo-text">Sara Soluciones</span>
+            </div>
+
+            <div class="panel-body">
+                <h2 class="panel-tagline">¡Todo listo para continuar!</h2>
+                <p class="panel-desc">Tu cuenta está segura. Ya puedes ingresar con tus nuevas credenciales.</p>
+            </div>
+
+            <div class="panel-footer">
+                <p class="panel-footer-text">© 2025 Sara Soluciones</p>
             </div>
         </div>
+
+        <!-- Panel Estado -->
+        <div class="auth-form-area" style="justify-content: center;">
+
+            <div class="status-card">
+                <div class="status-icon status-icon-success">
+                    <i class="fas fa-check"></i>
+                </div>
+
+                <h2 class="status-title">¡Contraseña actualizada!</h2>
+                <p class="status-desc">
+                    Tu contraseña ha sido restablecida exitosamente. Ahora puedes acceder a tu cuenta con tus nuevas credenciales.
+                </p>
+
+                <a href="{% url 'login:login' %}" class="btn-primary-custom" style="max-width: 280px; margin: 0 auto;">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </a>
+            </div>
+
+        </div>
     </div>
+
 </body>
 </html>

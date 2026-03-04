@@ -3,32 +3,61 @@
 <html lang="es">
 <head>
     <title>Correo Enviado | Sara Soluciones</title>
-    <meta charset="utf-8"> 
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'AdminLTE/dist/css/adminlte.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'login/css/custom.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'login/css/login_style.css' %}">
 </head>
-<body class="hold-transition login-page"> 
-    <div id="slideshow-background"></div>
-    
-    <div class="login-box">
-        <div class="card shadow-lg border-0">
-            <div class="card-body text-center p-5">
-                <i class="fas fa-envelope-open-text text-success" style="font-size: 4rem; margin-bottom: 20px;"></i>
-                <h3 class="font-weight-bold">¡Revisa tu bandeja!</h3>
-                <p class="text-muted mt-3">
-                    Hemos enviado las instrucciones para restablecer tu contraseña.
-                </p>
-                <div class="alert alert-light border small text-left mt-4">
-                    <i class="fas fa-info-circle text-info mr-1"></i> Si no ves el correo en unos minutos, revisa tu carpeta de <b>Spam</b> o Correo no deseado.
-                </div>
+<body>
 
-                <a href="{% url 'login:login' %}" class="btn btn-outline-primary btn-block mt-4 font-weight-bold">
-                    Volver al inicio
-                </a>
+    <div class="auth-wrapper">
+
+        <!-- Panel Izquierdo -->
+        <div class="auth-panel">
+            <div class="panel-logo">
+                <div class="panel-logo-mark">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <span class="panel-logo-text">Sara Soluciones</span>
+            </div>
+
+            <div class="panel-body">
+                <h2 class="panel-tagline">Revisa tu bandeja de entrada.</h2>
+                <p class="panel-desc">Si el correo está registrado en nuestro sistema, recibirás el enlace en los próximos minutos.</p>
+            </div>
+
+            <div class="panel-footer">
+                <p class="panel-footer-text">© 2025 Sara Soluciones</p>
             </div>
         </div>
+
+        <!-- Panel Estado -->
+        <div class="auth-form-area" style="justify-content: center;">
+
+            <div class="status-card">
+                <div class="status-icon status-icon-email">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+
+                <h2 class="status-title">Correo enviado</h2>
+                <p class="status-desc">
+                    Hemos enviado las instrucciones para restablecer tu contraseña a tu correo registrado.
+                </p>
+
+                <div class="info-box">
+                    <i class="fas fa-info-circle" style="margin-top: 2px; flex-shrink: 0;"></i>
+                    <span>¿No ves el correo? Revisa tu carpeta de <strong>Spam</strong> o correo no deseado. El enlace expira en 24 horas.</span>
+                </div>
+
+                <a href="{% url 'login:login' %}" class="btn-primary-custom">
+                    <i class="fas fa-arrow-left"></i> Volver al inicio de sesión
+                </a>
+            </div>
+
+        </div>
     </div>
+
 </body>
 </html>

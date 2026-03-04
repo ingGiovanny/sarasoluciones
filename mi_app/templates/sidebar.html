@@ -4,94 +4,58 @@
     <a href="{% url 'mi_app:principal' %}" class="brand-link">
       <img src="{% static 'img/logosara.png' %}" alt="logo de sara soluciones" class="brand-image opacity-75 shadow" />
       <span class="brand-text fw-light">Soluciones Sara <br></span>
-      </a>
-    </div>
+    </a>
+  </div>
+  
   <div class="sidebar-wrapper">
     <nav class="mt-2">
       <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="navigation">
         
+        <li class="nav-header text-uppercase text-muted fw-bold ps-3 mt-2" style="font-size: 0.8rem;">Personas</li>
         <li class="nav-item">
           <a href="{% url 'mi_app:administrador_lista' %}" class="nav-link">
-            <i class="bi bi-folder2"></i>
+            <i class="bi bi-person-badge-fill"></i>
             <p>Administradores</p>
           </a>
         </li>
-                <li class="nav-item">
-          <a href="{% url 'mi_app:panel_logistica' %}" class="nav-link">
-            <i class="bi bi-folder2"></i>
-            <p>Panel Logística</p>
-          </a>
-        </li>
-
         <li class="nav-item">
           <a href="{% url 'mi_app:cliente_lista' %}" class="nav-link">
-            <i class="bi bi-file-earmark-person-fill"></i>
+            <i class="bi bi-people-fill"></i>
             <p>Clientes</p>
           </a>
         </li>
-
         <li class="nav-item">
           <a href="{% url 'mi_app:proveedor_lista' %}" class="nav-link">
-            <i class="bi bi-file-earmark-person-fill"></i>
+            <i class="bi bi-truck"></i>
             <p>Proveedores</p>
           </a>
         </li>
 
+        <li class="nav-header text-uppercase text-muted fw-bold ps-3 mt-3" style="font-size: 0.8rem;">Operaciones</li>
         <li class="nav-item">
-          <a href="{% url 'mi_app:marca_lista' %}" class="nav-link">
-            <i class="bi bi-x-diamond-fill"></i>
-            <p>Marca</p>
+          <a href="{% url 'mi_app:panel_logistica' %}" class="nav-link">
+            <i class="bi bi-clipboard-data-fill"></i>
+            <p>Panel Logística</p>
           </a>
         </li>
-
-        <li class="nav-item">
-          <a href="{% url 'mi_app:presentacion_lista' %}" class="nav-link">
-            <i class="bi bi-file-easel-fill"></i>
-            <p>Presentacion De Producto</p>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a href="{% url 'mi_app:categoria_lista' %}" class="nav-link">
-            <i class="bi bi-bookmark-star-fill"></i>
-            <p>Categoría</p>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a href="{% url 'mi_app:factura_lista' %}" class="nav-link">
-            <i class="bi bi-receipt"></i>
-            <p>Factura</p>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a href="{% url 'mi_app:gestionar_garantias' %}" class="nav-link">
-            <i class="bi bi-calendar2-event-fill"></i>
-            <p>Garantias</p>
-          </a>
-        </li>
-
         <li class="nav-item">
           <a href="{% url 'mi_app:pedido_lista' %}" class="nav-link">
             <i class="bi bi-basket2-fill"></i>
             <p>Pedidos</p>
           </a>
         </li>
-
         <li class="nav-item">
-          <a href="{% url 'mi_app:producto_lista' %}" class="nav-link">
-            <i class="bi bi-shop"></i>
-            <p>Productos</p>
+          <a href="{% url 'mi_app:factura_lista' %}" class="nav-link">
+            <i class="bi bi-receipt"></i>
+            <p>Facturas</p>
           </a>
         </li>
-         <li class="nav-item">
-          <a href="{% url 'mi_app:servicio_lista' %}" class="nav-link">
-            <i class="bi bi-shop"></i>
-            <p>servicios</p>
+        <li class="nav-item">
+          <a href="{% url 'mi_app:gestionar_garantias' %}" class="nav-link">
+            <i class="bi bi-shield-check"></i>
+            <p>Garantías</p>
           </a>
         </li>
-
         <li class="nav-item">
           <a href="{% url 'mi_app:compras_lista' %}" class="nav-link">
             <i class="bi bi-cart-check-fill"></i>
@@ -99,26 +63,54 @@
           </a>
         </li>
 
+        <li class="nav-header text-uppercase text-muted fw-bold ps-3 mt-3" style="font-size: 0.8rem;">Catálogo</li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'login:login'%}">
-            <i class="fas fa-power-off" aria-hidden="true"></i>
-            <p>Login</p>
+          <a href="{% url 'mi_app:producto_lista' %}" class="nav-link">
+            <i class="bi bi-box-seam-fill"></i>
+            <p>Productos</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'mi_app:servicio_lista' %}" class="nav-link">
+            <i class="bi bi-tools"></i>
+            <p>Servicios</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'mi_app:categoria_lista' %}" class="nav-link">
+            <i class="bi bi-tags-fill ms-3"></i> <p>Categorías</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'mi_app:marca_lista' %}" class="nav-link">
+            <i class="bi bi-award-fill ms-3"></i>
+            <p>Marcas</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'mi_app:presentacion_lista' %}" class="nav-link">
+            <i class="bi bi-box-fill ms-3"></i>
+            <p>Presentaciones</p>
           </a>
         </li>
 
+        <li class="nav-header text-uppercase text-muted fw-bold ps-3 mt-3" style="font-size: 0.8rem;">Sistema</li>
+        <li class="nav-item">
+          <a href="{% url 'backups:generar_backup' %}" class="nav-link">
+            <i class="bi bi-cloud-arrow-up-fill"></i>
+            <p>Copias de Seguridad</p>
+          </a>
+        </li>
         <li class="nav-item">
           <a href="{% url 'mi_app:ayuda' %}" class="nav-link">
             <i class="fa-solid fa-circle-info"></i>
             <p>Ayuda</p>
           </a>
         </li>
-    <li class="nav-item">
-  <a href="{% url 'backups:generar_backup' %}" class="nav-link">
-    <i class="bi bi-cloud-arrow-up-fill"></i>
-    <p>Copias de Seguridad</p>
-  </a>
-    </li>
+        
+ 
+
       </ul>
-      </nav>
+    </nav>
   </div>
-  </aside>
+</aside>

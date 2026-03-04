@@ -4,75 +4,118 @@
 <html lang="es">
 <head>
     <title>Nueva Contraseña | Sara Soluciones</title>
-    <meta charset="utf-8"> 
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'AdminLTE/dist/css/adminlte.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'login/css/custom.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'login/css/login_style.css' %}">
 </head>
-<body class="hold-transition login-page"> 
-    <div id="slideshow-background"></div>
-    
-    <div class="login-box">
-        <div class="login-logo py-3">
-            <a href="#" class="text-white"><b>Crear Clave</b></a> 
-        </div>
-        
-        <div class="card shadow-lg">
-            <div class="card-body login-card-body rounded">
-                
-                {% if validlink %}
-                
-                    <p class="login-box-msg text-muted">Ingresa tu nueva contraseña a continuación.</p>
+<body>
 
-                    <form method="post">
-                        {% csrf_token %} 
-                        
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger p-2 small">
-                                {% for error in form.non_field_errors %}{{ error }}<br>{% endfor %}
-                            </div>
-                        {% endif %}
+    <div class="auth-wrapper">
 
-                        <div class="input-group mb-3">
-                            {% render_field form.new_password1 class="form-control" placeholder="Nueva Contraseña" type="password" %}
-                            <div class="input-group-append">
-                                <div class="input-group-text"><span class="fas fa-lock"></span></div>
-                            </div>
-                        </div>
-                        {% for error in form.new_password1.errors %}
-                            <div class="text-danger small mt-n2 mb-2">{{ error }}</div>
-                        {% endfor %}
-
-                        <div class="input-group mb-4">
-                            {% render_field form.new_password2 class="form-control" placeholder="Confirmar Contraseña" type="password" %}
-                            <div class="input-group-append">
-                                <div class="input-group-text"><span class="fas fa-check-double"></span></div>
-                            </div>
-                        </div>
-                        {% for error in form.new_password2.errors %}
-                            <div class="text-danger small mt-n2 mb-2">{{ error }}</div>
-                        {% endfor %}
-
-                        <button type="submit" class="btn btn-primary btn-block font-weight-bold">
-                            <i class="fas fa-save mr-2"></i> Guardar Contraseña
-                        </button>
-                    </form>
-                
-                {% else %}
-                    
-                    <div class="text-center pb-3">
-                        <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
-                        <h5 class="text-danger font-weight-bold">¡Enlace Inválido!</h5>
-                        <p class="text-muted small">Por seguridad, este enlace ya no es válido. Puede que ya lo hayas usado o que haya expirado.</p>
-                        <a href="{% url 'login:password_reset' %}" class="btn btn-warning btn-block font-weight-bold mt-4">
-                            <i class="fas fa-envelope mr-2"></i> Solicitar otro enlace
-                        </a>
-                    </div>
-
-                {% endif %}
+        <!-- Panel Izquierdo -->
+        <div class="auth-panel">
+            <div class="panel-logo">
+                <div class="panel-logo-mark">
+                    <i class="fas fa-bolt"></i>
                 </div>
+                <span class="panel-logo-text">Sara Soluciones</span>
+            </div>
+
+            <div class="panel-body">
+                {% if validlink %}
+                <h2 class="panel-tagline">Crea una contraseña segura.</h2>
+                <p class="panel-desc">Elige una contraseña única que no uses en otros sitios. Mínimo 8 caracteres.</p>
+                {% else %}
+                <h2 class="panel-tagline">Este enlace ya no es válido.</h2>
+                <p class="panel-desc">Por seguridad, los enlaces de recuperación expiran después de su primer uso.</p>
+                {% endif %}
+            </div>
+
+            <div class="panel-footer">
+                <p class="panel-footer-text">© 2025 Sara Soluciones</p>
+            </div>
+        </div>
+
+        <!-- Panel Formulario -->
+        <div class="auth-form-area">
+
+            {% if validlink %}
+
+            <div class="form-header">
+                <p class="form-eyebrow">Último paso</p>
+                <h1 class="form-title">Crea tu nueva contraseña</h1>
+                <p class="form-subtitle">Ingresa y confirma tu nueva clave de acceso.</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="alert-custom alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{% for error in form.non_field_errors %}{{ error }}<br>{% endfor %}</span>
+                </div>
+                {% endif %}
+
+                <div class="field">
+                    <label class="field-label">Nueva Contraseña</label>
+                    <div class="field-wrap">
+                        {% render_field form.new_password1 class="field-input" placeholder="Mínimo 8 caracteres" type="password" %}
+                        <span class="field-icon fas fa-lock"></span>
+                    </div>
+                    {% for error in form.new_password1.errors %}
+                    <p class="field-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% if "too short" in error %}Debe contener al menos 8 caracteres.
+                        {% elif "common" in error %}Esta contraseña es demasiado común.
+                        {% elif "entirely numeric" in error %}No puede ser completamente numérica.
+                        {% else %}{{ error }}{% endif %}
+                    </p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="field-label">Confirmar Contraseña</label>
+                    <div class="field-wrap">
+                        {% render_field form.new_password2 class="field-input" placeholder="Repite tu contraseña" type="password" %}
+                        <span class="field-icon fas fa-check-double"></span>
+                    </div>
+                    {% for error in form.new_password2.errors %}
+                    <p class="field-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% if "mismatch" in error or "not match" in error %}Las contraseñas no coinciden.
+                        {% else %}{{ error }}{% endif %}
+                    </p>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn-primary-custom" style="margin-top: 8px;">
+                    <i class="fas fa-save"></i> Guardar nueva contraseña
+                </button>
+            </form>
+
+            {% else %}
+
+            <div class="invalid-state">
+                <div class="invalid-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2 class="status-title" style="color: #c0392b;">Enlace inválido</h2>
+                <p class="status-desc">
+                    Este enlace de recuperación ya no es válido. Puede que haya sido usado anteriormente o haya expirado por seguridad.
+                </p>
+                <a href="{% url 'login:password_reset' %}" class="btn-primary-custom" style="max-width: 320px; margin: 0 auto;">
+                    <i class="fas fa-envelope"></i> Solicitar un nuevo enlace
+                </a>
+            </div>
+
+            {% endif %}
+
         </div>
     </div>
+
 </body>
 </html>

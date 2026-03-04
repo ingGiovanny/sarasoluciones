@@ -14,6 +14,7 @@
         padding-right: 0;
     }
 
+    
     [dir="rtl"] #changelist .actions select {
         margin-left: 0;
         margin-right: 15px;

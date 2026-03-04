@@ -1,101 +1,121 @@
 {% load static %}
 {% load widget_tweaks %}
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
-    <title>Sara Soluciones</title>
-    <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-    <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
-    <meta name="color-scheme" content="light dark" />
-
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'AdminLTE/dist/css/adminlte.css' %}" />
-    <link rel="stylesheet" href="{% static 'AdminLTE/dist/css/bootstrap.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
-
+    <title>Iniciar Sesión | Sara Soluciones</title>
+    <link rel="icon" type="image/png" href="{% static 'img/logosara.png' %}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1557d4">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
-<body class="login-page"> 
+<body>
+
     {% if messages %}
-    <div style="position: absolute; top: 20px; right: 20px; z-index: 9999; width: 300px;">
+    <div class="toast-container">
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-lg" role="alert">
-                {{ message|safe }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+        <div class="toast-alert">
+            <i class="fas fa-info-circle" style="color: var(--blue-400); margin-right: 8px;"></i>
+            {{ message|safe }}
+        </div>
         {% endfor %}
     </div>
-{% endif %}
-    
-    <div id="slideshow-background"></div>
-    <div class="login-box">
-    <div class="card">
-        <div class="login-logo py-3"> <br/>
-            <a href="#"><b>Bienvenidos</b></a>
-             <p><a href="#"><b>Sara Soluciones</b></a><p/>
+    {% endif %}
+
+    <div class="auth-wrapper">
+
+        <!-- Panel Izquierdo Azul -->
+        <div class="auth-panel">
+            <div class="panel-logo">
+                <div class="panel-logo-mark">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <span class="panel-logo-text">Sara Soluciones</span>
+            </div>
+
+            <div class="panel-body">
+                <h2 class="panel-tagline">Tu espacio de trabajo, siempre disponible.</h2>
+                <p class="panel-desc">Accede de forma segura a todas tus herramientas y servicios en un solo lugar.</p>
+            </div>
+
+            <div class="panel-footer">
+                <p class="panel-footer-text">© 2025 Sara Soluciones</p>
+            </div>
         </div>
-        
-        <div class="card-body login-card-body">
-            
-            
 
-            <form method="post">
-                {% csrf_token %} 
-                
-                <div class="input-group mb-3">
-                    {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su Usuario' }}
-                    <div class="input-group-text">
-                        <span class="fas fa-user"></span> 
-                    </div>
-                </div>
-                
-                <div class="input-group mb-3">
-                    {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su Contraseña' }}
-                    <div class="input-group-text">
-                        <span class="fas fa-lock"></span>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <div class="icheck-primary"> 
-                            <input type="checkbox" id="remember">
-                            <label for="remember">
-                                Recordarme
-                            </label>
-                        </div>
+        <!-- Panel Derecho Formulario -->
+        <div class="auth-form-area">
+
+            <a href="{% url 'mi_app:contenido_cliente' %}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Volver al inicio
+            </a>
+
+            <div class="form-header">
+                <p class="form-eyebrow">Bienvenido de nuevo</p>
+                <h1 class="form-title">Inicia sesión</h1>
+                <p class="form-subtitle">Ingresa tus credenciales para continuar.</p>
+            </div>
+
+            <form method="post" autocomplete="off">
+                {% csrf_token %}
+
+                <div class="field">
+                    <label class="field-label">Usuario</label>
+                    <div class="field-wrap">
+                        {{ form.username|add_class:'field-input'|attr:'placeholder:Ingresa tu usuario'|attr:'autocomplete:off' }}
+                        <span class="field-icon fas fa-user"></span>
                     </div>
                 </div>
 
-                <div class="d-grid gap-2 mb-3">
-                    <button type="submit" class="btn btn-block btn-primary btn-lg">Iniciar Sesión</button>
+                <div class="field">
+                    <label class="field-label">Contraseña</label>
+                    <div class="field-wrap">
+                        {{ form.password|add_class:'field-input'|attr:'placeholder:Ingresa tu contraseña'|attr:'autocomplete:off' }}
+                        <span class="field-icon fas fa-lock"></span>
+                    </div>
                 </div>
+
+                <div class="form-meta">
+                    <label class="checkbox-custom">
+                        <input type="checkbox" id="remember">
+                        Recordarme
+                    </label>
+                    <a href="{% url 'login:password_reset' %}" class="form-link">¿Olvidaste tu clave?</a>
+                </div>
+
+                <button type="submit" class="btn-primary-custom">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
             </form>
 
-            <p class="mb-1 text-center">
-                <a href="{% url 'login:password_reset' %}">Olvidé Mi Contraseña</a>
-                <hr class="mt-4 mb-3" style="opacity: 0.1;">
-    <div class="text-center mt-3">
-        <span class="text-muted" style="font-size: 14px;">¿No tienes una cuenta?</span><br>
-        <a href="{% url 'registro:registro' %}" class="btn btn-outline-primary w-100 fw-bold mt-2" style="border-color: #0d6efd; color: #0d6efd;">
-            <i class="fas fa-user-plus me-1"></i> Regístrate aquí
-        </a>
-    </div>
-            </p>
+            <div class="divider">o</div>
+
+            <a href="{% url 'registro:registro' %}" class="btn-outline-custom">
+                <i class="fas fa-user-plus"></i> Crear una cuenta nueva
+            </a>
+
         </div>
     </div>
-</div>
 
-<script type="application/javascript">
+    <script src="{% static 'lib/datatables-1.10.20/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'AdminLTE/dist/js/bootstrap.js' %}"></script>
     {% if form.errors %}
-    // ... Tu lógica de Swal.fire (SweetAlert2)
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Credenciales inválidas',
+            text: 'El usuario o la contraseña no son correctos.',
+            confirmButtonColor: '#1557d4',
+            background: '#fff',
+            customClass: { popup: 'swal-custom' }
+        });
+    </script>
     {% endif %}
-</script>
-</div>
-<script src="{% static 'lib/datatables-1.10.20/jquery-3.7.1.min.js' %}"></script>
-<script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
-<script src="{% static 'AdminLTE/dist/js/popper.js' %}"></script>
-<script src="{% static 'AdminLTE/dist/js/bootstrap.js' %}"></script>
-<script src="{% static 'AdminLTE/dist/js/adminlte.js' %}"></script>
 </body>
 </html>

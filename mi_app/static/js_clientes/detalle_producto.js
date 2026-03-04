@@ -92,7 +92,10 @@ function agregarAlCarrito(productoId, redireccionar = false) {
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 2500,
-                    timerProgressBar: true
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.style.marginTop = '80px'; // Ajusta los píxeles según tu menú
+                    }
                 });
                 
                 // Actualizar el numerito del carrito en el header sin recargar
@@ -114,5 +117,24 @@ function agregarAlCarrito(productoId, redireccionar = false) {
     .catch(error => {
         console.error('Error en fetch:', error);
         Swal.fire('Error', 'No se pudo procesar la solicitud.', 'error');
+    });
+}
+// La función ahora recibe la URL como un parámetro llamado "urlLogin"
+function mostrarAlertaLogin(urlLogin) {
+    Swal.fire({
+        icon: 'info',
+        title: '¡Inicia sesión!',
+        text: 'Debes ingresar a tu cuenta para ver y gestionar tu carrito de compras.',
+        showCancelButton: true,
+        confirmButtonColor: '#000',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Iniciar Sesión',
+        cancelButtonText: 'Seguir mirando',
+        heightAuto: false 
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Usamos la variable que llegó desde el HTML
+            window.location.href = urlLogin; 
+        }
     });
 }
