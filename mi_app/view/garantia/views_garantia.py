@@ -45,7 +45,7 @@ def reporte_garantias(request):
 @method_decorator(never_cache, name='dispatch')
 class GarantiaListView(AdminRequiredMixin, ListView):
     model = Garantia
-    template_name = 'modulos/garantia/garantia.html'
+    template_name = 'modulos/garantia/admin_garantias.html'
     context_object_name = 'garantias' 
     
     @method_decorator(csrf_exempt)

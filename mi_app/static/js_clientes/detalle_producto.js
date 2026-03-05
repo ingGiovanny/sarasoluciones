@@ -122,3 +122,34 @@ function agregarAlCarrito(productoId, redireccionar = false) {
         Swal.fire('Error', 'No se pudo procesar la solicitud.', 'error');
     });
 }
+function requiereLoginCarrito(event) {
+    // Evitamos que el clic en el enlace recargue la página o salte hacia arriba
+    event.preventDefault(); 
+    
+    Swal.fire({
+        icon: 'info',
+        title: '¡Casi listo!',
+        text: 'Debes iniciar sesión para ver y gestionar tu carrito.',
+        showCancelButton: true,
+        confirmButtonColor: '#d4af37', // Tu color dorado
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión',
+        cancelButtonText: 'Seguir mirando',
+        
+        // Colores dinámicos respetando tu modo oscuro estricto
+        background: document.body.classList.contains('dark-mode') ? '#1e1e2f' : '#ffffff',
+        color: document.body.classList.contains('dark-mode') ? '#f1f1f1' : '#212529',
+        
+        didOpen: (popup) => {
+            if(document.body.classList.contains('dark-mode')) {
+                popup.style.border = '2px solid #d4af37';
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // El truco maestro: Lo mandamos al login, pero con ?next= para que
+            // al iniciar sesión, Django lo devuelva automáticamente al carrito.
+            window.location.href = "/login/?next={% url 'mi_app:ver_carrito' %}"; 
+        }
+    });
+}

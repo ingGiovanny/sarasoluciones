@@ -1,4 +1,6 @@
-from django.shortcuts import render, redirect
+from urllib import request
+
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from mi_app.models import Administrador, Garantia
 from django.http import JsonResponse, HttpResponse
@@ -14,6 +16,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from core.utils import exportar_a_pdf
 from django.core.mail import send_mail
 from django.conf import settings
+
 
 # ==========================================
 # EL "BOUNCER" (Validador de Admin)
@@ -133,38 +136,69 @@ class AdministradorDeleteView(AdminRequiredMixin, DeleteView):
 # ==========================================
 # GESTIONAR GARANTÍAS (Reforzado)
 # ==========================================
+
+
+
+
 @login_required(login_url='login:login')
-@user_passes_test(es_administrador, login_url='mi_app:inicio')
+@user_passes_test(es_administrador, login_url='mi_app:principal')
 @never_cache
 def gestionar_garantias(request):
-    # La protección @user_passes_test ya hace el chequeo de admin automáticamente
-    
     if request.method == 'POST':
         garantia_id = request.POST.get('garantia_id')
-        nuevo_estado = request.POST.get('estado_garantia')
+        nuevo_estado = request.POST.get('estado_garantia') # 'APROBADO', 'RECHAZADO'
         respuesta = request.POST.get('respuesta_admin')
 
         try:
+            # 1. Obtener la garantía y actualizarla
             garantia = Garantia.objects.get(id=garantia_id)
             garantia.estado_garantia = nuevo_estado
             garantia.respuesta_admin = respuesta
             garantia.save()
             
-            # NOTIFICACIÓN AL CLIENTE
+            # 2. Sincronización con el Pedido
+            pedido_original = garantia.id_Pedido
+            
+            if nuevo_estado == 'APROBADO':
+                # El pedido vuelve a preparación para el re-envío
+                pedido_original.estado_pedido = 'EN PREPARACIÓN' 
+                
+                # Descontamos del stock el nuevo producto que se va a enviar
+                producto = pedido_original.id_producto
+                producto.cantidad_producto -= pedido_original.cantidad
+                producto.save()
+                
+                messages.info(request, f"Garantía aprobada. Se descontaron {pedido_original.cantidad} unidades para el re-envío.")
+            
+            elif nuevo_estado == 'RECHAZADO':
+                # Si se rechaza, el pedido se mantiene como entregado (no se toca el stock)
+                pedido_original.estado_pedido = 'ENTREGADO'
+                messages.warning(request, "Garantía rechazada: El pedido permanece como Entregado.")
+            
+            # Guardamos los cambios en el pedido
+            pedido_original.save()
+
+            # 3. Notificación por correo (dentro de su propio try para no romper el proceso)
             try:
-                cliente = garantia.id_Pedido.id_cliente
+                cliente = pedido_original.id_cliente
                 asunto = f"Garantía Actualizada - Soluciones Sara"
-                mensaje = f"Hola {cliente.nombre_completo},\n\nTu garantía para '{garantia.id_Pedido.id_producto.id_presentacion.nombre}' cambió a: {nuevo_estado}.\n\nRespuesta: {respuesta}"
+                mensaje = (f"Hola {cliente.nombre_completo},\n\n"
+                           f"Tu garantía para '{pedido_original.id_producto.id_presentacion.nombre}' "
+                           f"ha sido actualizada a: {nuevo_estado}.\n\n"
+                           f"Respuesta del administrador: {respuesta}")
+                
                 send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [cliente.correo_electronico], fail_silently=True)
-            except:
+            except Exception:
                 pass
 
-            messages.success(request, "Garantía actualizada correctamente.")
+            messages.success(request, "Garantía procesada correctamente.")
+            
         except Garantia.DoesNotExist:
-            messages.error(request, "Garantía no encontrada.")
+            messages.error(request, "Error: La garantía no existe en el sistema.")
             
         return redirect('mi_app:gestionar_garantias')
 
+    # Si es GET, cargamos la lista
     return render(request, 'modulos/garantia/admin_garantias.html', {
-        'garantias': Garantia.objects.all()
+        'garantias': Garantia.objects.all().order_by('-fecha_garantia')
     })

@@ -35,20 +35,27 @@ def panel_logistica(request):
 @user_passes_test(es_administrador, login_url='mi_app:inicio')
 @never_cache
 def cambiar_estado_pedido(request, transaction_id, nuevo_estado):
-    # Buscamos todos los productos que pertenezcan a esa transacción
     pedidos = Pedido.objects.filter(comprobante_pago=transaction_id)
     
     if pedidos.exists():
-        # REGLA DE SEGURIDAD: Verificar si la orden ya fue cancelada por el cliente
-        # Tomamos el primer pedido para revisar su estado general
         estado_actual = pedidos.first().estado_pedido 
         
+        # REGLA 1: Evitar cambios en órdenes canceladas
         if estado_actual == 'CANCELADO':
-            messages.error(request, "¡Alto! No puedes cambiar el estado de una orden que ya fue cancelada por el cliente.")
+            messages.error(request, "¡Alto! No puedes modificar una orden cancelada.")
+        
+        # REGLA 2: Si ya fue ENTREGADO, no puede volver atrás (preparación/enviado)
+        elif estado_actual == 'ENTREGADO' and nuevo_estado != 'ENTREGADO':
+            messages.error(request, "¡Error! Un pedido ya entregado no puede regresar a estados anteriores.")
+            
+        # REGLA 3: Si el pedido está en GARANTÍA, el administrador de logística no debe moverlo
+        elif estado_actual == 'EN GARANTÍA':
+            messages.error(request, "¡Acción Bloqueada! Este pedido está bajo un proceso de Garantía.")
+            
         else:
-            # Si la orden está viva, actualizamos el estado de toda la orden en la BD
+            # Si pasa los filtros, actualizamos
             pedidos.update(estado_pedido=nuevo_estado)
-            messages.success(request, f"La orden {transaction_id} ahora está en estado: {nuevo_estado}")
+            messages.success(request, f"La orden {transaction_id} cambió a: {nuevo_estado}")
     else:
         messages.error(request, "No se encontró la orden especificada.")
     
