@@ -8,7 +8,23 @@
     <div class="form-group mb-3">
         <label for="{{ field.id_for_label }}" class="fw-bold">{{ field.label }}:</label>
         
-        {% if field.name == 'activo' or field.name == 'destacado' or field.name == 'incluye_certificado' %}
+        {% if field.name == 'descripcion_breve' %}
+            <div class="input-group">
+                {{ field|add_class:'form-control'|attr:'autocomplete:off'|attr:'rows:2' }}
+                <button type="button" class="btn btn-dark" id="btn-ia-breve" style="z-index: 0;">
+                    <i class="bi bi-stars text-warning"></i> IA Breve
+                </button>
+            </div>
+            
+        {% elif field.name == 'descripcion_detallada' %}
+            <div class="input-group">
+                {{ field|add_class:'form-control'|attr:'autocomplete:off'|attr:'rows:4' }}
+                <button type="button" class="btn btn-secondary" id="btn-ia-detallada" style="z-index: 0;">
+                    <i class="bi bi-stars text-light"></i> IA Detallada
+                </button>
+            </div>
+            
+        {% elif field.name == 'activo' or field.name == 'destacado' or field.name == 'incluye_certificado' %}
             <div class="form-check">
                 {{ field|add_class:'form-check-input' }}
                 <label class="form-check-label text-muted">Activar opción</label>
@@ -28,8 +44,62 @@
         {% endif %}
     </div>
     {% endfor %}
-{% endblock %}
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // Función genérica para no repetir código
+    function llamarIA(botonId, inputId, urlFetch) {
+        const btnIA = document.getElementById(botonId);
+        if (!btnIA) return;
+
+        btnIA.addEventListener("click", function() {
+            const nombreItem = document.getElementById("id_nombre_servicio").value;
+            
+            if (!nombreItem || nombreItem.trim() === "") {
+                Swal.fire('Atención', 'Primero escribe el nombre del servicio arriba.', 'warning');
+                return;
+            }
+
+            const iconoOriginal = btnIA.innerHTML;
+            btnIA.innerHTML = '<span class="spinner-border spinner-border-sm"></span>...';
+            btnIA.disabled = true;
+
+            fetch(urlFetch, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ nombre: nombreItem })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.descripcion) {
+                    document.getElementById(inputId).value = data.descripcion.trim();
+                } else {
+                    Swal.fire('Error', 'No se pudo generar la descripción: ' + (data.error || ''), 'error');
+                }
+            })
+            .catch(error => {
+                Swal.fire('Error', 'Problema de conexión con la IA.', 'error');
+            })
+            .finally(() => {
+                btnIA.innerHTML = iconoOriginal;
+                btnIA.disabled = false;
+            });
+        });
+    }
+
+    // Activamos el botón de la IA Breve (Apunta a tu primera función)
+    llamarIA("btn-ia-breve", "id_descripcion_breve", "{% url 'mi_app:generar_descripcion_ia' %}");
+    
+    // Activamos el botón de la IA Detallada (Apunta a la función nueva)
+    llamarIA("btn-ia-detallada", "id_descripcion_detallada", "{% url 'mi_app:generar_descripcion_detallada_ia' %}");
+});
+</script>
+{% endblock %}
 {% block Cancelar %}
     <button type="submit" class="btn btn-primary btn-flat">
         <i class="fas fa-save"></i> Guardar

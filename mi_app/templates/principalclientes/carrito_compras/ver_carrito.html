@@ -31,7 +31,7 @@
                         </thead>
                         <tbody>
                             {% for key, value in request.session.carrito.items %}
-                            <tr id="row-{{ value.producto_id }}" class="producto-row {% if value.activo == False %}row-desactivada{% endif %}">
+                            <tr id="row-{{ value.producto_id }}" class="producto-row {% if value.activo == False %}row-desactivada{% endif %}" data-precio="{{ value.precio }}">
                                 <td class="ps-4 text-center">
                                     <input type="checkbox" class="producto-check" 
                                            onclick="toggleProducto('{{ value.producto_id }}')"
@@ -41,7 +41,7 @@
                                     <div class="d-flex align-items-center py-2">
                                         <img src="{{ value.imagen }}" class="img-cart me-3">
                                         <div>
-                                            <div class="product-name">{{ value.nombre }}</div>
+                                            <div class="product-name text-dark">{{ value.nombre }}</div>
                                             <small class="text-muted d-block">$ {{ value.precio|floatformat:0 }} unitario</small>
                                             <button class="btn-delete p-0 mt-1" onclick="confirmarEliminar('{{ value.producto_id }}', '{{ value.nombre }}')">
                                                 <i class="fas fa-trash-alt me-1"></i> Quitar
@@ -52,20 +52,20 @@
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <div class="input-group input-group-sm" style="width: 110px;">
-                                            <button class="btn btn-outline-secondary" onclick="modificarCantidad('{{ value.producto_id }}', 'restar')">
+                                            <button class="btn btn-outline-secondary" onclick="modificarCantidadConSubtotal('{{ value.producto_id }}', 'restar', this)">
                                                 <i class="fas fa-minus"></i>
                                             </button>
                                             <span class="form-control text-center px-0 item-cantidad-{{ value.producto_id }}">
-                                                    {{ value.cantidad }}
-                                                </span>
-                                            <button class="btn btn-outline-secondary" onclick="modificarCantidad('{{ value.producto_id }}', 'sumar')">
+                                                {{ value.cantidad }}
+                                            </span>
+                                            <button class="btn btn-outline-secondary" onclick="modificarCantidadConSubtotal('{{ value.producto_id }}', 'sumar', this)">
                                                 <i class="fas fa-plus"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="text-end pe-4">
-                                    <span class="fw-bold product-price">$ {{ value.total|floatformat:0 }}</span>
+                                    <span id="subtotal-item-{{ value.producto_id }}" class="fw-bold product-price text-success">$ {{ value.total|floatformat:0 }}</span>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -111,8 +111,6 @@
                     <i class="fas fa-lock me-2"></i> Pagar Ahora
                 </button>
                 
-               
-
                 <div class="text-center mt-4 opacity-50">
                     <i class="fas fa-shield-alt text-success"></i> <small>Transacciones encriptadas y seguras</small>
                 </div>
@@ -130,4 +128,41 @@
 </div>
 
 <script src="{% static 'js_clientes/carrito_compras.js' %}"></script>
+
+<script>
+function modificarCantidadConSubtotal(productoId, operacion, botonPresionado) {
+    // 1. Buscamos la fila entera a la que pertenece el botón que se presionó
+    const fila = botonPresionado.closest('.producto-row');
+    
+    // 2. Extraemos el precio que habíamos escondido en el HTML
+    const precioUnitario = parseFloat(fila.getAttribute('data-precio'));
+    
+    // 3. Buscamos el "span" que tiene la cantidad actual escrita
+    const spanCantidad = document.querySelector('.item-cantidad-' + productoId);
+    let cantidadActual = parseInt(spanCantidad.innerText);
+    
+    // 4. Calculamos la nueva cantidad según el botón que presionó
+    if (operacion === 'sumar') {
+        cantidadActual++;
+    } else if (operacion === 'restar' && cantidadActual > 1) {
+        cantidadActual--;
+    }
+    
+    // 5. Calculamos el nuevo subtotal de esta fila
+    const nuevoSubtotalFila = precioUnitario * cantidadActual;
+    
+    // 6. Actualizamos el HTML del subtotal (el número verde de la derecha)
+    const textoSubtotal = document.getElementById('subtotal-item-' + productoId);
+    if (textoSubtotal) {
+        textoSubtotal.innerText = '$ ' + nuevoSubtotalFila.toLocaleString('es-CO');
+    }
+    
+    // 7. IMPORTANTE: Llamamos a tu función original para que le avise al backend
+    // y actualice también el cuadro de "Resumen del Pedido".
+    if (typeof modificarCantidad === "function") {
+        modificarCantidad(productoId, operacion);
+    }
+}
+</script>
+
 {% endblock %}

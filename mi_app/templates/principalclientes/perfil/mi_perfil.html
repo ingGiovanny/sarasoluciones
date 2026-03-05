@@ -218,6 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             <td>
                                 <span class="amount-positive">$ {{ pedido.valor_total|floatformat:0 }}</span>
                             </td>
+                            
                             <td>
                                 {% if pedido.estado_pedido == 'PEDIDO EXITOSO' %}
                                     <span class="status-badge status-procesando">
@@ -235,16 +236,27 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <span class="status-badge status-entregado">
                                         <i class="fas fa-home"></i> Entregado
                                     </span>
+                                {% elif pedido.estado_pedido == 'CANCELADO' %}
+                                    <span class="status-badge" style="background: rgba(220, 38, 38, 0.1); color: #dc2626; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 0.8rem;">
+                                        <i class="fas fa-ban"></i> Cancelado
+                                    </span>
                                 {% endif %}
                             </td>
+                            
                             <td>
-                                <div class="actions-cell">
+                                <div class="actions-cell" style="display: flex; gap: 8px; align-items: center;">
+                                    
                                     <a href="{% url 'mi_app:descargar_factura_pdf' pedido.comprobante_pago %}"
                                        class="btn-action btn-pdf-custom" title="Descargar Factura">
                                         <i class="fas fa-file-pdf"></i> PDF
                                     </a>
 
-                                    {% if pedido.estado_pedido == 'PEDIDO EXITOSO' %}
+                                    {% if pedido.estado_pedido == 'PEDIDO EXITOSO' or pedido.estado_pedido == 'EN PREPARACIÓN' %}
+                                        <a href="{% url 'mi_app:cancelar_pedido' pedido.id %}" class="btn-action" style="background: #fee2e2; color: #dc2626; border-radius: 4px; padding: 6px 10px; font-size: 0.85rem; text-decoration: none;" title="Cancelar Compra">
+                                            <i class="fas fa-times-circle"></i> Cancelar
+                                        </a>
+
+                                    {% elif pedido.estado_pedido == 'ENTREGADO' %}
                                         {% with garantia=pedido.garantias_pedido.first %}
                                             {% if garantia %}
                                                 <a href="{% url 'mi_app:mis_garantias' %}" class="btn-action btn-warranty-see">
@@ -258,7 +270,13 @@ document.addEventListener("DOMContentLoaded", function () {
                                                 <span class="badge-expired"><i class="fas fa-times-circle"></i> Expirada</span>
                                             {% endif %}
                                         {% endwith %}
+                                        
+                                    {% elif pedido.estado_pedido == 'CANCELADO' %}
+                                        <span style="font-size: 0.8rem; color: #9ca3af; font-weight: 600;">
+                                            Anulada
+                                        </span>
                                     {% endif %}
+                                    
                                 </div>
                             </td>
                         </tr>
@@ -279,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </tbody>
                 </table>
             </div>
-        </div><!-- /right col -->
+        </div>
 
     </div><!-- /dash-grid -->
 </div><!-- /dash-wrap -->

@@ -1,4 +1,8 @@
 from django.urls import path
+
+
+
+
 from . import views
 from mi_app.views import *
 
@@ -19,6 +23,7 @@ from mi_app.view.garantia.views_garantia import *
 from mi_app.view.principal.views_principal import *
 from mi_app.view.panel_pedidos.panel_logistica import *
 from mi_app.view.A_todo_cliente.productoscli.views_productoscli import *
+from mi_app.view.A_todo_cliente.historial_pedidos.cancelar_pedido import *
 from mi_app.view.A_todo_cliente.servicio_cli.detalle_servicio import *
 from mi_app.view.A_todo_cliente.principalcliente.views_principal_cliente import *
 from mi_app.view.A_todo_cliente.principalcliente.cuenta_email import *
@@ -27,6 +32,7 @@ from mi_app.view.A_todo_cliente.principalcliente.direccion_cli import *
 from mi_app.view.A_todo_cliente.principalcliente.garantia import *
 from mi_app.view.A_todo_cliente.carrito_compras.views_carrito import *
 from mi_app.view.A_todo_cliente.carrito_compras.check import *
+from mi_app.view.producto_servicio_ia.producto_servicio_ia import *
 from mi_app.view.compra.views_compra import *
 
 app_name = 'mi_app'
@@ -69,10 +75,16 @@ urlpatterns = [
     path('mis-pedidos/garantia/<int:pedido_id>/', solicitar_garantia, name='solicitar_garantia'),
     path('logistica/garantias/', gestionar_garantias, name='gestionar_garantias'),
     path('mis-garantias/', mis_garantias, name='mis_garantias'),
+    path('pedido/cancelar/<int:pedido_id>/', cancelar_pedido, name='cancelar_pedido'),
     
     #activar cuenta 
     path('activar/<str:uidb64>/<str:token>/', activar_cuenta, name='activar'),
 
+    # Inteligencia Artificial url de la views de groq para generar descripción de producto/servicio con IA----------------
+    path('api/generar-descripcion/', generar_descripcion_ia, name='generar_descripcion_ia'),
+    path('api/generar-descripcion-producto/', generar_descripcion_producto_ia, name='generar_descripcion_producto_ia'),
+    path('api/generar-descripcion-detallada/', generar_descripcion_detallada_ia, name='generar_descripcion_detallada_ia'),
+    
     # ==========================================
     # MÓDULOS DEL ADMINISTRADOR (CRUDs)
     # ==========================================

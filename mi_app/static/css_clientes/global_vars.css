@@ -1,66 +1,63 @@
-/* =========================================================
-   CEREBRO DE COLORES: VARIABLES GLOBALES DEL SISTEMA
-   ========================================================= */
+/* static/css_clientes/global_vars.css */
+
 :root {
-    /* --- COLORES DEL CUERPO (Modo Claro) --- */
-    --bg-primary: #ffffff;
-    --bg-secondary: #f4f6f9;
-    --bg-card: #ffffff;
-    --text-primary: #2c3e50;
-    --text-secondary: #7f8c8d;
-    --accent-color: #2d005f; /* Tu morado original */
+    /* --- MODO CLARO: Blanco, Negro y Dorado --- */
+    --bg-body: #f8f9fa; /* Blanco roto/gris muy suave para el fondo */
+    --bg-card: #ffffff; /* Blanco puro para tarjetas */
+    --bg-secondary: #f1f1f1;
+    --text-primary: #111111; /* Negro casi puro */
+    --text-secondary: #666666;
+    
+    --accent-color: #d4af37; /* DORADO ELEGANTE */
+    --accent-hover: #b5952f; /* Dorado más oscuro para hover */
+    --accent-glow: rgba(212, 175, 55, 0.15); /* Brillo dorado */
+    
     --border-color: #e0e0e0;
     
-    /* --- NAVBAR (Fijo - Siempre Oscuro) --- */
-    --navbar-bg: #111111;
+    /* Navbar siempre oscuro para contraste */
+    --navbar-bg: #000000;
     --navbar-text: #ffffff;
-    --navbar-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    --navbar-shadow: 0 4px 15px rgba(0,0,0,0.1);
 
-    /* --- BOTÓN TOGGLE --- */
-    --toggle-bg: linear-gradient(145deg, #2c3e50, #34495e);
-    --slider-bg: linear-gradient(145deg, #f39c12, #f1c40f);
+    /* Toggle */
+    --toggle-bg: #e0e0e0;
+    --slider-bg: #d4af37;
+
+    /* Sombras globales */
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.04);
 }
 
 body.dark-mode {
-    /* --- COLORES DEL CUERPO (Modo Oscuro) --- */
-    --bg-primary: #0f172a;   
-    --bg-secondary: #1e293b; 
-    --bg-card: #1e293b;      
-    --text-primary: #f1f5f9; 
-    --text-secondary: #94a3b8; 
-    --accent-color: #8c52ff; /* Morado brillante */
-    --border-color: rgba(255, 255, 255, 0.1); 
+    /* --- MODO OSCURO: Negro, Blanco y Dorado --- */
+    --bg-body: #000000; /* Negro puro */
+    --bg-card: #121212; /* Negro levemente gris para tarjetas */
+    --bg-secondary: #1e1e1e;
+    --text-primary: #ffffff; /* Blanco puro */
+    --text-secondary: #a0a0a0;
+    
+    --accent-color: #d4af37; /* DORADO */
+    --accent-hover: #f1c40f; /* Dorado más brillante */
+    --accent-glow: rgba(212, 175, 55, 0.15);
+    
+    --border-color: #333333;
 
-    /* Toggle en Modo Oscuro */
-    --toggle-bg: #334155;
-    --slider-bg: #38bdf8;
+    --navbar-bg: #000000;
+    --navbar-text: #ffffff;
+
+    --toggle-bg: #333333;
+    --slider-bg: #d4af37;
+    
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
-/* Aplicación base */
+/* Aplicación base a toda la web */
 html, body {
     height: 100%;
     margin: 0;
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    transition: background-color 0.3s, color 0.3s;
-}
-:root {
-    --bg-body: #f4f6f9;
-    --text-primary: #2c3e50;
-    /* ... tus otras variables de modo claro ... */
-}
-
-/* ESTO ES LO QUE CAMBIA LOS COLORES DE LA WEB */
-body.dark-mode {
-    --bg-body: #000000 !important;
-    --text-primary: #ffffff !important;
-    background-color: #000000 !important; /* Fuerza el color de fondo */
-    color: #ffffff !important;
-}
-
-/* Aplicación global */
-body {
     background-color: var(--bg-body);
     color: var(--text-primary);
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }

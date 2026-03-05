@@ -31,16 +31,27 @@
             <td>$ {{ pedido.valor_total|floatformat:0 }}</td>
             
             <td>
-                {% if pedido.estado_pedido == 'PEDIDO EXITOSO' %}
-                    <span class="badge bg-success">Recién Pagado</span>
-                {% elif pedido.estado_pedido == 'EN PREPARACIÓN' %}
-                    <span class="badge bg-warning text-dark">En Preparación</span>
-                {% elif pedido.estado_pedido == 'ENVIADO' %}
-                    <span class="badge bg-primary">Enviado</span>
+                {% if pedido.estado_pedido == 'CANCELADO' %}
+                    <span class="text-danger fw-bold"><i class="fas fa-ban"></i> Orden Anulada</span>
+                
                 {% elif pedido.estado_pedido == 'ENTREGADO' %}
-                    <span class="badge bg-secondary">Entregado</span>
+                    <span class="text-success fw-bold"><i class="fas fa-check-double"></i> Proceso Finalizado</span>
+                
                 {% else %}
-                    <span class="badge bg-dark">{{ pedido.estado_pedido }}</span>
+                    <a href="{% url 'mi_app:cambiar_estado_pedido' pedido.comprobante_pago 'EN PREPARACIÓN' %}" 
+                       class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Marcar en Preparación">
+                       <i class="fas fa-box-open"></i>
+                    </a>
+                    
+                    <a href="{% url 'mi_app:cambiar_estado_pedido' pedido.comprobante_pago 'ENVIADO' %}" 
+                       class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="Marcar como Enviado">
+                       <i class="fas fa-truck"></i>
+                    </a>
+
+                    <a href="{% url 'mi_app:cambiar_estado_pedido' pedido.comprobante_pago 'ENTREGADO' %}" 
+                       class="btn btn-secondary btn-sm" data-bs-toggle="tooltip" title="Marcar como Entregado">
+                       <i class="fas fa-home"></i>
+                    </a>
                 {% endif %}
             </td>
 

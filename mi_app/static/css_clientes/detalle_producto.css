@@ -1,218 +1,31 @@
 /* static/css_clientes/detalle_producto.css */
+.dash-wrap { max-width: 1200px; margin: 0 auto; padding: 30px 20px 80px; animation: fadeIn 0.5s ease-in-out; }
+.dash-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; box-shadow: var(--shadow-card); padding: 35px; }
+.producto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
 
-.dash-wrap { 
-    max-width: 1200px; 
-    margin: 0 auto; 
-    padding: 30px 20px 80px; 
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-.dash-card { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    border-radius: 20px; 
-    box-shadow: var(--shadow-card); 
-    padding: 35px; 
-}
-
-.producto-grid { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 40px; 
-    align-items: start; 
-}
-
-/* --- GALERÍA PROFESIONAL --- */
-.producto-galeria { 
-    position: sticky; 
-    top: 100px; 
-}
-
-.imagen-principal-wrapper { 
-    width: 100%; 
-    height: 450px; 
-    border-radius: 15px; 
-    overflow: hidden; 
-    background-color: #ffffff; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    border: 1px solid var(--border-color); 
-}
-
-.imagen-principal-wrapper img { 
-    max-width: 90%; 
-    max-height: 90%; 
-    object-fit: contain; 
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-}
-
+.producto-galeria { position: sticky; top: 100px; }
+.imagen-principal-wrapper { width: 100%; height: 450px; border-radius: 15px; overflow: hidden; background-color: #ffffff; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); }
+.imagen-principal-wrapper img { max-width: 90%; max-height: 90%; object-fit: contain; transition: transform 0.4s ease; }
 .imagen-principal-wrapper:hover img { transform: scale(1.08); }
 
-.miniaturas-container { 
-    display: flex; 
-    gap: 12px; 
-    margin-top: 15px; 
-    overflow-x: auto; 
-    padding: 5px 0; 
-}
+.miniaturas-container { display: flex; gap: 12px; margin-top: 15px; overflow-x: auto; padding: 5px 0; }
+.miniatura-item { width: 70px; height: 70px; border-radius: 10px; border: 2px solid var(--border-color); cursor: pointer; object-fit: contain; background-color: #fff; transition: all 0.3s; opacity: 0.6; }
+.miniatura-item:hover, .miniatura-item.active { border-color: var(--accent-color); opacity: 1; transform: scale(1.05); }
 
-.miniatura-item { 
-    width: 70px; 
-    height: 70px; 
-    border-radius: 10px; 
-    border: 2px solid var(--border-color); 
-    cursor: pointer; 
-    object-fit: contain; 
-    background-color: #fff; 
-    transition: all 0.3s; 
-    opacity: 0.6; 
-}
+.marca-badge { background-color: var(--accent-glow); color: var(--accent-color); padding: 6px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-block; margin-bottom: 15px; }
+.producto-titulo { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; color: var(--text-primary); margin-bottom: 20px; line-height: 1.1; }
 
-.miniatura-item:hover, .miniatura-item.active { 
-    border-color: var(--accent-color); 
-    opacity: 1; 
-    transform: scale(1.05); 
-}
+.precio-detalle-box { margin: 20px 0; padding: 20px; background-color: var(--bg-secondary); border-radius: 16px; border-left: 5px solid var(--accent-color); }
+.producto-precio-valor { font-size: 3rem; color: var(--text-primary); font-weight: 900; line-height: 1; }
 
-/* --- INFO DEL PRODUCTO --- */
-.marca-badge { 
-    background-color: rgba(45, 0, 95, 0.08); 
-    color: var(--accent-color); 
-    padding: 6px 14px; 
-    border-radius: 50px; 
-    font-size: 0.75rem; 
-    font-weight: 700; 
-    text-transform: uppercase; 
-    display: inline-block; 
-    margin-bottom: 15px; 
-}
+.compra-box { background-color: var(--bg-card); padding: 25px; border-radius: 20px; border: 2px solid var(--border-color); margin-top: 30px; }
+.btn-carrito { background-color: transparent; color: var(--text-primary); border: 2px solid var(--text-primary); padding: 15px; border-radius: 50px; font-weight: 700; width: 100%; transition: all 0.3s; margin-bottom: 15px; }
+.btn-carrito:hover { background-color: var(--text-primary); color: var(--bg-card) !important; }
+.btn-comprar-ahora { background-color: var(--accent-color); color: #000 !important; border: none; padding: 15px; border-radius: 50px; font-weight: 700; width: 100%; transition: all 0.3s; text-transform: uppercase; }
+.btn-comprar-ahora:hover { background-color: var(--accent-hover); }
 
-.producto-titulo { 
-    font-size: clamp(1.8rem, 4vw, 2.8rem); 
-    font-weight: 800; 
-    color: var(--text-primary); 
-    margin-bottom: 20px; 
-    line-height: 1.1; 
-}
+.amazon-select-wrapper { position: relative; width: 100%; max-width: 180px; height: 55px; }
+.select-amazon-style { width: 100%; height: 100%; background-color: var(--bg-card); color: var(--text-primary); border: 2px solid var(--border-color); border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; padding: 0 15px; transition: all 0.3s ease; }
+.select-amazon-style:focus { border-color: var(--accent-color); box-shadow: 0 0 0 4px var(--accent-glow); outline: none;}
 
-.precio-detalle-box { 
-    margin: 20px 0; 
-    padding: 20px; 
-    background-color: var(--bg-secondary); 
-    border-radius: 16px; 
-    border-left: 5px solid var(--accent-color);
-}
-
-.producto-precio-valor { 
-    font-size: 3rem; 
-    color: var(--text-primary); 
-    font-weight: 900; 
-    line-height: 1; 
-}
-
-/* --- CAJA DE COMPRA --- */
-.compra-box { 
-    background-color: var(--bg-card); 
-    padding: 25px; 
-    border-radius: 20px; 
-    border: 2px solid var(--border-color);
-    margin-top: 30px; 
-}
-
-.btn-carrito { 
-    background-color: transparent; 
-    color: var(--accent-color); 
-    border: 2px solid var(--accent-color); 
-    padding: 15px; 
-    border-radius: 50px; 
-    font-weight: 700; 
-    width: 100%; 
-    transition: all 0.3s; 
-    margin-bottom: 15px;
-}
-
-.btn-carrito:hover { 
-    background-color: var(--accent-color); 
-    color: white !important; 
-}
-
-.btn-comprar-ahora { 
-    background-color: var(--accent-color); 
-    color: white !important; 
-    border: none; 
-    padding: 15px; 
-    border-radius: 50px; 
-    font-weight: 700; 
-    width: 100%; 
-    transition: all 0.3s; 
-    text-transform: uppercase;
-}
-/* =======================================================
-   ESTILOS DEL SELECTOR DE CANTIDAD (TAMAÑO PRO)
-   ======================================================= */
-.amazon-select-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 180px; /* Más ancho para que quepa "X unidades" */
-    height: 55px;     /* Mucho más alto y fácil de tocar en celular */
-}
-
-.select-amazon-style {
-    width: 100%;
-    height: 100%;
-    background-color: var(--bg-card);
-    color: var(--text-primary);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    outline: none;
-    padding: 0 15px;
-    transition: all 0.3s ease;
-}
-
-.select-amazon-style:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 4px rgba(45, 0, 95, 0.1);
-}
-
-/* --- ADAPTACIÓN MODO OSCURO --- */
-body.dark-mode .select-amazon-style {
-    background-color: #2b2b2b !important;
-    color: #ffffff !important;
-    border-color: #444 !important;
-}
-
-/* El fondo de las opciones desplegadas en modo oscuro */
-body.dark-mode .select-amazon-style option {
-    background-color: #1e293b;
-    color: #ffffff;
-}
-/* --- RESPONSIVIDAD --- */
-@media (max-width: 991px) {
-    .producto-grid { grid-template-columns: 1fr; gap: 40px; }
-    .producto-galeria { position: relative; top: 0; }
-    .imagen-principal-wrapper { height: 380px; }
-}
-/* --- FIX PARA MODO OSCURO (Detalle Producto) --- */
-/* Forzamos que las cajas grises de Bootstrap se adapten al modo oscuro */
-body.dark-mode .bg-light {
-    background-color: var(--bg-secondary) !important;
-    color: var(--text-primary) !important;
-    border-color: var(--border-color) !important;
-}
-
-body.dark-mode .text-muted {
-    color: var(--text-secondary) !important;
-}
-
-/* La caja del precio unitario */
-.precio-detalle-box { 
-    margin: 20px 0; 
-    padding: 20px; 
-    background-color: var(--bg-secondary); /* Usa la variable global */
-    border-radius: 16px; 
-    border-left: 5px solid var(--accent-color);
-}
+@media (max-width: 991px) { .producto-grid { grid-template-columns: 1fr; gap: 40px; } .producto-galeria { position: relative; top: 0; } .imagen-principal-wrapper { height: 380px; } }

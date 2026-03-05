@@ -39,9 +39,16 @@ def cambiar_estado_pedido(request, transaction_id, nuevo_estado):
     pedidos = Pedido.objects.filter(comprobante_pago=transaction_id)
     
     if pedidos.exists():
-        # Actualizamos el estado de toda la orden en la BD
-        pedidos.update(estado_pedido=nuevo_estado)
-        messages.success(request, f"La orden {transaction_id} ahora está en estado: {nuevo_estado}")
+        # REGLA DE SEGURIDAD: Verificar si la orden ya fue cancelada por el cliente
+        # Tomamos el primer pedido para revisar su estado general
+        estado_actual = pedidos.first().estado_pedido 
+        
+        if estado_actual == 'CANCELADO':
+            messages.error(request, "¡Alto! No puedes cambiar el estado de una orden que ya fue cancelada por el cliente.")
+        else:
+            # Si la orden está viva, actualizamos el estado de toda la orden en la BD
+            pedidos.update(estado_pedido=nuevo_estado)
+            messages.success(request, f"La orden {transaction_id} ahora está en estado: {nuevo_estado}")
     else:
         messages.error(request, "No se encontró la orden especificada.")
     

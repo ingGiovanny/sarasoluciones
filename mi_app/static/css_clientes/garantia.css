@@ -1,0 +1,20 @@
+/* static/css_clientes/garantia.css */
+/* Ya no hay :root aquí, todo lo hereda del global_vars */
+
+.warranty-wrapper { width: 100%; max-width: 1300px; margin: 0 auto; }
+.card-warranty { background-color: var(--bg-card) !important; border: 1px solid var(--border-color) !important; border-radius: 16px !important; overflow: hidden; box-shadow: var(--shadow-card) !important; transition: all 0.3s ease; }
+.card-header-custom { background-color: var(--bg-secondary) !important; border-bottom: 1px solid var(--border-color) !important; padding: 1.5rem 2rem !important; }
+
+/* El cuadro celeste de info se vuelve sutil con la paleta nueva */
+.alert-info-custom { background-color: var(--bg-secondary) !important; color: var(--text-primary) !important; border: 1px solid var(--border-color) !important; border-radius: 12px; transition: all 0.3s ease; border-left: 4px solid var(--accent-color) !important;}
+
+.form-control-custom { background-color: var(--bg-card) !important; border: 2px solid var(--border-color) !important; color: var(--text-primary) !important; border-radius: 12px !important; transition: all 0.25s ease; resize: none; line-height: 1.6; }
+.form-control-custom::placeholder { color: var(--text-secondary); opacity: 0.6; }
+.form-control-custom:focus { border-color: var(--accent-color) !important; box-shadow: 0 0 0 4px var(--accent-glow) !important; outline: none; }
+
+.upload-zone { border: 2px dashed var(--border-color); background-color: var(--bg-secondary); border-radius: 12px; transition: all 0.3s ease; position: relative; overflow: hidden; }
+.upload-zone:hover, .upload-zone:focus-within { border-color: var(--accent-color); background-color: var(--accent-glow); transform: translateY(-2px); }
+.upload-zone input[type="file"] { border: 1px solid var(--border-color) !important; background: var(--bg-card) !important; padding: 0.6rem; border-radius: 8px !important; cursor: pointer; color: var(--text-primary); }
+.upload-zone input[type="file"]:hover { border-color: var(--accent-color) !important; }
+
+@media (max-width: 768px) { .warranty-wrapper { padding: 0.5rem !important; } .card-body { padding: 1.5rem !important; } .upload-zone { min-height: 200px !important; } .form-control-custom { min-height: 180px !important; } .gap-3 { flex-direction: column-reverse; gap: 0.8rem !important; } .btn { width: 100%; } }

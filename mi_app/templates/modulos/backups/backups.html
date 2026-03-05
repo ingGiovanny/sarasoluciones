@@ -1,12 +1,12 @@
-{% extends "listar.html" %}
+{% extends "body.html" %}
+
 {% load static %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/backups.css' %}">
-{% endblock %}
-
 {% block content %}
-<div class="backup-wrapper"> <div class="container-fluid pt-4">
+<link rel="stylesheet" href="{% static 'css/backups.css' %}">
+
+<div class="backup-wrapper"> 
+    <div class="container-fluid pt-4">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0">Centro de Copias de Seguridad</h1>
         </div>
@@ -95,71 +95,77 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Tu lógica de SweetAlert se mantiene igual
-    {% if autenticado %}
-    document.getElementById("btnGenerar").addEventListener("click", function () {
-        Swal.fire({
-            title: '¿Iniciar respaldo?',
-            text: "Se generará un dump comprimido y se subirá a Drive.",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#4e73df',
-            confirmButtonText: 'Sí, comenzar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
+    // Aseguramos que el DOM cargue antes de buscar los botones
+    document.addEventListener("DOMContentLoaded", function() {
+        {% if autenticado %}
+        let btnGenerar = document.getElementById("btnGenerar");
+        if (btnGenerar) {
+            btnGenerar.addEventListener("click", function () {
                 Swal.fire({
-                    title: 'Procesando...',
-                    html: 'Comprimiendo y subiendo a la nube...',
-                    allowOutsideClick: false,
-                    didOpen: () => Swal.showLoading()
+                    title: '¿Iniciar respaldo?',
+                    text: "Se generará un dump comprimido y se subirá a Drive.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4e73df',
+                    confirmButtonText: 'Sí, comenzar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Procesando...',
+                            html: 'Comprimiendo y subiendo a la nube...',
+                            allowOutsideClick: false,
+                            didOpen: () => Swal.showLoading()
+                        });
+                        document.getElementById("formBackup").submit();
+                    }
                 });
-                document.getElementById("formBackup").submit();
-            }
-        });
-    });
-    {% endif %}
-
-    document.getElementById("btnRestaurar").addEventListener("click", function () {
-        if (!document.getElementById("inputBackup").files.length) {
-            Swal.fire('Error', 'Por favor selecciona un archivo de backup primero.', 'error');
-            return;
-        }
-        Swal.fire({
-            title: '¿Confirmar restauración?',
-            html: '<p class="text-danger"><strong>¡ADVERTENCIA!</strong> Esta acción reemplazará todos los datos actuales.</p>',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#e74a3b',
-            confirmButtonText: 'Sí, restaurar todo',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Restaurando...',
-                    html: 'Descomprimiendo e inyectando datos...',
-                    allowOutsideClick: false,
-                    didOpen: () => Swal.showLoading()
-                });
-                document.getElementById("formRestaurar").submit();
-            }
-        });
-    });
-
-    {% if messages %}
-        {% for message in messages %}
-            Swal.fire({
-                title: "{% if message.tags == 'success' %}¡Completado!{% else %}Hubo un problema{% endif %}",
-                text: "{{ message|escapejs }}",
-                icon: "{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}",
-                confirmButtonColor: '#4e73df'
             });
-        {% endfor %}
-    {% endif %}
+        }
+        {% endif %}
+
+        let btnRestaurar = document.getElementById("btnRestaurar");
+        if (btnRestaurar) {
+            btnRestaurar.addEventListener("click", function () {
+                if (!document.getElementById("inputBackup").files.length) {
+                    Swal.fire('Error', 'Por favor selecciona un archivo de backup primero.', 'error');
+                    return;
+                }
+                Swal.fire({
+                    title: '¿Confirmar restauración?',
+                    html: '<p class="text-danger"><strong>¡ADVERTENCIA!</strong> Esta acción reemplazará todos los datos actuales.</p>',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74a3b',
+                    confirmButtonText: 'Sí, restaurar todo',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Restaurando...',
+                            html: 'Descomprimiendo e inyectando datos...',
+                            allowOutsideClick: false,
+                            didOpen: () => Swal.showLoading()
+                        });
+                        document.getElementById("formRestaurar").submit();
+                    }
+                });
+            });
+        }
+
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    title: "{% if message.tags == 'success' %}¡Completado!{% else %}Hubo un problema{% endif %}",
+                    text: "{{ message|escapejs }}",
+                    icon: "{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}",
+                    confirmButtonColor: '#4e73df'
+                });
+            {% endfor %}
+        {% endif %}
+    });
 </script>
 {% endblock %}

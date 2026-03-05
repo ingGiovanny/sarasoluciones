@@ -132,7 +132,6 @@ def procesar_pago_simulado(request):
     carrito_sesion = request.session.get('carrito', {})
     cliente_actual = GestionCliente.objects.filter(user=request.user).first()
     
-    # ... (validaciones de dirección igual que antes) ...
 
     if carrito_sesion:
         # 🚨 FILTRO CRÍTICO: Creamos una lista solo con los productos con el 'check' activo

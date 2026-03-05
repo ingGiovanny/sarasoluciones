@@ -1,54 +1,98 @@
-{% extends "base.html" %} {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-header bg-white border-bottom p-4">
-                    <h4 class="mb-0 fw-bold" style="color: #2d005f;">
-                        <i class="fas fa-tools me-2"></i> Solicitar Garantía
-                    </h4>
-                </div>
-                
-                <div class="card-body p-4">
-                    <div class="alert alert-info mb-4">
-                        <h6 class="fw-bold mb-1"><i class="fas fa-box-open me-1"></i> Producto a reportar:</h6>
-                        <p class="mb-0">{{ pedido.id_producto.id_presentacion.nombre }}</p>
-                        <hr class="my-2">
-                        <small><b>Transacción (TX):</b> {{ pedido.comprobante_pago }}</small> | 
-                        <small><b>Fecha de compra:</b> {{ pedido.fecha_pedido|date:"d/m/Y" }}</small>
+{% extends 'principalclientes/body.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/garantia.css' %}">
+
+<div class="warranty-wrapper p-3 p-md-4"> 
+    <div class="card shadow-sm card-warranty">
+        <div class="card-header card-header-custom p-4">
+            <h4 class="mb-0 fw-bold" style="color: var(--text-main);">
+                <i class="fas fa-tools me-2 text-warning"></i> Solicitud de Garantía Profesional
+            </h4>
+        </div>
+        
+        <div class="card-body p-4 p-md-5">
+            <div class="alert alert-info-custom mb-5 p-4 rounded-3 w-100">
+                <div class="row align-items-center">
+                    <div class="col-md-7">
+                        <h6 class="fw-bold text-uppercase mb-1" style="letter-spacing: 1px; font-size: 0.85rem;"><i class="fas fa-box-open me-1"></i> Producto a reportar</h6>
+                        <h4 class="fw-bold mb-0">{{ pedido.id_producto.id_presentacion.nombre }}</h4>
                     </div>
-
-                    <form action="{% url 'mi_app:solicitar_garantia' pedido.id %}" method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <div class="mb-3">
-                            <label for="motivo" class="form-label fw-bold">¿Cuál es el problema con tu producto?</label>
-                            <textarea class="form-control" id="motivo" name="motivo" rows="4" 
-                                      placeholder="Explícanos detalladamente qué defecto o problema presenta el producto..." required></textarea>
-                            <div class="form-text">Sé lo más específico posible para agilizar la respuesta.</div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="evidencia" class="form-label fw-bold">Foto de Evidencia (Obligatorio)</label>
-                            <input class="form-control" type="file" id="evidencia" name="evidencia" accept="image/*" required>
-                            <div class="form-text text-danger"><i class="fas fa-exclamation-triangle"></i> Debes subir una foto clara del defecto para que la garantía sea evaluada.</div>
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'mi_app:mi_perfil' %}" class="btn btn-outline-secondary px-4">
-                                <i class="fas fa-arrow-left me-1"></i> Cancelar
-                            </a>
-                            <button type="submit" class="btn btn-warning px-4 fw-bold shadow-sm">
-                                <i class="fas fa-paper-plane me-1"></i> Enviar Solicitud
-                            </button>
-                        </div>
-                        
-                    </form>
+                    <div class="col-md-5 text-md-end mt-3 mt-md-0 border-start border-dark border-opacity-10 ps-md-4">
+                        <p class="mb-1 fs-6"><strong>Orden (TX):</strong> {{ pedido.comprobante_pago }}</p>
+                        <p class="mb-0 fs-6"><strong>Fecha Compra:</strong> {{ pedido.fecha_pedido|date:"d/m/Y" }}</p>
+                    </div>
                 </div>
             </div>
 
+            <form action="{% url 'mi_app:solicitar_garantia' pedido.id %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row g-4 g-lg-5 mb-5">
+                    
+                    <div class="col-12 d-flex flex-column mb-4">
+                        <label for="motivo" class="form-label fw-bold fs-5 mb-3" style="color: var(--text-main);">Descripción del inconveniente</label>
+                        <textarea class="form-control form-control-custom p-4 flex-grow-1" id="motivo" name="motivo" rows="10" 
+                                  placeholder="Explícanos detalladamente qué defecto o problema presenta el producto..." required style="min-height: 250px; font-size: 1.05rem;"></textarea>
+                    </div>
+
+                   <div class="col-12 d-flex flex-column mb-4">
+                        <label for="evidencia" class="form-label fw-bold fs-5 mb-3" style="color: var(--text-main);">Evidencia Fotográfica</label>
+                        
+                        <div class="upload-zone p-4 d-flex flex-column justify-content-center align-items-center flex-grow-1 w-100 text-center" style="min-height: 250px;">
+                            
+                            <img id="preview-img" src="#" alt="Previsualización" class="img-fluid rounded shadow-sm mb-3 d-none" style="max-height: 150px; object-fit: cover;">
+                            
+                            <i id="upload-icon" class="fas fa-cloud-upload-alt fa-4x mb-3 text-muted"></i>
+                            <h5 class="fw-bold" style="color: var(--text-main);">Sube una foto del daño</h5>
+                            <p class="text-muted mb-4">Formatos soportados: JPG, PNG</p>
+                            
+                            <input class="form-control form-control-custom w-100 mb-3" type="file" id="evidencia" name="evidencia" accept="image/*" required onchange="previewImage(this)">
+                            
+                            <div class="badge bg-danger text-danger p-2 px-3 rounded-pill mt-2" style="background-color: rgba(220, 38, 38, 0.1) !important; white-space: normal; font-size: 0.85rem;">
+                                <i class="fas fa-exclamation-triangle me-1"></i> Obligatorio para validar garantía
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <hr class="mb-4" style="border-color: var(--input-border);">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <a href="{% url 'mi_app:mi_perfil' %}" class="btn btn-outline-secondary px-5 py-2 fs-5">
+                        <i class="fas fa-arrow-left me-2"></i> Volver
+                    </a>
+                    <button type="submit" class="btn btn-warning px-5 py-2 fs-5 fw-bold shadow">
+                        <i class="fas fa-paper-plane me-2"></i> Enviar Reporte
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    function previewImage(input) {
+        const preview = document.getElementById('preview-img');
+        const icon = document.getElementById('upload-icon');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('d-none'); // Muestra la imagen
+                icon.classList.add('d-none'); // Oculta la nubecita
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = "#";
+            preview.classList.add('d-none');
+            icon.classList.remove('d-none');
+        }
+    }
+</script>
 {% endblock content %}
