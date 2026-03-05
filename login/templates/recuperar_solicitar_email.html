@@ -4,56 +4,75 @@
 <html lang="es">
 <head>
     <title>Recuperar Contraseña | Sara Soluciones</title>
-    <meta charset="utf-8"> 
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
 </head>
-<body class="hold-transition login-page"> 
-    <div id="slideshow-background"></div>
-    
-    <div class="login-box">
-        <div class="login-logo py-3">
-            <a href="#" class="text-white"><b>Recuperar Contraseña</b></a>
-        </div>
-        
-        <div class="card shadow-lg">
-            <div class="card-body login-card-body rounded">
-                <p class="login-box-msg text-muted">Ingresa tu correo electrónico y te enviaremos un enlace para recuperar el acceso.</p>
+<body>
 
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="input-group mb-3">
-                        {{ form.email|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Correo Electrónico' }}
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span> 
-                            </div>
-                        </div>
-                    </div>
+    <div class="auth-wrapper">
 
-                    {% if form.email.errors or form.non_field_errors %}
-                        <div class="alert alert-danger p-2 small">
-                            {% for error in form.email.errors %}{{ error }}<br>{% endfor %}
-                            {% for error in form.non_field_errors %}{{ error }}<br>{% endfor %}
-                        </div>
-                    {% endif %}
-
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-block font-weight-bold">
-                                <i class="fas fa-paper-plane mr-2"></i> Enviar Enlace
-                            </button>
-                        </div>
-                    </div>
-                </form>
-                <p class="mt-4 mb-1 text-center">
-                    <a href="{% url 'login:login' %}" class="text-secondary"><i class="fas fa-arrow-left mr-1"></i> Volver al Login</a>
-                </p>
+        <!-- Panel Izquierdo -->
+        <div class="auth-panel">
+            <div class="panel-logo">
+                <div class="panel-logo-mark">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <span class="panel-logo-text">Sara Soluciones</span>
             </div>
+
+            <div class="panel-body">
+                <h2 class="panel-tagline">Recupera el acceso a tu cuenta.</h2>
+                <p class="panel-desc">Te enviaremos un enlace seguro para que puedas crear una nueva contraseña en minutos.</p>
+            </div>
+
+            <div class="panel-footer">
+                <p class="panel-footer-text">© 2025 Sara Soluciones</p>
+            </div>
+        </div>
+
+        <!-- Panel Formulario -->
+        <div class="auth-form-area">
+
+            <a href="{% url 'login:login' %}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Volver al login
+            </a>
+
+            <div class="form-header">
+                <p class="form-eyebrow">Recuperación de acceso</p>
+                <h1 class="form-title">¿Olvidaste tu contraseña?</h1>
+                <p class="form-subtitle">Ingresa tu correo registrado y recibirás un enlace para restablecerla.</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.email.errors or form.non_field_errors %}
+                <div class="alert-custom alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>
+                        {% for error in form.email.errors %}{{ error }}<br>{% endfor %}
+                        {% for error in form.non_field_errors %}{{ error }}<br>{% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                <div class="field">
+                    <label class="field-label">Correo Electrónico</label>
+                    <div class="field-wrap">
+                        {{ form.email|add_class:'field-input'|attr:'placeholder:tu@correo.com'|attr:'autocomplete:off' }}
+                        <span class="field-icon fas fa-envelope"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary-custom" style="margin-top: 8px;">
+                    <i class="fas fa-paper-plane"></i> Enviar enlace de recuperación
+                </button>
+            </form>
+
         </div>
     </div>
 

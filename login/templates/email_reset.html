@@ -1,16 +1,15 @@
-{% load i18n %}{% autoescape off %}
-{% blocktrans %}Bienvenido,{% endblocktrans %}
+{% load i18n %}{% autoescape off %}{% blocktrans %}Hola,{% endblocktrans %}
 
-{% blocktrans %}Haz solicitado el restablecimiento de contraseña para la cuenta en {{ site_name }}.{% endblocktrans %}
+{% blocktrans %}Recibimos una solicitud para restablecer la contraseña de tu cuenta en {{ site_name }}.{% endblocktrans %}
 
-{% blocktrans %}Haz clic en el enlace para restablecer la contraseña:{% endblocktrans %}
+{% blocktrans %}Haz clic en el siguiente enlace para crear una nueva contraseña:{% endblocktrans %}
+
 {{ protocol }}://{{ domain }}{% url 'login:password_reset_confirm' uidb64=uid token=token %}
 
-{% blocktrans %}Si no solicitaste este restablecimiento, puedes ignorar este correo electrónico de forma segura.{% endblocktrans %}
+{% blocktrans %}Este enlace es válido por 24 horas y solo puede usarse una vez.{% endblocktrans %}
 
+{% blocktrans %}Si no solicitaste este cambio, puedes ignorar este mensaje con total seguridad. Tu contraseña actual permanecerá sin cambios.{% endblocktrans %}
+
+──────────────────────────────
+{% blocktrans %}El equipo de {{ site_name }}{% endblocktrans %}
 {% endautoescape %}
-
-{% blocktrans %}Gracias por usar nuestro servicio.{% endblocktrans %}
-
-{% blocktrans %}El equipo de {{ site_name }}.{% endblocktrans %}
-

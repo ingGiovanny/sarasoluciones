@@ -1,4 +1,4 @@
-/* ========== REGISTRO PROFESIONAL ========== */
+/* ========== REGISTRO PROFESIONAL (BLANCO, NEGRO, DORADO) ========== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -10,22 +10,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-color: var(--bg-body); /* Conectado al cerebro */
     padding: 40px 20px;
 }
 
 .register-container {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 480px;
     width: 100%;
-    background: white;
+    background-color: var(--bg-card);
     border-radius: 20px;
     padding: 50px 40px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
+    transition: all 0.3s ease;
 }
 
+/* La línea superior elegante en Dorado */
 .register-container::before {
     content: '';
     position: absolute;
@@ -33,7 +35,7 @@
     left: 0;
     width: 100%;
     height: 5px;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    background-color: var(--accent-color);
 }
 
 .register-header {
@@ -44,12 +46,12 @@
 .register-header h2 {
     font-weight: 800;
     font-size: 2rem;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 10px;
 }
 
 .register-header p {
-    color: #7f8c8d;
+    color: var(--text-secondary);
     font-size: 0.95rem;
 }
 
@@ -60,67 +62,53 @@
     transition: all 0.3s ease;
 }
 
-
-
-
-/* 1. EL ÍCONO: Lo fijamos arriba para que no se baje cuando salga el error */
+/* Ícono posicionado de forma fija para evitar saltos */
 .input-group i {
     position: absolute;
     left: 18px;
-    top: 27px; /* Cambiamos el 50% por un valor fijo desde arriba */
+    top: 27px;
     transform: translateY(-50%);
     font-size: 18px;
-    color: #95a5a6;
+    color: var(--text-secondary);
     transition: all 0.3s ease;
     z-index: 1;
 }
+
 .input-group input {
-    box-sizing: border-box; /* ESTA ES LA LÍNEA MÁGICA QUE EVITA QUE SE SALGAN */
+    box-sizing: border-box;
     width: 100%;
     padding: 16px 20px 16px 55px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--border-color);
     border-radius: 12px;
     font-size: 15px;
     transition: all 0.3s ease;
-    background: #f8f9fa;
-    color: #2c3e50;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: #667eea;
-    background: white;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    border-color: var(--accent-color);
+    background-color: var(--bg-card);
+    box-shadow: 0 0 0 4px var(--accent-glow);
 }
 
 .input-group input:focus + i,
 .input-group input:not(:placeholder-shown) + i {
-    color: #667eea;
+    color: var(--accent-color);
     transform: translateY(-50%) scale(1.1);
 }
 
 .input-group input::placeholder {
-    color: #bdc3c7;
+    color: var(--text-secondary);
+    opacity: 0.6;
 }
 
-/* Validación visual */
-.input-group.valid input {
-    border-color: #27ae60;
-    background: #f0fff4;
-}
-
-.input-group.invalid input {
-    border-color: #e74c3c;
-    background: #fff5f5;
-}
-
-.input-group.valid i {
-    color: #27ae60;
-}
-
-.input-group.invalid i {
-    color: #e74c3c;
-}
+/* Validación visual de colores fijos (Semántica universal) */
+.input-group.valid input { border-color: #27ae60; background: rgba(39, 174, 96, 0.05); }
+.input-group.invalid input { border-color: #e74c3c; background: rgba(231, 76, 60, 0.05); }
+.input-group.valid i { color: #27ae60; }
+.input-group.invalid i { color: #e74c3c; }
 
 /* Mensaje de error */
 .error-message {
@@ -145,49 +133,34 @@
 /* Botón de Registro */
 .btn-register {
     width: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background-color: var(--accent-color);
+    color: #000000; /* Texto negro sobre fondo dorado para máximo contraste premium */
     border: none;
     padding: 18px;
     border-radius: 12px;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 10px 20px var(--accent-glow);
     margin-top: 10px;
     position: relative;
     overflow: hidden;
 }
 
-.btn-register::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s ease;
-}
-
-.btn-register:hover::before {
-    left: 100%;
-}
-
 .btn-register:hover {
     transform: translateY(-2px);
-    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+    background-color: var(--accent-hover);
+    box-shadow: 0 15px 30px var(--accent-glow);
 }
 
-.btn-register:active {
-    transform: translateY(0);
-}
+.btn-register:active { transform: translateY(0); }
 
 .btn-register:disabled {
-    background: #95a5a6;
+    background-color: var(--border-color);
+    color: var(--text-secondary);
     cursor: not-allowed;
     box-shadow: none;
 }
@@ -196,19 +169,19 @@
 .login-link {
     text-align: center;
     margin-top: 25px;
-    color: #7f8c8d;
+    color: var(--text-secondary);
     font-size: 0.95rem;
 }
 
 .login-link a {
-    color: #667eea;
-    font-weight: 600;
+    color: var(--accent-color);
+    font-weight: 700;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .login-link a:hover {
-    color: #764ba2;
+    color: var(--accent-hover);
     text-decoration: underline;
 }
 
@@ -217,94 +190,36 @@
     height: 4px;
     border-radius: 2px;
     margin-top: 8px;
-    background: #e0e0e0;
+    background: var(--border-color);
     overflow: hidden;
     display: none;
 }
 
-.password-strength-bar {
-    height: 100%;
-    width: 0;
-    transition: all 0.3s ease;
-}
+.password-strength-bar { height: 100%; width: 0; transition: all 0.3s ease; }
+.input-group.has-password .password-strength { display: block; }
 
-.input-group.has-password .password-strength {
-    display: block;
-}
-
-.strength-weak .password-strength-bar {
-    width: 33%;
-    background: #e74c3c;
-}
-
-.strength-medium .password-strength-bar {
-    width: 66%;
-    background: #f39c12;
-}
-
-.strength-strong .password-strength-bar {
-    width: 100%;
-    background: #27ae60;
-}
+.strength-weak .password-strength-bar { width: 33%; background: #e74c3c; }
+.strength-medium .password-strength-bar { width: 66%; background: #f39c12; }
+.strength-strong .password-strength-bar { width: 100%; background: #27ae60; }
 
 /* Loading spinner */
 .btn-register .spinner {
     display: none;
     width: 20px;
     height: 20px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-top-color: white;
+    border: 3px solid rgba(0,0,0,0.3);
+    border-top-color: #000;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin: 0 auto;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.btn-register.loading .btn-text {
-    display: none;
-}
-
-.btn-register.loading .spinner {
-    display: block;
-}
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn-register.loading .btn-text { display: none; }
+.btn-register.loading .spinner { display: block; }
 
 /* Responsive */
 @media (max-width: 576px) {
-    .register-container {
-        padding: 40px 30px;
-    }
-    
-    .register-header h2 {
-        font-size: 1.75rem;
-    }
-}
-
-/* Modo Oscuro */
-body.dark-mode .register-container {
-    background-color: #0f3460 !important;
-}
-
-body.dark-mode .register-header h2 {
-    color: #fff !important;
-}
-
-body.dark-mode .register-header p {
-    color: #aaa !important;
-}
-
-body.dark-mode .input-group input {
-    background-color: #1a1a2e !important;
-    color: #eee !important;
-    border-color: #444 !important;
-}
-
-body.dark-mode .input-group input:focus {
-    background-color: #0f3460 !important;
-}
-
-body.dark-mode .login-link {
-    color: #aaa !important;
+    .register-container { padding: 40px 30px; }
+    .register-header h2 { font-size: 1.75rem; }
 }

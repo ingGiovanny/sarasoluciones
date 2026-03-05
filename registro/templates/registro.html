@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - Soluciones Sara</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css_clientes/global_vars.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 </head>
 <body>
 
@@ -20,82 +21,44 @@
         <form method="POST" id="registerForm" novalidate>
             {% csrf_token %}
             
-            <!-- Nombre Completo -->
             <div class="input-group">
-                <input type="text" 
-                       name="first_name" 
-                       id="first_name"
-                       placeholder="Nombres" 
-                       required>
+                <input type="text" name="first_name" id="first_name" placeholder="Nombres" required>
                 <i class="fas fa-user"></i>
                 <div class="error-message">Por favor ingresa tu nombre</div>
             </div>
 
-            <!-- Apellidos -->
             <div class="input-group">
-                <input type="text" 
-                       name="last_name" 
-                       id="last_name"
-                       placeholder="Apellidos" 
-                       required>
+                <input type="text" name="last_name" id="last_name" placeholder="Apellidos" required>
                 <i class="fas fa-user"></i>
                 <div class="error-message">Por favor ingresa tus apellidos</div>
             </div>
 
-            <!-- Cédula -->
             <div class="input-group">
-                <input type="text" 
-                       name="cedula" 
-                       id="cedula"
-                       placeholder="Número de documento" 
-                       pattern="[0-9]+"
-                       required>
+                <input type="text" name="cedula" id="cedula" placeholder="Número de documento" pattern="[0-9]+" required>
                 <i class="fas fa-id-card"></i>
                 <div class="error-message">Ingresa un documento válido (solo números)</div>
             </div>
 
-            <!-- Email -->
             <div class="input-group">
-                <input type="email" 
-                       name="email" 
-                       id="email"
-                       placeholder="Correo electrónico" 
-                       required>
+                <input type="email" name="email" id="email" placeholder="Correo electrónico" required>
                 <i class="fas fa-envelope"></i>
                 <div class="error-message">Ingresa un correo válido</div>
             </div>
 
-            <!-- Teléfono -->
             <div class="input-group">
-                <input type="tel" 
-                       name="telefono" 
-                       id="telefono"
-                       placeholder="Número de teléfono"
-                       pattern="[0-9]{10}"
-                       required>
+                <input type="tel" name="telefono" id="telefono" placeholder="Número de teléfono" pattern="[0-9]{10}" required>
                 <i class="fas fa-phone"></i>
                 <div class="error-message">Ingresa un teléfono válido (10 dígitos)</div>
             </div>
 
-            <!-- Username -->
             <div class="input-group">
-                <input type="text" 
-                       name="username" 
-                       id="username"
-                       placeholder="Nombre de usuario" 
-                       required>
+                <input type="text" name="username" id="username" placeholder="Nombre de usuario" required>
                 <i class="fas fa-at"></i>
                 <div class="error-message">Elige un nombre de usuario</div>
             </div>
 
-            <!-- Contraseña -->
             <div class="input-group">
-                <input type="password" 
-                       name="password" 
-                       id="password"
-                       placeholder="Contraseña" 
-                       required
-                       minlength="8">
+                <input type="password" name="password" id="password" placeholder="Contraseña" required minlength="8">
                 <i class="fas fa-lock"></i>
                 <div class="password-strength">
                     <div class="password-strength-bar"></div>
@@ -103,37 +66,21 @@
                 <div class="error-message">Mínimo 8 caracteres, incluye mayúsculas, números y símbolos</div>
             </div>
 
-            <!-- Confirmar Contraseña -->
             <div class="input-group">
-                <input type="password" 
-                       name="confirm_password" 
-                       id="confirm_password"
-                       placeholder="Confirmar contraseña" 
-                       required>
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirmar contraseña" required>
                 <i class="fas fa-lock"></i>
                 <div class="error-message">Las contraseñas no coinciden</div>
             </div>
 
-            <!-- Botón Submit -->
             <button type="submit" class="btn-register" id="btnRegister">
                 <span class="btn-text">REGISTRARSE</span>
                 <div class="spinner"></div>
             </button>
 
-            <!-- Link a Login -->
             <div class="login-link">
-    ¿Ya tienes cuenta? <a href="{% url 'login:login' %}">Inicia sesión aquí</a>
-</div>
+                ¿Ya tienes cuenta? <a href="{% url 'login:login' %}">Inicia sesión aquí</a>
+            </div>
         </form>
-
-        <!-- Mensajes de Django -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert-message {{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
     </div>
 </div>
 
@@ -175,7 +122,6 @@ passwordInput.addEventListener('input', () => {
     const password = passwordInput.value;
     const group = passwordInput.closest('.input-group');
     
-    // Calcular fuerza
     let strength = 0;
     if (password.length >= 8) strength++;
     if (/[A-Z]/.test(password)) strength++;
@@ -211,7 +157,6 @@ confirmPasswordInput.addEventListener('input', () => {
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     
-    // Validar todos los campos
     let isValid = true;
     inputs.forEach(input => {
         if (!validateField(input)) {
@@ -219,36 +164,32 @@ form.addEventListener('submit', (e) => {
         }
     });
     
-    // Validar que las contraseñas coincidan
     if (passwordInput.value !== confirmPasswordInput.value) {
         confirmPasswordInput.closest('.input-group').classList.add('invalid');
         isValid = false;
     }
     
     if (isValid) {
-        // Mostrar loading
         btnRegister.classList.add('loading');
         btnRegister.disabled = true;
-        
-        // Enviar formulario
         form.submit();
     } else {
         Swal.fire({
             icon: 'error',
             title: 'Errores en el formulario',
             text: 'Por favor corrige los campos marcados',
-            confirmButtonColor: '#667eea'
+            confirmButtonColor: '#d4af37' // Dorado para el botón de error
         });
     }
 });
 
-// Mostrar mensajes de Django con SweetAlert
+// Mostrar mensajes de Django
 {% if messages %}
     {% for message in messages %}
         Swal.fire({
             icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
             title: '{{ message|escapejs }}',
-            confirmButtonColor: '#667eea'
+            confirmButtonColor: '#d4af37'
         });
     {% endfor %}
 {% endif %}
