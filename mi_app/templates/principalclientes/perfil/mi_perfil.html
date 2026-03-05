@@ -205,94 +205,74 @@ document.addEventListener("DOMContentLoaded", function () {
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for pedido in pedidos %}
-                        <tr>
-                            <td>
-                                <span class="comprobante-code">{{ pedido.comprobante_pago }}</span>
-                            </td>
-                            <td style="font-weight:500; color:var(--text-h); max-width:180px; overflow:hidden; text-overflow:ellipsis;">
-                                {{ pedido.id_producto.id_presentacion.nombre }}
-                            </td>
-                            <td>{{ pedido.cantidad }} <span style="color:var(--text-muted); font-size:.75rem;">und</span></td>
-                            <td>
-                                <span class="amount-positive">$ {{ pedido.valor_total|floatformat:0 }}</span>
-                            </td>
-                            
-                            <td>
-                                {% if pedido.estado_pedido == 'PEDIDO EXITOSO' %}
-                                    <span class="status-badge status-procesando">
-                                        <i class="fas fa-clock"></i> Procesando
-                                    </span>
-                                {% elif pedido.estado_pedido == 'EN PREPARACIÓN' %}
-                                    <span class="status-badge status-preparando">
-                                        <i class="fas fa-box-open"></i> Preparando
-                                    </span>
-                                {% elif pedido.estado_pedido == 'ENVIADO' %}
-                                    <span class="status-badge status-enviado">
-                                        <i class="fas fa-truck"></i> Enviado
-                                    </span>
-                                {% elif pedido.estado_pedido == 'ENTREGADO' %}
-                                    <span class="status-badge status-entregado">
-                                        <i class="fas fa-home"></i> Entregado
-                                    </span>
-                                {% elif pedido.estado_pedido == 'CANCELADO' %}
-                                    <span class="status-badge" style="background: rgba(220, 38, 38, 0.1); color: #dc2626; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 0.8rem;">
-                                        <i class="fas fa-ban"></i> Cancelado
-                                    </span>
-                                {% endif %}
-                            </td>
-                            
-                            <td>
-                                <div class="actions-cell" style="display: flex; gap: 8px; align-items: center;">
-                                    
-                                    <a href="{% url 'mi_app:descargar_factura_pdf' pedido.comprobante_pago %}"
-                                       class="btn-action btn-pdf-custom" title="Descargar Factura">
-                                        <i class="fas fa-file-pdf"></i> PDF
-                                    </a>
+                  <tbody>
+    {% for pedido in pedidos %}
+    <tr>
+        <td>
+            <span class="comprobante-code">{{ pedido.comprobante_pago }}</span>
+        </td>
+        <td style="font-weight:500; color:var(--text-h); max-width:180px; overflow:hidden; text-overflow:ellipsis;">
+            {{ pedido.id_producto.id_presentacion.nombre }}
+        </td>
+        <td>{{ pedido.cantidad }} <span style="color:var(--text-muted); font-size:.75rem;">und</span></td>
+        <td>
+            <span class="amount-positive">$ {{ pedido.valor_total|floatformat:0 }}</span>
+        </td>
+        
+        <td>
+            {% if pedido.estado_pedido == 'PEDIDO EXITOSO' %}
+                <span class="status-badge status-procesando"><i class="fas fa-clock"></i> Procesando</span>
+            {% elif pedido.estado_pedido == 'EN PREPARACIÓN' %}
+                <span class="status-badge status-preparando"><i class="fas fa-box-open"></i> Preparando</span>
+            {% elif pedido.estado_pedido == 'ENVIADO' %}
+                <span class="status-badge status-enviado"><i class="fas fa-truck"></i> Enviado</span>
+            {% elif pedido.estado_pedido == 'ENTREGADO' %}
+                <span class="status-badge status-entregado"><i class="fas fa-home"></i> Entregado</span>
+            {% elif pedido.estado_pedido == 'CANCELADO' %}
+                <span class="status-badge" style="background: rgba(220, 38, 38, 0.1); color: #dc2626; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 0.8rem;">
+                    <i class="fas fa-ban"></i> Cancelado
+                </span>
+            {% endif %}
+        </td>
+        
+        <td>
+            <div class="actions-cell" style="display: flex; gap: 8px; align-items: center;">
+                {% if pedido.estado_pedido != 'CANCELADO' %}
+                <a href="{% url 'mi_app:descargar_factura_pdf' pedido.comprobante_pago %}"
+                   class="btn-action btn-pdf-custom" title="Descargar Factura">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </a>
+                {% endif %}
 
-                                    {% if pedido.estado_pedido == 'PEDIDO EXITOSO' or pedido.estado_pedido == 'EN PREPARACIÓN' %}
-                                        <a href="{% url 'mi_app:cancelar_pedido' pedido.id %}" class="btn-action" style="background: #fee2e2; color: #dc2626; border-radius: 4px; padding: 6px 10px; font-size: 0.85rem; text-decoration: none;" title="Cancelar Compra">
-                                            <i class="fas fa-times-circle"></i> Cancelar
-                                        </a>
+                {% if pedido.estado_pedido == 'PEDIDO EXITOSO' or pedido.estado_pedido == 'EN PREPARACIÓN' %}
+                    <a href="{% url 'mi_app:cancelar_pedido' pedido.id %}" 
+                       class="btn-action" 
+                       onclick="confirmarCancelacionCliente(event, this.href)"
+                       style="background: #fee2e2; color: #dc2626; border-radius: 4px; padding: 6px 10px; font-size: 0.85rem; text-decoration: none;">
+                        <i class="fas fa-times-circle"></i> Cancelar
+                    </a>
 
-                                    {% elif pedido.estado_pedido == 'ENTREGADO' %}
-                                        {% with garantia=pedido.garantias_pedido.first %}
-                                            {% if garantia %}
-                                                <a href="{% url 'mi_app:mis_garantias' %}" class="btn-action btn-warranty-see">
-                                                    <i class="fas fa-eye"></i> Ver Garantía
-                                                </a>
-                                            {% elif pedido.garantia_vigente %}
-                                                <a href="{% url 'mi_app:solicitar_garantia' pedido.id %}" class="btn-action btn-warranty-request">
-                                                    <i class="fas fa-shield-alt"></i> Garantía ({{ pedido.dias_restantes_garantia }}d)
-                                                </a>
-                                            {% else %}
-                                                <span class="badge-expired"><i class="fas fa-times-circle"></i> Expirada</span>
-                                            {% endif %}
-                                        {% endwith %}
-                                        
-                                    {% elif pedido.estado_pedido == 'CANCELADO' %}
-                                        <span style="font-size: 0.8rem; color: #9ca3af; font-weight: 600;">
-                                            Anulada
-                                        </span>
-                                    {% endif %}
-                                    
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6">
-                                <div class="empty-state">
-                                    <div class="empty-icon"><i class="fas fa-box-open"></i></div>
-                                    <h5>Aún no tienes pedidos</h5>
-                                    <p>Cuando realices una compra, aparecerá aquí.</p>
-                                    <a href="{% url 'mi_app:productos_clientes' %}" class="btn-shop">
-                                        <i class="fas fa-store"></i> Ir a comprar
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
+                {% elif pedido.estado_pedido == 'ENTREGADO' %}
+                    {% with garantia=pedido.garantias_pedido.first %}
+                        {% if garantia %}
+                            <a href="{% url 'mi_app:mis_garantias' %}" class="btn-action btn-warranty-see">
+                                <i class="fas fa-eye"></i> Ver Garantía
+                            </a>
+                        {% elif pedido.garantia_vigente %}
+                            <a href="{% url 'mi_app:solicitar_garantia' pedido.id %}" class="btn-action btn-warranty-request">
+                                <i class="fas fa-shield-alt"></i> Garantía ({{ pedido.dias_restantes_garantia }}d)
+                            </a>
+                        {% else %}
+                            <span class="badge-expired"><i class="fas fa-times-circle"></i> Expirada</span>
+                        {% endif %}
+                    {% endwith %}
+
+                {% elif pedido.estado_pedido == 'CANCELADO' %}
+                    <span style="font-size: 0.8rem; color: #9ca3af; font-weight: 600;">Anulada</span>
+                {% endif %}
+            </div>
+        </td>
+    </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -421,6 +401,28 @@ function verificarOtraCiudad() {
         // El select recupera el control
         select.setAttribute('name', 'ciudad');
     }
+}
+
+// Función para confirmar cancelación de pedido por parte del cliente
+function confirmarCancelacionCliente(event, url) {
+    event.preventDefault(); // Evita que el navegador siga el link de inmediato
+
+    Swal.fire({
+        title: '¿Estás seguro de cancelar?',
+        text: "Esta acción anulará tu compra y el proceso de envío se detendrá.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, cancelar compra',
+        cancelButtonText: 'No, mantener pedido',
+        background: document.body.classList.contains('dark-mode') ? '#1e1e2f' : '#ffffff',
+        color: document.body.classList.contains('dark-mode') ? '#f1f1f1' : '#212529'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url; // Solo redirige si el cliente acepta
+        }
+    });
 }
 </script>
 

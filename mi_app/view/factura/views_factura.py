@@ -1,35 +1,42 @@
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache # <--- EVITA EL HISTORIAL DEL NAVEGADOR
-from mi_app.models import Pedido
+from django.views.decorators.cache import never_cache
+from mi_app.models import Pedido, Garantia  # <-- Importamos Garantia
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
 
-# Aplicamos la protección de caché a nivel de clase
 @method_decorator(never_cache, name='dispatch')
 class FacturaListView(AdminRequiredMixin, ListView):
     model = Pedido
     template_name = 'modulos/facturas/factura_listar.html' 
     
-    def dispatch(self, request, *args, **kwargs):
-        # El AdminRequiredMixin ya verifica que sea administrador
-        return super().dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # 1. Traemos todos los pedidos, ordenados por fecha descendente
-        todos_los_pedidos = Pedido.objects.all().order_by('-id')
+        # 1. Traemos todos los pedidos ordenados
+        todos_los_pedidos = Pedido.objects.all().select_related('id_cliente').order_by('-id')
         
-        # 2. Agrupamos por Transacción (TX) para mostrar una sola fila por compra
         facturas_unicas = {}
+        
+        # 2. Bucle único para agrupar y validar garantías
         for pedido in todos_los_pedidos:
             tx = pedido.comprobante_pago
+            
             if tx not in facturas_unicas:
-                # Guardamos el primer pedido que encontramos de esa TX
+                # VALIDACIÓN ESTRICTA: ¿Existe una garantía APROBADA para esta TX?
+                tiene_garantia_aprobada = Garantia.objects.filter(
+                    id_Pedido__comprobante_pago=tx,
+                    estado_garantia='APROBADO'
+                ).exists()
+                
+                # Creamos el atributo dinámico para el HTML
+                pedido.puede_anularse = tiene_garantia_aprobada
+                
+                # Guardamos en el diccionario
                 facturas_unicas[tx] = pedido
                 
-        # 3. Mandamos la lista limpia y el título al HTML
+        # 3. Enviamos los datos procesados
         context['facturas'] = facturas_unicas.values()
-        context['titulo'] = 'Historial de Facturas (Solo Lectura)'
+        context['titulo'] = 'Gestión y Control de Facturación'
         context['entidad'] = 'Facturas'
+        
         return context

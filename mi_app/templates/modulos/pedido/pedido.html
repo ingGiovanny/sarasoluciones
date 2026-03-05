@@ -1,72 +1,64 @@
 {% extends "listar.html" %}
 
 {% block titulo %}
-        <h1 class="text-center">Gestión De Pedidos</h1>
+    <h1 class="text-center">Gestión De Pedidos</h1>
 {% endblock titulo %}
 
 {% block agregar %}
-<a href="{{crear_url}}" class=" btn btn-primary btn btn-xs"><i class="fas fa-plus"></i>
-          Agregar
-</a>
-
-<a href="{% url 'mi_app:pdf_pedidos' %}" class="btn btn-danger">
-    <i class="fas fa-file-pdf"></i> Descargar Reporte
-</a>
+<a href="{{crear_url}}" class="btn btn-primary btn-xs"><i class="fas fa-plus"></i> Agregar</a>
+<a href="{% url 'mi_app:pdf_pedidos' %}" class="btn btn-danger"><i class="fas fa-file-pdf"></i> Reporte</a>
 {% endblock %}
 
 {% block columnas %}
-
-                <th>Id</th>
-                        <th>id_cliente</th>
-                         <th>id_producto</th>
-                        <th>cantidad</th>
-                        <th>valor del pedido</th>
-                        <th>departamento_entrega</th>
-                        <th>municipio_ciudad_entrega</th>
-                             <th>direccion_entrega</th>
-                        <th>comprobante_pago</th>
-                        <th>estado_pedido</th>
-                        <th>email</th>
-                        <th>Acciones</th>
-
+    <th>ID</th>
+    <th>Cliente</th>
+    <th>Producto</th>
+    <th>Cant.</th>
+    <th>Total</th>
+    <th>Lugar de Entrega</th> <th>Estado</th>
+    <th>Acciones</th>
 {% endblock %}
 
 {% block iterar %}
+    {% for a in object_list %}
+        <tr>
+            <td>{{ a.id }}</td>
+            <td>
+                <b>{{ a.id_cliente.nombre_completo }}</b><br>
+                <small class="text-muted">{{ a.email }}</small>
+            </td>
+            <td>{{ a.id_producto.id_presentacion.nombre }}</td>
+            <td>{{ a.cantidad }}</td>
+            <td>$ {{ a.valor_total|floatformat:0 }}</td>
+            
+            <td>
+                {% if a.direccion_entrega %}
+                    <i class="fas fa-map-marker-alt text-danger"></i> 
+                    {{ a.direccion_entrega }}<br>
+                    <small class="text-muted">{{ a.municipio_ciudad_entrega }}, {{ a.departamento_entrega }}</small>
+                {% else %}
+                    <span class="text-warning small italic">Dirección no especificada</span>
+                {% endif %}
+            </td>
 
-            {% for a in object_list %}
-                    <tr>
-                        <td>{{ a.id }}</td>
-                        <td>{{ a.id_cliente }}</td>
-                        <td>{{ a.id_producto }}</td>
-                        <td>{{ a.cantidad }}</td>
-                        <td>{{ a.valor_total }}</td>
-                        <td>{{ a.departamento_entrega }}</td>
-                        <td>{{ a.municipio_ciudad_entrega }}</td>
-                        <td>{{ a.direccion_entrega }}</td>
-                        <td>{{ a.comprobante_pago }}</td>
-                        <td>{{ a.estado_pedido }}</td>
-                        <td>{{ a.email }}</td>
-                        <td>
-                              <a href="{% url 'mi_app:pedido_editar' a.id %}"class="btn btn-warning btn-sm"data-bs-toggle="tooltip"title="Editar"><i class="bi bi-pen-fill"></i></a>
-                              <a href="{% url 'mi_app:pedido_eliminar' a.id %}"class="btn btn-danger btn-sm"data-bs-toggle="tooltip"title="Eliminar"><i class="bi bi-trash3-fill"></i></a>
-                        </td>
-                    </tr>
-                 
-                    {% endfor %}
+            <td>
+                {% if a.estado_pedido == 'PEDIDO EXITOSO' %}
+                    <span class="badge bg-success">Exitoso</span>
+                {% else %}
+                    <span class="badge bg-warning text-dark">{{ a.estado_pedido }}</span>
+                {% endif %}
+            </td>
 
-<!-- Mensajes con SweetAlert -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-  {% if messages %}
-    {% for message in messages %}
-      Swal.fire({
-        icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
-        title: '{{ message|escapejs }}',
-        timer: 2500,
-        showConfirmButton: false
-      });
+            <td>
+                <div class="btn-group">
+                    <a href="{% url 'mi_app:pedido_editar' a.id %}" class="btn btn-warning btn-sm" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'mi_app:pedido_eliminar' a.id %}" class="btn btn-danger btn-sm" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
     {% endfor %}
-  {% endif %}
-</script>
-
 {% endblock %}

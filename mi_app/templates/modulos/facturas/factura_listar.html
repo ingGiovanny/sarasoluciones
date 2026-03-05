@@ -5,49 +5,98 @@
 {% endblock titulo %}
 
 {% block agregar %}
-    <a href="{% url 'mi_app:panel_logistica' %}" class="btn btn-secondary btn-xs">
+    <a href="{% url 'mi_app:panel_logistica' %}" class="btn btn-secondary shadow-sm">
         <i class="fas fa-arrow-left"></i> Volver a Logística
     </a>
 {% endblock %}
 
 {% block columnas %}
-    <th>Transacción (TX)</th>
-    <th>Cliente</th>
-    <th>Documento</th>
-    <th>Estado de la Orden</th>
-    <th>Acciones</th>
+    <th style="width: 15%;">Transacción (TX)</th>
+    <th style="width: 20%;">Cliente</th>
+    <th style="width: 20%;">Estado Orden</th>
+    <th style="width: 25%;">Sustento de Anulación</th> <th style="width: 20%;">Acciones</th>
 {% endblock %}
 
 {% block iterar %}
     {% for pedido in facturas %}
         <tr>
-            <td><b>{{ pedido.comprobante_pago }}</b></td>
+            <td class="text-center"><b>{{ pedido.comprobante_pago }}</b></td>
             <td>
                 {{ pedido.id_cliente.nombre_completo }}<br>
-                <small class="text-muted">{{ pedido.id_cliente.correo_electronico }}</small>
+                <small class="text-muted">{{ pedido.id_cliente.numero_documento }}</small>
             </td>
-            <td>{{ pedido.id_cliente.numero_documento }}</td>
             
-            <td>
+            <td class="text-center">
                 {% if pedido.estado_pedido == 'PEDIDO EXITOSO' %}
                     <span class="badge bg-success">Pagado / Recibido</span>
                 {% elif pedido.estado_pedido == 'CANCELADO' %}
-                    <span class="badge bg-danger">Cancelado</span>
+                    <span class="badge bg-danger">Factura Anulada</span>
                 {% else %}
                     <span class="badge bg-primary">{{ pedido.estado_pedido }}</span>
                 {% endif %}
             </td>
+
+            <td class="text-center">
+                {% if pedido.puede_anularse %}
+                    <div class="text-success fw-bold" style="font-size: 0.85rem;">
+                        <i class="fas fa-certificate"></i> Garantía Aprobada<br>
+                        <small class="text-muted">Listo para anulación contable</small>
+                    </div>
+                {% elif pedido.estado_pedido == 'CANCELADO' %}
+                    <span class="text-muted"><i class="fas fa-check-circle"></i> Proceso de anulación completo</span>
+                {% else %}
+                    <div class="text-muted" style="font-size: 0.8rem; opacity: 0.7;">
+                        <i class="fas fa-info-circle"></i> Sin garantías aprobadas<br>
+                        <span>Anulación bloqueada</span>
+                    </div>
+                {% endif %}
+            </td>
             
-            <td>
-                <a href="{% url 'mi_app:descargar_factura_pdf' pedido.comprobante_pago %}" 
-                   class="btn btn-danger btn-sm" target="_blank" data-bs-toggle="tooltip" title="Ver Factura PDF">
-                   <i class="fas fa-file-pdf"></i> Ver PDF
-                </a>
+            <td class="text-center">
+                <div class="btn-group shadow-sm">
+                    <a href="{% url 'mi_app:descargar_factura_pdf' pedido.comprobante_pago %}" 
+                       class="btn btn-danger btn-sm" target="_blank">
+                       <i class="fas fa-file-pdf"></i> PDF
+                    </a>
+
+                    {% if pedido.puede_anularse and pedido.estado_pedido != 'CANCELADO' %}
+                        <button class="btn btn-dark btn-sm" onclick="confirmarAnulacion('{{ pedido.comprobante_pago }}')">
+                            <i class="fas fa-times-circle"></i> Anular
+                        </button>
+                    {% elif pedido.estado_pedido == 'CANCELADO' %}
+                        {% else %}
+                        <button class="btn btn-outline-secondary btn-sm" 
+                                disabled 
+                                data-bs-toggle="tooltip" 
+                                title="Se requiere una Garantía Aprobada para habilitar la anulación">
+                            <i class="fas fa-lock"></i>
+                        </button>
+                    {% endif %}
+                </div>
             </td>
         </tr>
-    {% empty %}
-        <tr>
-            <td colspan="5" class="text-center">No hay facturas registradas en el sistema todavía.</td>
-        </tr>
     {% endfor %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmarAnulacion(transactionId) {
+    Swal.fire({
+        title: '¿Confirmar Anulación de Factura?',
+        html: `Vas a anular la transacción <b>${transactionId}</b>.<br><br>El stock regresará al inventario y la orden quedará invalidada permanentemente.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#000',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, anular legalmente',
+        cancelButtonText: 'Cancelar',
+        background: document.body.classList.contains('dark-mode') ? '#1e1e2f' : '#fff',
+        color: document.body.classList.contains('dark-mode') ? '#f1f1f1' : '#333'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/pedido/cambiar-estado/" + transactionId + "/CANCELADO/";
+        }
+    });
+}
+</script>
 {% endblock %}
