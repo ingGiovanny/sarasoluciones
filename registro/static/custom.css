@@ -223,3 +223,23 @@
     .register-container { padding: 40px 30px; }
     .register-header h2 { font-size: 1.75rem; }
 }
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: #666; /* Un gris suave */
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-back i {
+    margin-right: 8px;
+    font-size: 0.8rem;
+}
+
+.btn-back:hover {
+    color: #d4af37; /* Cambia al dorado de tu marca al pasar el mouse */
+    transform: translateX(-5px); /* Pequeño efecto de movimiento a la izquierda */
+}

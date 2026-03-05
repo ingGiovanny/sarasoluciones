@@ -7,12 +7,15 @@
     <title>Registro - Soluciones Sara</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css_clientes/global_vars.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'custom.css' %}">
 </head>
 <body>
 
 <div class="register-wrapper">
     <div class="register-container">
+        <a href="{% url 'mi_app:contenido_cliente' %}" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
         <div class="register-header">
             <h2>Crear Cuenta</h2>
             <p>Únete a Soluciones Sara</p>

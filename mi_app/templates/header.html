@@ -88,6 +88,7 @@
     </a>
 <form action="{% url 'logout' %}" method="post" id="logout-form" style="display: none;">
     {% csrf_token %}
+    <input type="hidden" name="next" value="{% url 'mi_app:contenido_cliente' %}">
 </form>
 
 <a href="#" class="menu-item-custom login-custom" onclick="document.getElementById('logout-form').submit(); return false;">

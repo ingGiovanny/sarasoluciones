@@ -29,3 +29,9 @@
 .select-amazon-style:focus { border-color: var(--accent-color); box-shadow: 0 0 0 4px var(--accent-glow); outline: none;}
 
 @media (max-width: 991px) { .producto-grid { grid-template-columns: 1fr; gap: 40px; } .producto-galeria { position: relative; top: 0; } .imagen-principal-wrapper { height: 380px; } }
+/* El contenedor del toast suele tener un z-index alto, 
+   aquí le damos un margen superior */
+.mi-toast-personalizado {
+    margin-top: 60px !important; /* Ajusta este valor según la altura de tu header */
+    margin-right: 20px !important; /* Para que no esté pegado al borde derecho */
+}

@@ -92,7 +92,13 @@ function agregarAlCarrito(productoId, redireccionar = false) {
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 2500,
-                    timerProgressBar: true
+                    timerProgressBar: true,
+                    customClass: {
+                            
+                        container: 'mi-toast-personalizado'
+                           
+                    }
+                    
                 });
                 
                 // Actualizar el numerito del carrito en el header sin recargar

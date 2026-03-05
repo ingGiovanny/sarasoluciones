@@ -189,4 +189,4 @@ GOOGLE_DRIVE_FOLDER_ID = '1JuFGWk32un1IzSMV68p71d2wLTwr4cPm'
 BACKUP_ENCRYPTION_KEY = os.getenv('BACKUP_ENCRYPTION_KEY', SECRET_KEY)
 
 #groq
-GROQ_API_KEY = os.environ.get('GROQ_API_KEY', 'default_key')
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
