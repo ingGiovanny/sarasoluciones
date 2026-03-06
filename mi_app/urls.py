@@ -1,4 +1,6 @@
 from django.urls import path
+
+from mi_app.view import principal
 from . import views
 from mi_app.views import *
 
@@ -38,7 +40,8 @@ urlpatterns = [
     # ==========================================
     # RUTAS PÚBLICAS Y CLIENTE
     # ==========================================
-    path('principal/', principal, name='principal'),
+   
+    path('panel-control/', dashboard_admin, name='principal'),
     path('ayuda/', ayuda, name='ayuda'),
     path('', pagina_clientes, name='contenido_cliente'),
     path('productos', listar_productos_publicos, name='productos_clientes'),

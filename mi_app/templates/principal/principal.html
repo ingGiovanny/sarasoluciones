@@ -1,25 +1,132 @@
-{% extends "listar.html" %}
+{% extends "body.html" %}
+{% load static %}
 
-{% block titulo %}
-        
+{% block content %}
+<div class="container-fluid" style="padding: 20px; padding-top: 70px; padding-bottom: 80px;">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold text-dark">Panel de Control</h1>
+            <p class="text-muted mb-0">Bienvenido a Soluciones Sara - Resumen general</p>
+        </div>
+        <div>
+            <button class="btn btn-success shadow-sm" onclick="window.print()">
+                <i class="fas fa-print me-2"></i> Reporte Rápido
+            </button>
+        </div>
+    </div>
+    
+    {% if error_dashboard %}
+    <div class="alert alert-warning border-0 shadow-sm rounded-4 mb-4">
+        <i class="fas fa-exclamation-triangle me-2"></i> {{ error_dashboard }}
+    </div>
+    {% endif %}
 
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="text-muted small fw-bold text-uppercase mb-2">Ingresos Hoy</div>
+                    <h3 class="fw-bold text-success mb-0">$ {{ ganancia_hoy|floatformat:0 }}</h3>
+                    <small class="text-muted">Ventas exitosas: {{ ventas_hoy_cantidad }}</small>
+                </div>
+            </div>
+        </div>
 
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="text-muted small fw-bold text-uppercase mb-2">Logística Pendiente</div>
+                    <h3 class="fw-bold text-info mb-0">{{ pedidos_pendientes }}</h3>
+                    <small class="text-muted">Pedidos por enviar</small>
+                </div>
+            </div>
+        </div>
 
-{% endblock titulo %}
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="text-muted small fw-bold text-uppercase mb-2">Garantías</div>
+                    <h3 class="fw-bold {% if garantias_pendientes > 0 %}text-danger{% else %}text-muted{% endif %} mb-0">
+                        {{ garantias_pendientes }}
+                    </h3>
+                    <small class="text-muted">Pendientes de revisión</small>
+                </div>
+            </div>
+        </div>
 
-{% block agregar %}
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="text-muted small fw-bold text-uppercase mb-2">Clientes</div>
+                    <h3 class="fw-bold text-primary mb-0">{{ total_clientes }}</h3>
+                    <small class="text-muted">Total registrados</small>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<h1 class="text-center">Bienvenido a Soluciones Sara</h1>
-<p class="text-center">Tu tienda de confianza para soluciones tecnológicas</p>
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white py-3">
+                    <h5 class="fw-bold text-danger mb-0"><i class="fas fa-box-open me-2"></i> Alerta de Stock Bajo</h5>
+                </div>
+                <div class="card-body">
+                    {% if alerta_stock %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th class="text-end">Stock Disponible</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for producto in alerta_stock %}
+                                    <tr>
+                                        <td><b>{{ producto }}</b></td>
+                                        <td class="text-end">
+                                            <span class="badge bg-danger">Solo {{ producto.cantidad_producto }} unidades</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-center text-muted my-3">Todo el inventario está al día.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
-
-
-
-
-
-
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white py-3">
+                    <h5 class="fw-bold mb-0"><i class="fas fa-history me-2 text-warning"></i> Actividad Reciente</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for item in actividad_reciente %}
+                        <div class="list-group-item px-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas {{ item.icono }} me-3"></i>
+                                <div>
+                                    <p class="mb-0 small fw-bold">{{ item.mensaje }}</p>
+                                    <small class="text-muted">{{ item.fecha|timesince }} atrás</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center p-4 text-muted">
+                            <small>No hay actividad reciente registrada.</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
-
-
-
-
