@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.cookie = "asw=" + e + ";" + n + ";path=/"
         }(0, JSON.stringify(t))
     };
+    
     let s = function(t) {
         let e = "asw=", s = decodeURIComponent(document.cookie).split(";");
         for (let t = 0; t < s.length; t++) {
@@ -29,11 +30,12 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         return ""
     }();
-    try {
-        s = JSON.parse(s)
-    } catch (t) {}
+    
+    try { s = JSON.parse(s) } catch (t) {}
+    
     t = { states: {}, ...s };
     let a = ["format_size", "add", "remove", "restart_alt", "close"];
+    
     const n = function(e, s) {
         let n = "";
         for (var i = e.length; i--;) {
@@ -45,26 +47,30 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         return n
     };
+
+    // Traducción directa de los botones
     let i = n([
-            { label: "Readable Font", key: "readable-font", icon: "local_parking" },
-            { label: "Highlight Links", key: "highlight-links", icon: "link" },
-            { label: "Highlight Title", key: "highlight-title", icon: "title" }
+            { label: "Fuente Legible", key: "readable-font", icon: "local_parking" },
+            { label: "Resaltar Enlaces", key: "highlight-links", icon: "link" },
+            { label: "Resaltar Título", key: "highlight-title", icon: "title" }
         ]),
         o = n([
-            { label: "Monochrome", key: "monochrome", icon: "filter_b_and_w" },
-            { label: "Low Saturation", key: "low-saturation", icon: "gradient" },
-            { label: "High Saturation", key: "high-saturation", icon: "filter_vintage" },
-            { label: "High Contrast", key: "high-contrast", icon: "tonality" },
-            { label: "Light Contrast", key: "light-contrast", icon: "brightness_5" },
+            { label: "Monocromo", key: "monochrome", icon: "filter_b_and_w" },
+            { label: "Baja Saturación", key: "low-saturation", icon: "gradient" },
+            { label: "Alta Saturación", key: "high-saturation", icon: "filter_vintage" },
+            { label: "Alto Contraste", key: "high-contrast", icon: "tonality" },
+            { label: "Bajo Contraste", key: "light-contrast", icon: "brightness_5" },
         ], "asw-filter"),
         l = n([
-            { label: "Big Cursor", key: "big-cursor", icon: "mouse" },
-            { label: "Stop Animations", key: "stop-animations", icon: "motion_photos_off" },
-            { label: "Reading Guide", key: "readable-guide", icon: "local_library" }
+            { label: "Cursor Grande", key: "big-cursor", icon: "mouse" },
+            { label: "Sin Animaciones", key: "stop-animations", icon: "motion_photos_off" },
+            { label: "Guía de Lectura", key: "readable-guide", icon: "local_library" }
         ], "asw-tools");
+
     var r = document.createElement("div");
+    
+    // HTML del Widget Traducido
     r.innerHTML = `
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons&text=${a.toString()}" rel="stylesheet">
     <style>
         .asw-menu, .asw-menu-btn { position: fixed; left: 20px; transition: .3s; z-index: 500000; }
         .asw-widget { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; font-weight: 400; -webkit-font-smoothing: antialiased; }
@@ -99,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     </style>
     <div class="asw-widget">
-        <div class="asw-menu-btn" title="Open Accessibility Menu" role="button" aria-expanded="false">
+        <div class="asw-menu-btn" title="Abrir Menú de Accesibilidad" role="button" aria-expanded="false">
             <svg xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px;min-height:34px;min-width:34px;max-width:34px;max-height:34px;" viewBox="0 0 24 24" width="34px" height="34px">
                 <path d="M0 0h24v24H0V0z" fill="none"/>
                 <path d="M20.5 6c-2.61.7-5.67 1-8.5 1s-5.89-.3-8.5-1L3 8c1.86.5 4 .83 6 1v13h2v-6h2v6h2V9c2-.17 4.14-.5 6-1l-.5-2zM12 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
@@ -108,11 +114,11 @@ document.addEventListener("DOMContentLoaded", function() {
         <div class="asw-menu">
             <div class="asw-menu-header">Accesibilidad
                 <div>
-                    <div role="button" class="asw-menu-reset" title="Reset Settings">
-                        <span class="material-icons">reiniciar</span>
+                    <div role="button" class="asw-menu-reset" title="Restablecer Ajustes">
+                        <span class="material-icons">restart_alt</span>
                     </div>
-                    <div role="button" class="asw-menu-close" title="Close Accessibility Menu">
-                        <span class="material-icons">cerrar</span>
+                    <div role="button" class="asw-menu-close" title="Cerrar Menú">
+                        <span class="material-icons">close</span>
                     </div>
                 </div>
             </div>
@@ -145,11 +151,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 </div>
             </div>
             <div class="asw-footer">
-                <a href="https://bennyluk.github.io/Sienna-Accessibility-Widget/">By: Sienna Free Accessibility Widget</a>
+                <a href="#">Widget de Accesibilidad</a>
             </div>
         </div>
         <div class="asw-overlay"></div>
     </div>`;
+
     const c = function(t, e) {
         let s = document.getElementById(e || "") || document.createElement("style");
         s.innerHTML = t, s.id || (s.id = e, document.head.appendChild(s))
@@ -215,27 +222,50 @@ document.addEventListener("DOMContentLoaded", function() {
                 t.style["font-size"] = a + "px"
             }
         }));
-        let n = "Default";
+        let n = "Normal";
         1 !== s && (s > 1 ? n = "+" : s < 1 && (n = "-"), n += parseInt(100 * s) + "%"), a && (a.parentElement.querySelector(".asw-amount").innerHTML = n), t.states.fontSize = s
     };
+    
     let m = r.querySelector(".asw-menu"), g = r.querySelector(".asw-overlay");
+    
     r.querySelector(".asw-menu-btn").addEventListener("click", function() {
         m.style.display = "block" == m.style.display ? "none" : "block", g.style.display = m.style.display
-    }, !1), m.querySelector(".asw-menu-close").addEventListener("click", function() {
+    }, !1);
+    
+    m.querySelector(".asw-menu-close").addEventListener("click", function() {
         m.style.display = "none", g.style.display = m.style.display
-    }, !1), g.addEventListener("click", function() {
+    }, !1);
+    
+    g.addEventListener("click", function() {
         m.style.display = "none", g.style.display = m.style.display
-    }, !1), m.querySelector(".asw-menu-reset").addEventListener("click", function() {
-        t.states = {}, p(), u(), h(void 0, 1), document.querySelectorAll(".asw-btn").forEach(function(t) {
-            t.classList.remove("asw-selected"), t.setAttribute("aria-pressed", "false")
-        }), document.querySelectorAll(".asw-amount").forEach(function(t) {
-            t.innerHTML = "Default"
-        }), e()
-    }, !1), m.querySelectorAll(".asw-btn").forEach(function(t) {
+    }, !1);
+    
+    // AQUÍ ESTÁ EL BOTÓN DE RESTABLECER (RESET)
+    m.querySelector(".asw-menu-reset").addEventListener("click", function() {
+        t.states = {}; 
+        p(); 
+        u(); 
+        h(void 0, 1); 
+        document.querySelectorAll(".asw-btn").forEach(function(t) {
+            t.classList.remove("asw-selected");
+            t.setAttribute("aria-pressed", "false")
+        });
+        document.querySelectorAll(".asw-amount").forEach(function(t) {
+            t.innerHTML = "Normal"; // Restaurar el texto del % a la normalidad
+        });
+        e();
+    }, !1);
+    
+    m.querySelectorAll(".asw-btn").forEach(function(t) {
         t.addEventListener("click", f, !1)
-    }), m.querySelectorAll(".asw-adjust-font div[role='button']").forEach(function(t) {
+    });
+    
+    m.querySelectorAll(".asw-adjust-font div[role='button']").forEach(function(t) {
         t.addEventListener("click", function(t) {
             h(t), e()
         }, !1)
-    }), document.body.appendChild(r), s && (u(), 1 !== t.states.fontSize && h(null, t.states.fontSize), t.states.contrast && p(t.states.contrast))
+    });
+    
+    document.body.appendChild(r);
+    s && (u(), 1 !== t.states.fontSize && h(null, t.states.fontSize), t.states.contrast && p(t.states.contrast))
 });
