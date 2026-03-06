@@ -54,6 +54,22 @@
         padding: 40px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
+    /* Color del placeholder en MODO CLARO (por defecto) */
+.form-control::placeholder {
+    color: #6c757d; /* Gris estándar */
+    opacity: 1;
+}
+
+/* Color del placeholder en MODO OSCURO */
+body.dark-mode .form-control::placeholder {
+    color: var(--text-secondary) !important; /* Usamos tu variable de texto secundario */
+    opacity: 0.6; /* Un poco de transparencia para que se vea moderno */
+}
+
+/* Soporte para diferentes navegadores */
+body.dark-mode .form-control::-webkit-input-placeholder { color: var(--text-secondary); }
+body.dark-mode .form-control::-moz-placeholder { color: var(--text-secondary); }
+body.dark-mode .form-control:-ms-input-placeholder { color: var(--text-secondary); }
 </style>
 
 <div class="container">

@@ -48,12 +48,12 @@
                     <p class="text-muted">{{ producto.id_presentacion.descripcion }}</p>
                     <div class="row g-2 mt-2">
                         <div class="col-6">
-                            <div class="p-2 border rounded bg-light small">
+                            <div class="p-2 border rounded bg small">
                                 <strong>Modelo:</strong> {{ producto.id_presentacion.modelo }}
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="p-2 border rounded bg-light small">
+                            <div class="p-2 border rounded bg small">
                                 <strong>Color:</strong> {{ producto.id_presentacion.color }}
                             </div>
                         </div>
@@ -61,52 +61,46 @@
                 </div>
 
                 <div class="compra-box">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        {% if producto.cantidad_producto > 0 %}
-                            <span class="badge bg-success-soft py-2 px-3">
-                                <i class="fas fa-check-circle me-1"></i> {{ producto.cantidad_producto }} Unidades en stock
-                            </span>
-                        {% else %}
-                            <span class="badge bg-danger-soft py-2 px-3">
-                                <i class="fas fa-times-circle me-1"></i> Agotado temporalmente
-                            </span>
-                        {% endif %}
-                    </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        {% if producto.cantidad_producto > 0 %}
+            <span class="badge bg-success-soft py-2 px-3">
+                <i class="fas fa-check-circle me-1"></i> {{ producto.cantidad_producto }} Unidades en stock
+            </span>
+        {% else %}
+            <span class="badge bg-danger-soft py-2 px-3">
+                <i class="fas fa-times-circle me-1"></i> Agotado temporalmente
+            </span>
+        {% endif %}
+    </div>
 
-                    {% if producto.cantidad_producto > 0 %}
-                        <form action="{% url 'mi_app:agregar_carrito' producto.id %}" method="POST">
-                            {% csrf_token %}           
-                                <div class="selector-cantidad mb-4">
-                                        <span class="fw-bold small text-muted text-uppercase d-block mb-2">Cantidad a comprar:</span>
-                                        <div class="amazon-select-wrapper">
-                                            <select id="cantidad-input" class="select-amazon-style" 
-                                                    onmousedown="abrirSelector(this)" 
-                                                    onchange="cerrarSelector(this)" 
-                                                    onblur="cerrarSelector(this)">
-                                                
-                                                {% with ''|center:producto.cantidad_producto as range %}
-                                                {% for _ in range %}
-                                                    <option value="{{ forloop.counter }}">{{ forloop.counter }} unidad{% if not forloop.first %}es{% endif %}</option>
-                                                {% endfor %}
-                                                {% endwith %}
-                                                
-                                            </select>
-                                        </div>
-                                    </div>
+    {% if producto.cantidad_producto > 0 %}
+        <form action="{% url 'mi_app:agregar_carrito' producto.id %}" method="POST">
+            {% csrf_token %}          
+            
+            <div class="selector-cantidad mb-4">
+                <span class="fw-bold small text-muted text-uppercase d-block mb-2">Cantidad a comprar:</span>
+                
+                <div class="amazon-select-wrapper">
+                    <select name="cantidad" id="cantidad-input" class="select-amazon-style">
+                        {% with ''|center:producto.cantidad_producto as range %}
+                            {% for _ in range %}
+                                <option value="{{ forloop.counter }}">{{ forloop.counter }} unidad{% if not forloop.first %}es{% endif %}</option>
+                            {% endfor %}
+                        {% endwith %}
+                    </select>
+                </div>
+            </div>
 
                                 <div class="d-grid gap-2">
                                     <button type="button" onclick="agregarAlCarrito('{{ producto.id }}', false)" class="btn-carrito">
                                         <i class="fas fa-cart-plus me-2"></i> Añadir al carrito
                                     </button>
-
-                                   
                                 </div>
+                            </form>
+                        {% else %}
+                            <button type="button" class="btn w-100 py-3 rounded-pill btn-secondary opacity-50" disabled>No disponible</button>
+                        {% endif %}
 
-                                {% csrf_token %}
-                        </form>
-                    {% else %}
-                        <button type="button" class="btn w-100 py-3 rounded-pill btn-secondary opacity-50" disabled>No disponible</button>
-                    {% endif %}
                 </div>
             </div>
         </div>

@@ -4,42 +4,47 @@
 <html lang="es">
 <head>
     <title>Nueva Contraseña | Sara Soluciones</title>
+    <link rel="icon" type="image/png" href="{% static 'img/logosara.png' %}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
 </head>
 <body>
-
     <div class="auth-wrapper">
 
-        <!-- Panel Izquierdo -->
         <div class="auth-panel">
             <div class="panel-logo">
-                <div class="panel-logo-mark">
-                    <i class="fas fa-bolt"></i>
+                <img src="{% static 'img/logosara.png' %}" alt="Sara Soluciones" class="panel-logo-img">
+                <div>
+                    <div class="panel-logo-text">Sara Soluciones</div>
+                    <span class="panel-logo-sub">Seguridad & Salud en el Trabajo</span>
                 </div>
-                <span class="panel-logo-text">Sara Soluciones</span>
             </div>
-
             <div class="panel-body">
+                <div class="panel-icon-row">
+                    {% if validlink %}
+                    <div class="panel-icon-badge"><i class="fas fa-lock"></i></div>
+                    <div class="panel-icon-badge"><i class="fas fa-shield-alt"></i></div>
+                    {% else %}
+                    <div class="panel-icon-badge"><i class="fas fa-exclamation-triangle"></i></div>
+                    {% endif %}
+                </div>
                 {% if validlink %}
-                <h2 class="panel-tagline">Crea una contraseña segura.</h2>
-                <p class="panel-desc">Elige una contraseña única que no uses en otros sitios. Mínimo 8 caracteres.</p>
+                <h2 class="panel-tagline">Crea una <span>clave</span> segura.</h2>
+                <p class="panel-desc">Elige una contraseña única. Mínimo 8 caracteres, combina letras y números.</p>
                 {% else %}
-                <h2 class="panel-tagline">Este enlace ya no es válido.</h2>
-                <p class="panel-desc">Por seguridad, los enlaces de recuperación expiran después de su primer uso.</p>
+                <h2 class="panel-tagline">Enlace <span>expirado.</span></h2>
+                <p class="panel-desc">Por seguridad, los enlaces de recuperación expiran tras su primer uso o a las 24 horas.</p>
                 {% endif %}
             </div>
-
             <div class="panel-footer">
                 <p class="panel-footer-text">© 2025 Sara Soluciones</p>
             </div>
         </div>
 
-        <!-- Panel Formulario -->
         <div class="auth-form-area">
 
             {% if validlink %}
@@ -93,7 +98,8 @@
                 </div>
 
                 <button type="submit" class="btn-primary-custom" style="margin-top: 8px;">
-                    <i class="fas fa-save"></i> Guardar nueva contraseña
+                    <i class="fas fa-save"></i>
+                    <span>Guardar nueva contraseña</span>
                 </button>
             </form>
 
@@ -105,10 +111,11 @@
                 </div>
                 <h2 class="status-title" style="color: #c0392b;">Enlace inválido</h2>
                 <p class="status-desc">
-                    Este enlace de recuperación ya no es válido. Puede que haya sido usado anteriormente o haya expirado por seguridad.
+                    Este enlace ya no es válido. Puede que haya sido usado anteriormente o haya expirado por seguridad.
                 </p>
-                <a href="{% url 'login:password_reset' %}" class="btn-primary-custom" style="max-width: 320px; margin: 0 auto;">
-                    <i class="fas fa-envelope"></i> Solicitar un nuevo enlace
+                <a href="{% url 'login:password_reset' %}" class="btn-primary-custom" style="max-width: 300px; margin: 0 auto;">
+                    <i class="fas fa-envelope"></i>
+                    <span>Solicitar un nuevo enlace</span>
                 </a>
             </div>
 
@@ -116,6 +123,5 @@
 
         </div>
     </div>
-
 </body>
 </html>

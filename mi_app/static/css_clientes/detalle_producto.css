@@ -23,11 +23,51 @@
 .btn-carrito:hover { background-color: var(--text-primary); color: var(--bg-card) !important; }
 .btn-comprar-ahora { background-color: var(--accent-color); color: #000 !important; border: none; padding: 15px; border-radius: 50px; font-weight: 700; width: 100%; transition: all 0.3s; text-transform: uppercase; }
 .btn-comprar-ahora:hover { background-color: var(--accent-hover); }
+/* EL ESTILO TIPO AMAZON */
+.amazon-select-wrapper { 
+    position: relative; 
+    width: 100%; 
+    max-width: 180px; 
+    height: 55px; 
+}
 
-.amazon-select-wrapper { position: relative; width: 100%; max-width: 180px; height: 55px; }
-.select-amazon-style { width: 100%; height: 100%; background-color: var(--bg-card); color: var(--text-primary); border: 2px solid var(--border-color); border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; padding: 0 15px; transition: all 0.3s ease; }
-.select-amazon-style:focus { border-color: var(--accent-color); box-shadow: 0 0 0 4px var(--accent-glow); outline: none;}
+.select-amazon-style { 
+    /* Esto borra el diseño por defecto del navegador */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    width: 100%; 
+    height: 100%; 
+    background-color: var(--bg-card); 
+    color: var(--text-primary); 
+    border: 2px solid var(--border-color); 
+    border-radius: 12px; 
+    font-size: 1.1rem; 
+    font-weight: 700; 
+    cursor: pointer; 
+    padding: 0 40px 0 15px; /* 40px a la derecha para la flecha */
+    transition: all 0.3s ease; 
+}
 
+.select-amazon-style:focus { 
+    border-color: var(--accent-color); 
+    box-shadow: 0 0 0 4px var(--accent-glow); 
+    outline: none;
+}
+
+/* La flechita personalizada */
+.amazon-select-wrapper::after {
+    content: "▼"; 
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; 
+    opacity: 0.7;
+}
 @media (max-width: 991px) { .producto-grid { grid-template-columns: 1fr; gap: 40px; } .producto-galeria { position: relative; top: 0; } .imagen-principal-wrapper { height: 380px; } }
 /* El contenedor del toast suele tener un z-index alto, 
    aquí le damos un margen superior */

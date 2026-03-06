@@ -3,65 +3,78 @@
 <html lang="es">
 <head>
     <title>¡Contraseña Actualizada! | Sara Soluciones</title>
+    <link rel="icon" type="image/png" href="{% static 'img/logosara.png' %}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.0.1-web/css/all.min.css' %}">
-   <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
     <style>
-        /* Checkmark animation */
         @keyframes checkPop {
-            0%   { transform: scale(0); opacity: 0; }
-            70%  { transform: scale(1.15); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
+            0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
+            65%  { transform: scale(1.18) rotate(3deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
-        .status-icon-success { animation: checkPop 0.5s 0.3s cubic-bezier(0.4,0,0.2,1) both; }
+        .status-icon-success {
+            animation: checkPop 0.55s 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .status-card .status-title  { animation: fadeUp 0.4s 0.7s ease both; }
+        .status-card .status-desc   { animation: fadeUp 0.4s 0.85s ease both; }
+        .status-card .btn-primary-custom { animation: fadeUp 0.4s 1s ease both; }
     </style>
 </head>
 <body>
-
     <div class="auth-wrapper">
 
-        <!-- Panel Izquierdo -->
         <div class="auth-panel">
             <div class="panel-logo">
-                <div class="panel-logo-mark">
-                    <i class="fas fa-bolt"></i>
+                <img src="{% static 'img/logosara.png' %}" alt="Sara Soluciones" class="panel-logo-img">
+                <div>
+                    <div class="panel-logo-text">Sara Soluciones</div>
+                    <span class="panel-logo-sub">Seguridad & Salud en el Trabajo</span>
                 </div>
-                <span class="panel-logo-text">Sara Soluciones</span>
             </div>
-
             <div class="panel-body">
-                <h2 class="panel-tagline">¡Todo listo para continuar!</h2>
+                <div class="panel-icon-row">
+                    <div class="panel-icon-badge"><i class="fas fa-check-circle"></i></div>
+                    <div class="panel-icon-badge"><i class="fas fa-shield-alt"></i></div>
+                    <div class="panel-icon-badge"><i class="fas fa-hard-hat"></i></div>
+                </div>
+                <h2 class="panel-tagline">¡Todo listo para <span>continuar!</span></h2>
                 <p class="panel-desc">Tu cuenta está segura. Ya puedes ingresar con tus nuevas credenciales.</p>
+                <div class="panel-chips">
+                    <span class="panel-chip"><i class="fas fa-lock"></i> Cuenta protegida</span>
+                </div>
             </div>
-
             <div class="panel-footer">
                 <p class="panel-footer-text">© 2025 Sara Soluciones</p>
             </div>
         </div>
 
-        <!-- Panel Estado -->
         <div class="auth-form-area" style="justify-content: center;">
-
             <div class="status-card">
+
                 <div class="status-icon status-icon-success">
                     <i class="fas fa-check"></i>
                 </div>
 
                 <h2 class="status-title">¡Contraseña actualizada!</h2>
                 <p class="status-desc">
-                    Tu contraseña ha sido restablecida exitosamente. Ahora puedes acceder a tu cuenta con tus nuevas credenciales.
+                    Tu contraseña ha sido restablecida exitosamente. Ahora puedes acceder a tu plataforma SST con tus nuevas credenciales.
                 </p>
 
                 <a href="{% url 'login:login' %}" class="btn-primary-custom" style="max-width: 280px; margin: 0 auto;">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Iniciar Sesión</span>
                 </a>
             </div>
-
         </div>
-    </div>
 
+    </div>
 </body>
 </html>

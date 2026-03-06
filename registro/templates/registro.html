@@ -48,11 +48,12 @@
                 <div class="error-message">Ingresa un correo válido</div>
             </div>
 
-            <div class="input-group">
-                <input type="tel" name="telefono" id="telefono" placeholder="Número de teléfono" pattern="[0-9]{10}" required>
-                <i class="fas fa-phone"></i>
-                <div class="error-message">Ingresa un teléfono válido (10 dígitos)</div>
-            </div>
+         <div class="input-group">
+                    <input type="tel" name="telefono" id="telefono" placeholder="Número de teléfono" 
+                        pattern="^3[0-9]{9}$" maxlength="10" required>
+                    <i class="fas fa-phone"></i>
+                    <div class="error-message">Debe empezar por 3 y tener 10 dígitos</div>
+                </div>
 
             <div class="input-group">
                 <input type="text" name="username" id="username" placeholder="Nombre de usuario" required>
@@ -119,6 +120,19 @@ function validateField(input) {
         return false;
     }
 }
+const telefonoInput = document.getElementById('telefono');
+
+telefonoInput.addEventListener('input', () => {
+    // Evita que el usuario escriba letras o más de 10 caracteres
+    telefonoInput.value = telefonoInput.value.replace(/[^0-9]/g, '').slice(0, 10);
+    
+    const group = telefonoInput.closest('.input-group');
+    if (telefonoInput.validity.patternMismatch) {
+        group.classList.add('invalid');
+    } else {
+        validateField(telefonoInput);
+    }
+});
 
 // Validar contraseña especial
 passwordInput.addEventListener('input', () => {

@@ -17,7 +17,8 @@
 
     {% if request.session.carrito %}
     <div class="row g-4">
-        <div class="col-lg-8">
+        
+        <div class="col-lg-7">
             <div class="card cart-card border-0">
                 <div class="table-responsive">
                     <table class="table align-middle mb-0">
@@ -75,94 +76,158 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="summary-card p-4">
-                <h4 class="fw-bold mb-4">Resumen del Pedido</h4>
-                
-                <div class="mb-4">
-                    <label class="small fw-bold text-muted text-uppercase mb-2 d-block">Dirección de Entrega:</label>
-                    {% if direcciones %}
-                        <select id="selector_direccion" class="form-select rounded-pill border-2">
-                            <option value="" disabled selected>Selecciona una ubicación...</option>
-                            {% for dir in direcciones %}
-                                <option value="{{ dir.id }}">{{ dir.alias }} ({{ dir.ciudad }})</option>
-                            {% endfor %}
-                        </select>
-                    {% else %}
-                        <div class="alert alert-warning py-2 small">
-                            <i class="fas fa-exclamation-circle me-1"></i> No tienes direcciones guardadas.<br>
-                            <a href="{% url 'mi_app:mi_perfil' %}" class="fw-bold">Crear una ahora</a>
+<div class="col-lg-5">
+    <form action="{% url 'mi_app:procesar_pago_simulado' %}" method="POST" id="form-pago-definitivo" class="summary-card p-4">
+        {% csrf_token %}
+        
+        <h4 class="fw-bold mb-4 pb-3 border-bottom border-2">Resumen del Pedido</h4>
+        
+        <div class="mb-4">
+            <label class="small fw-bold text-muted text-uppercase mb-2 d-block">
+                <i class="fas fa-map-marker-alt me-1 text-primary"></i> Dirección de Entrega
+            </label>
+            {% if direcciones %}
+                <select name="direccion_envio_id" id="selector_direccion" class="form-select form-select-lg rounded-3 border-2 shadow-sm" required style="font-size: 0.95rem; cursor: pointer;">
+                    <option value="" disabled selected>Selecciona una ubicación...</option>
+                    {% for dir in direcciones %}
+                        <option value="{{ dir.id }}">{{ dir.alias }} - {{ dir.ciudad }}</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <div class="alert alert-warning py-3 rounded-3 shadow-sm border-0 small">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-circle fa-2x me-3"></i>
+                        <div>
+                            <strong>Sin direcciones</strong><br>
+                            <a href="{% url 'mi_app:mi_perfil' %}" class="fw-bold text-decoration-none">Crear una nueva</a>
                         </div>
-                    {% endif %}
+                    </div>
                 </div>
+            {% endif %}
+        </div>
 
-                <hr class="opacity-10">
-
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="text-muted">Subtotal:</span>
-                    <span class="total-compra-span fw-bold">$ {{ total_compra|floatformat:0 }}</span>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top mb-4">
-                    <span class="h5 fw-bold mb-0">Total:</span>
-                    <span class="h4 fw-bold mb-0 text-success total-compra-span">$ {{ total_compra|floatformat:0 }}</span>
-                </div>
-
-                <button onclick="simularPago()" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm mb-3 py-3" style="background: var(--accent-color); border:none;">
-                    <i class="fas fa-lock me-2"></i> Pagar Ahora
-                </button>
-                
-                <div class="text-center mt-4 opacity-50">
-                    <i class="fas fa-shield-alt text-success"></i> <small>Transacciones encriptadas y seguras</small>
-                </div>
+        <div class="bg-secondary bg-opacity-10 p-4 rounded-4 mb-4 border">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted fw-semibold">Subtotal de artículos</span>
+                <span class="fw-bold fs-5">$ {{ total_compra|floatformat:0 }}</span>
+            </div>
+            
+            <hr class="opacity-25 my-3">
+            
+            <div class="d-flex justify-content-between align-items-end">
+                <span class="h5 fw-bold mb-0 text-uppercase">Total Final</span>
+                <span class="h3 fw-bold mb-0 text-success total-compra-span" style="letter-spacing: -0.5px;">$ {{ total_compra|floatformat:0 }}</span>
             </div>
         </div>
+    
+<br>
+<br>
+        <button type="button" onclick="procesarPagoFinal()" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow position-relative overflow-hidden" style="background: var(--accent-color); border:none; padding: 18px 0; font-size: 1.2rem; transition: transform 0.2s;" {% if not direcciones %}disabled{% endif %}>
+            <i class="fas fa-lock me-2"></i> Confirmar y Pagar
+        </button>
+        
+        
+        <div class="text-center mt-4">
+            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
+                <i class="fas fa-shield-alt me-1"></i> Transacción 100% segura
+            </span>
+        </div>
+    </form>
+</div>
+
     </div> 
     {% else %}
-    <div class="empty-cart card py-5 border-0 shadow-sm">
-        <i class="fas fa-shopping-basket mb-3"></i>
+    <div class="empty-cart card py-5 border-0 shadow-sm text-center">
+        <i class="fas fa-shopping-basket mb-3 fa-4x text-muted"></i>
         <h3 class="fw-bold">Tu carrito está vacío</h3>
         <p class="text-muted mb-4">Aún no has añadido productos a tu carrito de compras.</p>
-        <a href="{% url 'mi_app:productos_clientes' %}" class="btn-shop">Volver a la tienda</a>
+        <a href="{% url 'mi_app:productos_clientes' %}" class="btn btn-primary rounded-pill px-4 py-2" style="background: var(--accent-color); border:none;">Volver a la tienda</a>
     </div>
     {% endif %}
 </div>
 
 <script src="{% static 'js_clientes/carrito_compras.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+// ==========================================
+// FUNCIÓN 1: ACTUALIZAR CANTIDADES Y SUBTOTALES
+// ==========================================
 function modificarCantidadConSubtotal(productoId, operacion, botonPresionado) {
-    // 1. Buscamos la fila entera a la que pertenece el botón que se presionó
     const fila = botonPresionado.closest('.producto-row');
-    
-    // 2. Extraemos el precio que habíamos escondido en el HTML
     const precioUnitario = parseFloat(fila.getAttribute('data-precio'));
-    
-    // 3. Buscamos el "span" que tiene la cantidad actual escrita
     const spanCantidad = document.querySelector('.item-cantidad-' + productoId);
     let cantidadActual = parseInt(spanCantidad.innerText);
     
-    // 4. Calculamos la nueva cantidad según el botón que presionó
     if (operacion === 'sumar') {
         cantidadActual++;
     } else if (operacion === 'restar' && cantidadActual > 1) {
         cantidadActual--;
     }
     
-    // 5. Calculamos el nuevo subtotal de esta fila
     const nuevoSubtotalFila = precioUnitario * cantidadActual;
-    
-    // 6. Actualizamos el HTML del subtotal (el número verde de la derecha)
     const textoSubtotal = document.getElementById('subtotal-item-' + productoId);
     if (textoSubtotal) {
         textoSubtotal.innerText = '$ ' + nuevoSubtotalFila.toLocaleString('es-CO');
     }
     
-    // 7. IMPORTANTE: Llamamos a tu función original para que le avise al backend
-    // y actualice también el cuadro de "Resumen del Pedido".
     if (typeof modificarCantidad === "function") {
         modificarCantidad(productoId, operacion);
     }
 }
+
+// ==========================================
+// FUNCIÓN 2: ANIMACIÓN Y ENVÍO FORZADO
+// ==========================================
+function procesarPagoFinal() {
+    const selector = document.getElementById('selector_direccion');
+    
+    // 1. Validar si eligió dirección
+    if (selector && selector.value === "") {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Falta la dirección',
+            text: 'Por favor, selecciona a dónde quieres que enviemos tu pedido.',
+            confirmButtonColor: 'var(--accent-color)',
+            background: document.body.classList.contains('dark-mode') ? '#1e1e2f' : '#ffffff',
+            color: document.body.classList.contains('dark-mode') ? '#f1f1f1' : '#212529'
+        });
+        return; 
+    }
+
+    // 2. Animación y envío FORZADO al servidor
+    Swal.fire({
+        title: 'Procesando tu pago...',
+        text: 'Generando factura y preparando el envío. Esto puede tardar unos segundos...',
+        allowOutsideClick: false,
+        showConfirmButton: false, // Ocultamos el botón para que espere
+        background: document.body.classList.contains('dark-mode') ? '#1e1e2f' : '#ffffff',
+        color: document.body.classList.contains('dark-mode') ? '#f1f1f1' : '#212529',
+        didOpen: () => {
+            Swal.showLoading();
+            
+            // ESTA LÍNEA ENVÍA EL FORMULARIO
+            // Asegúrate de que tu formulario en el HTML tenga id="form-pago-definitivo"
+            document.getElementById('form-pago-definitivo').submit();
+        }
+    });
+}
 </script>
 
+{% if messages %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        {% for message in messages %}
+            Swal.fire({
+                icon: '{% if message.tags == "error" %}error{% elif message.tags == "warning" %}warning{% else %}success{% endif %}',
+                title: '{% if message.tags == "error" %}Error en la compra{% elif message.tags == "warning" %}Aviso{% else %}¡Atención!{% endif %}',
+                text: '{{ message|escapejs }}',
+                confirmButtonColor: 'var(--accent-color)',
+                background: document.body.classList.contains('dark-mode') ? '#1e1e2f' : '#ffffff',
+                color: document.body.classList.contains('dark-mode') ? '#f1f1f1' : '#212529'
+            });
+        {% endfor %}
+    });
+</script>
+{% endif %}
 {% endblock %}
