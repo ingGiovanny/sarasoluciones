@@ -1,0 +1,51 @@
+{% extends "listar.html" %}
+
+{% block titulo %}
+    <h1 class="text-center">Módulo Financiero de Ventas</h1>
+{% endblock titulo %}
+
+{% block agregar %}
+<button class="btn btn-success shadow-sm" onclick="window.print()">
+    <i class="fas fa-print me-2"></i> Imprimir Reporte
+</button>
+{% endblock %}
+
+{% block columnas %}
+    <th>TX / Factura</th>
+    <th>Cliente</th>
+    <th>Estado Financiero</th>
+    <th class="text-end">Monto (Ingreso / Pérdida)</th>
+{% endblock %}
+
+{% block iterar %}
+    {% for venta in pedidos %}
+        <tr>
+            <td class="align-middle">
+                <span class="text-muted fw-bold">{{ venta.comprobante_pago }}</span>
+            </td>
+            <td class="align-middle">
+                {{ venta.id_cliente.nombre_completo }}
+            </td>
+            <td class="align-middle">
+                {% with garantia=venta.garantias_pedido.first %}
+                    {% if garantia.estado_garantia == 'APROBADO' %}
+                        <span class="badge bg-danger"><i class="fas fa-exclamation-triangle"></i> Garantía Aprobada</span>
+                    {% elif venta.estado_pedido == 'CANCELADO' %}
+                        <span class="badge bg-warning text-dark"><i class="fas fa-ban"></i> Venta Anulada</span>
+                    {% else %}
+                        <span class="badge bg-success"><i class="fas fa-check"></i> Venta Completada</span>
+                    {% endif %}
+                {% endwith %}
+            </td>
+            <td class="text-end align-middle">
+                {% with garantia=venta.garantias_pedido.first %}
+                    {% if garantia.estado_garantia == 'APROBADO' or venta.estado_pedido == 'CANCELADO' %}
+                        <h5 class="text-danger fw-bold mb-0">- $ {{ venta.valor_total|floatformat:0 }}</h5>
+                    {% else %}
+                        <h5 class="text-success fw-bold mb-0">+ $ {{ venta.valor_total|floatformat:0 }}</h5>
+                    {% endif %}
+                {% endwith %}
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}

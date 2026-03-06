@@ -1,64 +1,122 @@
 {% extends "listar.html" %}
 
 {% block titulo %}
-    <h1 class="text-center">Gestión De Pedidos</h1>
+    <h1 class="text-center">Historial de Pedidos Web</h1>
 {% endblock titulo %}
 
 {% block agregar %}
-<a href="{{crear_url}}" class="btn btn-primary btn-xs"><i class="fas fa-plus"></i> Agregar</a>
-<a href="{% url 'mi_app:pdf_pedidos' %}" class="btn btn-danger"><i class="fas fa-file-pdf"></i> Reporte</a>
+<div class="d-flex justify-content-end mb-3">
+    <a href="{% url 'mi_app:pdf_pedidos' %}" class="btn btn-danger shadow-sm">
+        <i class="fas fa-file-pdf me-2"></i> Descargar Reporte Consolidado
+    </a>
+</div>
 {% endblock %}
 
 {% block columnas %}
-    <th>ID</th>
-    <th>Cliente</th>
-    <th>Producto</th>
-    <th>Cant.</th>
-    <th>Total</th>
-    <th>Lugar de Entrega</th> <th>Estado</th>
-    <th>Acciones</th>
+    <th style="width: 5%;">ID</th>
+    <th style="width: 20%;">Cliente</th>
+    <th style="width: 20%;">Producto</th>
+    <th style="width: 10%;">Cant.</th>
+    <th style="width: 10%;">Total</th>
+    <th style="width: 15%;">Logística</th> 
+    <th style="width: 10%;">Estado de Garantía</th> 
+    <th style="width: 10%;">Acciones</th>
 {% endblock %}
 
 {% block iterar %}
     {% for a in object_list %}
         <tr>
-            <td>{{ a.id }}</td>
-            <td>
-                <b>{{ a.id_cliente.nombre_completo }}</b><br>
-                <small class="text-muted">{{ a.email }}</small>
-            </td>
-            <td>{{ a.id_producto.id_presentacion.nombre }}</td>
-            <td>{{ a.cantidad }}</td>
-            <td>$ {{ a.valor_total|floatformat:0 }}</td>
+            <td class="text-center align-middle fw-bold text-muted">#{{ a.id }}</td>
             
-            <td>
-                {% if a.direccion_entrega %}
-                    <i class="fas fa-map-marker-alt text-danger"></i> 
-                    {{ a.direccion_entrega }}<br>
-                    <small class="text-muted">{{ a.municipio_ciudad_entrega }}, {{ a.departamento_entrega }}</small>
-                {% else %}
-                    <span class="text-warning small italic">Dirección no especificada</span>
-                {% endif %}
+            <td class="align-middle">
+                <b>{{ a.id_cliente.nombre_completo }}</b><br>
+                <small class="text-muted"><i class="fas fa-envelope me-1"></i>{{ a.email }}</small>
             </td>
-
-            <td>
+            
+            <td class="align-middle">
+                {{ a.id_producto.id_presentacion.nombre }}<br>
+                <small class="text-muted">TX: {{ a.comprobante_pago|truncatechars:15 }}</small>
+            </td>
+            
+            <td class="text-center align-middle">
+                <span class="badge bg-secondary rounded-circle">{{ a.cantidad }}</span>
+            </td>
+            
+            <td class="align-middle text-success fw-bold">
+                $ {{ a.valor_total|floatformat:0 }}
+            </td>
+            
+            <td class="align-middle">
                 {% if a.estado_pedido == 'PEDIDO EXITOSO' %}
-                    <span class="badge bg-success">Exitoso</span>
+                    <span class="badge bg-primary w-100 mb-1"><i class="fas fa-clock me-1"></i> Por procesar</span>
+                {% elif a.estado_pedido == 'EN PREPARACIÓN' %}
+                    <span class="badge bg-info text-dark w-100 mb-1"><i class="fas fa-box me-1"></i> Preparando</span>
+                {% elif a.estado_pedido == 'ENVIADO' %}
+                    <span class="badge bg-warning text-dark w-100 mb-1"><i class="fas fa-truck me-1"></i> Enviado</span>
+                {% elif a.estado_pedido == 'ENTREGADO' %}
+                    <span class="badge bg-success w-100 mb-1"><i class="fas fa-check-circle me-1"></i> Entregado</span>
+                {% elif a.estado_pedido == 'CANCELADO' %}
+                    <span class="badge bg-danger w-100 mb-1"><i class="fas fa-ban me-1"></i> Anulado</span>
+                {% endif %}
+                
+                <small class="d-block text-muted" style="font-size: 0.75rem; line-height: 1.2;">
+                    {% if a.direccion_entrega %}
+                        {{ a.municipio_ciudad_entrega }} ({{ a.departamento_entrega }})
+                    {% else %}
+                        Retiro en tienda
+                    {% endif %}
+                </small>
+            </td>
+
+            <td class="text-center align-middle">
+                {% if a.estado_pedido == 'CANCELADO' %}
+                    <span class="text-muted small fw-bold" data-bs-toggle="tooltip" title="No aplica para pedidos anulados">
+                        <i class="fas fa-minus-circle opacity-50"></i> N/A
+                    </span>
                 {% else %}
-                    <span class="badge bg-warning text-dark">{{ a.estado_pedido }}</span>
+                    {% with garantia=a.garantias_pedido.first %}
+                        {% if garantia %}
+                            {% if garantia.estado_garantia == 'APROBADO' %}
+                                <span class="badge bg-success" data-bs-toggle="tooltip" title="Garantía Aprobada">
+                                    <i class="fas fa-check-circle"></i> Aprobado </span>
+                            {% elif garantia.estado_garantia == 'EN PROCESO' %}
+                                <span class="badge bg-warning text-dark" data-bs-toggle="tooltip" title="En revisión técnica">
+                                    <i class="fas fa-tools"></i> En Revisión
+                                </span>
+                            {% elif garantia.estado_garantia == 'RECHAZADO' %}
+                                <span class="badge bg-secondary" data-bs-toggle="tooltip" title="Garantía denegada">
+                                    <i class="fas fa-times"></i> Denegada
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            {% if a.garantia_vigente %}
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success" data-bs-toggle="tooltip" title="Quedan {{ a.dias_restantes_garantia }} días">
+                                    <i class="fas fa-shield-alt"></i> Vigente
+                                </span>
+                            {% else %}
+                                <span class="text-muted small"><i class="fas fa-shield-alt opacity-50"></i> Expirada</span>
+                            {% endif %}
+                        {% endif %}
+                    {% endwith %}
                 {% endif %}
             </td>
 
-            <td>
-                <div class="btn-group">
-                    <a href="{% url 'mi_app:pedido_editar' a.id %}" class="btn btn-warning btn-sm" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <a href="{% url 'mi_app:pedido_eliminar' a.id %}" class="btn btn-danger btn-sm" title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </a>
-                </div>
+            <td class="text-center align-middle">
+                <a href="{% url 'mi_app:descargar_factura_pdf' a.comprobante_pago %}" class="btn btn-outline-dark btn-sm" title="Ver Factura">
+                    <i class="fas fa-file-invoice"></i> PDF
+                </a>
             </td>
         </tr>
     {% endfor %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
 {% endblock %}

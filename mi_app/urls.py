@@ -1,8 +1,4 @@
 from django.urls import path
-
-
-
-
 from . import views
 from mi_app.views import *
 
@@ -21,6 +17,7 @@ from mi_app.view.pedido.views_pedido import *
 from mi_app.view.factura.views_factura import *
 from mi_app.view.garantia.views_garantia import *
 from mi_app.view.principal.views_principal import *
+from mi_app.view.venta.venta import VentaListView
 from mi_app.view.panel_pedidos.panel_logistica import *
 from mi_app.view.A_todo_cliente.productoscli.views_productoscli import *
 from mi_app.view.A_todo_cliente.historial_pedidos.cancelar_pedido import *
@@ -147,7 +144,10 @@ urlpatterns = [
       
     # Facturación
     path('facturar/listar/', FacturaListView.as_view(), name='factura_lista'),      
-    path('factura/<str:transaction_id>/', descargar_factura_pdf, name='descargar_factura_pdf'),  
+    path('factura/<str:transaction_id>/', descargar_factura_pdf, name='descargar_factura_pdf'), 
+    path('pedido/cambiar-estado/<str:transaction_id>/<str:estado>/', anular_factura, name='anular_factura'), 
+    #ventas
+    path('ventas/listar/', VentaListView.as_view(), name='ventas_listar'),
         
     # Compras
     path('compras/listar/', CompraListView.as_view(), name='compras_lista'),
