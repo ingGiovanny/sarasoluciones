@@ -1,5 +1,6 @@
 {% extends "body.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block content %}
 <div class="container-fluid" style="padding: 20px; padding-top: 70px; padding-bottom: 80px;">
@@ -27,7 +28,7 @@
             <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
                 <div class="card-body p-4">
                     <div class="text-muted small fw-bold text-uppercase mb-2">Ingresos Hoy</div>
-                    <h3 class="fw-bold text-success mb-0">$ {{ ganancia_hoy|floatformat:0 }}</h3>
+                    <h3 class="fw-bold text-success mb-0">$ {{ ganancia_hoy|floatformat:0|intcomma }}</h3>
                     <small class="text-muted">Ventas exitosas: {{ ventas_hoy_cantidad }}</small>
                 </div>
             </div>

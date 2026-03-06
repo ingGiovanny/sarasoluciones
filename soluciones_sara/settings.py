@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'login',
     'registro',
     'backups',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -134,6 +135,7 @@ TIME_ZONE = 'America/Bogota'
 USE_I18N = True
 
 USE_TZ = True
+USE_THOUSAND_SEPARATOR = True
 
 
 # Static files (CSS, JavaScript, Images)
