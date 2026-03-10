@@ -11,6 +11,7 @@ from django.urls import reverse_lazy
 from mi_app.forms.form_producto import ProductoForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin 
 from core.utils import exportar_a_pdf
+from django.views.decorators.http import require_POST
 
 # ==========================================
 # VALIDACIÓN DE ROL ADMINISTRADOR
@@ -151,3 +152,28 @@ def producto_cambiar_estado(request, pk):
     
     producto.save()
     return redirect('mi_app:producto_lista')
+
+
+
+# ==========================================
+# ELIMINAR IMAGEN INDIVIDUAL (Vía AJAX)
+# ==========================================
+@login_required(login_url='login:login')
+@require_POST # Obliga a que solo se pueda acceder por método POST (seguridad)
+def eliminar_imagen_producto(request, id):
+    try:
+        # Buscamos la imagen por su ID
+        imagen = get_object_or_404(ImagenProducto, id=id)
+        
+        # Eliminamos el archivo físico del servidor (opcional pero muy recomendado para ahorrar espacio)
+        if imagen.imagen:
+            imagen.imagen.delete(save=False)
+            
+        # Eliminamos el registro de la base de datos
+        imagen.delete()
+        
+        # Respondemos al JavaScript que todo salió bien
+        return JsonResponse({'status': 'success', 'mensaje': 'Imagen eliminada correctamente.'})
+        
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'mensaje': str(e)}, status=400)

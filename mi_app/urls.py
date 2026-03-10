@@ -132,6 +132,7 @@ urlpatterns = [
     path('producto/editar/<int:pk>/', productoupdateView.as_view(), name='producto_editar'),
     path('producto/eliminar/<int:pk>/', productoDeleteView.as_view(), name='producto_eliminar'),
     path('producto/estado/<int:pk>/', producto_cambiar_estado, name='producto_cambiar_estado'), # Corregido sin el views_producto.
+    path('producto/eliminar-imagen/<int:id>/', eliminar_imagen_producto, name='eliminar_imagen_producto'),
            
     # Garantía
     path('garantia/listar/', GarantiaListView.as_view(), name='garantia_lista'),

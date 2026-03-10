@@ -3,7 +3,10 @@ import json
 import gzip
 import pickle
 import subprocess
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+
+# Zona horaria Colombia (UTC-5, sin cambio de horario)
+TZ_BOGOTA = timezone(timedelta(hours=-5))
 
 import requests as http_requests
 from google.oauth2.credentials import Credentials
@@ -21,6 +24,10 @@ TOKEN_PATH = settings.GOOGLE_DRIVE_TOKEN_PATH
 CREDS_PATH = settings.GOOGLE_OAUTH_CREDS_PATH
 
 
+# ──────────────────────────────────────────
+#  Helpers de credenciales
+# ──────────────────────────────────────────
+
 def _get_credentials():
     if not os.path.exists(TOKEN_PATH):
         return None
@@ -37,16 +44,78 @@ def _esta_autenticado():
     return _get_credentials() is not None
 
 
+# ──────────────────────────────────────────
+#  Historial de backups desde Google Drive
+# ──────────────────────────────────────────
+
+def _listar_backups_drive(creds):
+    """
+    Devuelve una lista de dicts con info de los archivos de backup
+    almacenados en la carpeta de Drive configurada en settings.
+    Cada dict contiene: name, size, created_time, web_view_link.
+    """
+    try:
+        service = build('drive', 'v3', credentials=creds)
+        query = (
+            f"'{settings.GOOGLE_DRIVE_FOLDER_ID}' in parents "
+            f"and name contains 'backup_sara' "
+            f"and trashed = false"
+        )
+        results = service.files().list(
+            q=query,
+            fields="files(id, name, size, createdTime, webViewLink)",
+            orderBy="createdTime desc",
+            pageSize=50,
+        ).execute()
+
+        archivos = []
+        for f in results.get('files', []):
+            # Formatear tamaño
+            size_bytes = int(f.get('size', 0))
+            if size_bytes >= 1_048_576:
+                size_str = f"{size_bytes / 1_048_576:.2f} MB"
+            elif size_bytes >= 1_024:
+                size_str = f"{size_bytes / 1_024:.1f} KB"
+            else:
+                size_str = f"{size_bytes} B"
+
+            # Formatear fecha: Drive devuelve UTC → convertir a hora Colombia (UTC-5)
+            created_raw = f.get('createdTime', '')
+            try:
+                dt_utc = datetime.strptime(created_raw, "%Y-%m-%dT%H:%M:%S.%fZ")
+                dt_utc = dt_utc.replace(tzinfo=timezone.utc)
+                dt_col = dt_utc.astimezone(TZ_BOGOTA)
+                created_str = dt_col.strftime("%d/%m/%Y  %H:%M")
+            except Exception:
+                created_str = created_raw
+
+            archivos.append({
+                'name':          f.get('name', 'Sin nombre'),
+                'size':          size_str,
+                'created_time':  created_str,
+                'web_view_link': f.get('webViewLink', '#'),
+            })
+
+        return archivos
+
+    except Exception as e:
+        # Si falla silenciosamente devuelve lista vacía; el template lo maneja
+        return []
+
+
+# ──────────────────────────────────────────
+#  Vista principal: generar backup
+# ──────────────────────────────────────────
+
 def realizar_copia_seguridad(request):
     autenticado = _esta_autenticado()
+    creds = _get_credentials()
 
     if request.method == "POST":
-        creds = _get_credentials()
         if not creds:
             return redirect(reverse('backups:google_auth'))
 
         db_config = settings.DATABASES['default']
-        # ── FIX DOCKER: usar 'db' como host, no 'localhost' ──
         db_host = db_config.get('HOST', 'db') or 'db'
 
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
@@ -56,13 +125,13 @@ def realizar_copia_seguridad(request):
         os.makedirs(CARPETA_TEMP, exist_ok=True)
 
         ruta_sql = os.path.join(CARPETA_TEMP, "backup_temp.sql")
-        ruta_gz = os.path.join(CARPETA_TEMP, nombre_final)
+        ruta_gz  = os.path.join(CARPETA_TEMP, nombre_final)
 
         try:
             env = os.environ.copy()
             env['MYSQL_PWD'] = str(db_config['PASSWORD'])
 
-            # Paso 1: mysqldump a archivo .sql
+            # Paso 1: mysqldump
             cmd_dump = [
                 'mysqldump',
                 f"-u{db_config['USER']}",
@@ -79,16 +148,15 @@ def realizar_copia_seguridad(request):
                     cmd_dump,
                     stdout=sql_file,
                     stderr=subprocess.PIPE,
-                    env=env
+                    env=env,
                 )
 
             if result.returncode != 0:
                 raise Exception(f"mysqldump falló: {result.stderr.decode()}")
-
             if os.path.getsize(ruta_sql) < 100:
                 raise Exception(f"El dump está vacío. Error: {result.stderr.decode()}")
 
-            # Paso 2: comprimir con Python puro
+            # Paso 2: comprimir
             with open(ruta_sql, 'rb') as f_in:
                 with gzip.open(ruta_gz, 'wb') as f_out:
                     f_out.write(f_in.read())
@@ -96,12 +164,14 @@ def realizar_copia_seguridad(request):
             # Paso 3: subir a Drive
             service = build('drive', 'v3', credentials=creds)
             file_metadata = {
-                'name': nombre_final,
-                'parents': [settings.GOOGLE_DRIVE_FOLDER_ID]
+                'name':    nombre_final,
+                'parents': [settings.GOOGLE_DRIVE_FOLDER_ID],
             }
             media = MediaFileUpload(ruta_gz, mimetype='application/gzip')
             service.files().create(
-                body=file_metadata, media_body=media, fields='id'
+                body=file_metadata,
+                media_body=media,
+                fields='id',
             ).execute()
 
             messages.success(request, "¡Copia de seguridad enviada a Google Drive con éxito!")
@@ -116,19 +186,45 @@ def realizar_copia_seguridad(request):
 
         return redirect('backups:generar_backup')
 
-    return render(request, 'modulos/backups/backups.html', {'autenticado': autenticado})
+    # ── GET: listar historial ──
+    backups_historial = _listar_backups_drive(creds) if creds else []
 
+    return render(request, 'modulos/backups/backups.html', {
+        'autenticado':      autenticado,
+        'backups_historial': backups_historial,
+    })
+
+
+# ──────────────────────────────────────────
+#  Vista: restaurar backup
+# ──────────────────────────────────────────
 
 def restaurar_backup(request):
     if request.method == "POST" and request.FILES.get('archivo_backup'):
         archivo_subido = request.FILES['archivo_backup']
+
+        # ── Validación 1: archivo vacío ──
+        if archivo_subido.size == 0:
+            messages.error(request, "El archivo está vacío. Selecciona un backup válido.")
+            return redirect('backups:generar_backup')
+
+        # ── Validación 2: extensión correcta ──
+        if not archivo_subido.name.endswith('.gz'):
+            messages.error(request, "El archivo debe tener extensión .gz. Verifica que sea un backup generado por el sistema.")
+            return redirect('backups:generar_backup')
+
+        # ── Validación 3: tamaño mínimo razonable (al menos 100 bytes) ──
+        if archivo_subido.size < 100:
+            messages.error(request, "El archivo es demasiado pequeño para ser un backup válido.")
+            return redirect('backups:generar_backup')
+
         db_config = settings.DATABASES['default']
-        db_host = db_config.get('HOST', 'db') or 'db'
+        db_host   = db_config.get('HOST', 'db') or 'db'
 
         CARPETA_TEMP = os.path.join(settings.BASE_DIR, 'backups', 'temp')
         os.makedirs(CARPETA_TEMP, exist_ok=True)
 
-        ruta_gz = os.path.join(CARPETA_TEMP, "restore_temp.gz")
+        ruta_gz  = os.path.join(CARPETA_TEMP, "restore_temp.gz")
         ruta_sql = os.path.join(CARPETA_TEMP, "restore_temp.sql")
 
         try:
@@ -136,15 +232,27 @@ def restaurar_backup(request):
                 for chunk in archivo_subido.chunks():
                     destination.write(chunk)
 
-            # DEBUG: verificar tamaño del archivo subido
             size = os.path.getsize(ruta_gz)
-            print(f"[RESTORE DEBUG] Archivo recibido: {size} bytes")
+            print(f"[RESTORE] Archivo recibido: {size} bytes")
 
-            with gzip.open(ruta_gz, 'rb') as f_in:
-                contenido = f_in.read()
-                print(f"[RESTORE DEBUG] SQL descomprimido: {len(contenido)} bytes")
-                with open(ruta_sql, 'wb') as f_out:
-                    f_out.write(contenido)
+            # ── Validación 4: verificar que sea un .gz real ──
+            if not ruta_gz.endswith('.gz'):
+                raise Exception("El archivo no es un Gzip válido.")
+
+            try:
+                with gzip.open(ruta_gz, 'rb') as f_in:
+                    contenido = f_in.read()
+            except (gzip.BadGzipFile, OSError, EOFError):
+                raise Exception("El archivo .gz está corrupto o no es un backup válido generado por el sistema.")
+
+            print(f"[RESTORE] SQL descomprimido: {len(contenido)} bytes")
+
+            # ── Validación 5: contenido SQL mínimo ──
+            if len(contenido) < 100:
+                raise Exception("El backup está vacío o corrupto tras descomprimir.")
+
+            with open(ruta_sql, 'wb') as f_out:
+                f_out.write(contenido)
 
             env = os.environ.copy()
             env['MYSQL_PWD'] = str(db_config['PASSWORD'])
@@ -158,18 +266,18 @@ def restaurar_backup(request):
                 db_config['NAME'],
             ]
 
-            print(f"[RESTORE DEBUG] Ejecutando: {' '.join(cmd_restore)}")
+            print(f"[RESTORE] Ejecutando: {' '.join(cmd_restore)}")
 
             with open(ruta_sql, 'r') as sql_file:
                 result = subprocess.run(
                     cmd_restore,
                     stdin=sql_file,
                     stderr=subprocess.PIPE,
-                    env=env
+                    env=env,
                 )
 
-            print(f"[RESTORE DEBUG] Return code: {result.returncode}")
-            print(f"[RESTORE DEBUG] Stderr: {result.stderr.decode()}")
+            print(f"[RESTORE] Return code: {result.returncode}")
+            print(f"[RESTORE] Stderr: {result.stderr.decode()}")
 
             if result.returncode != 0:
                 raise Exception(f"mysql falló: {result.stderr.decode()}")
@@ -177,7 +285,7 @@ def restaurar_backup(request):
             messages.success(request, "¡Base de datos restaurada correctamente!")
 
         except Exception as e:
-            print(f"[RESTORE DEBUG] Excepción: {str(e)}")
+            print(f"[RESTORE] Excepción: {str(e)}")
             messages.error(request, f"Error crítico: {str(e)}")
 
         finally:
@@ -187,30 +295,35 @@ def restaurar_backup(request):
 
     return redirect('backups:generar_backup')
 
+
+# ──────────────────────────────────────────
+#  Vistas OAuth Google
+# ──────────────────────────────────────────
+
 def google_auth(request):
     with open(CREDS_PATH, 'r') as f:
         creds_data = json.load(f)
 
     client_info = creds_data.get('installed') or creds_data.get('web')
-    client_id = client_info['client_id']
+    client_id   = client_info['client_id']
     redirect_uri = request.build_absolute_uri(reverse('backups:google_callback'))
     request.session['redirect_uri'] = redirect_uri
 
     import urllib.parse
     params = {
-        'client_id': client_id,
-        'redirect_uri': redirect_uri,
+        'client_id':     client_id,
+        'redirect_uri':  redirect_uri,
         'response_type': 'code',
-        'scope': ' '.join(SCOPES),
-        'access_type': 'offline',
-        'prompt': 'consent',
+        'scope':         ' '.join(SCOPES),
+        'access_type':   'offline',
+        'prompt':        'consent',
     }
     auth_url = 'https://accounts.google.com/o/oauth2/v2/auth?' + urllib.parse.urlencode(params)
     return redirect(auth_url)
 
 
 def google_callback(request):
-    code = request.GET.get('code')
+    code         = request.GET.get('code')
     redirect_uri = request.session.get('redirect_uri')
 
     if not code:
@@ -220,23 +333,25 @@ def google_callback(request):
     with open(CREDS_PATH, 'r') as f:
         creds_data = json.load(f)
 
-    client_info = creds_data.get('installed') or creds_data.get('web')
-    client_id = client_info['client_id']
+    client_info   = creds_data.get('installed') or creds_data.get('web')
+    client_id     = client_info['client_id']
     client_secret = client_info['client_secret']
-    token_uri = client_info['token_uri']
+    token_uri     = client_info['token_uri']
 
-    response = http_requests.post(token_uri, data={
-        'code': code,
-        'client_id': client_id,
+    response   = http_requests.post(token_uri, data={
+        'code':          code,
+        'client_id':     client_id,
         'client_secret': client_secret,
-        'redirect_uri': redirect_uri,
-        'grant_type': 'authorization_code',
+        'redirect_uri':  redirect_uri,
+        'grant_type':    'authorization_code',
     })
-
     token_data = response.json()
 
     if 'error' in token_data:
-        messages.error(request, f"Error al vincular Google: {token_data.get('error_description', token_data['error'])}")
+        messages.error(
+            request,
+            f"Error al vincular Google: {token_data.get('error_description', token_data['error'])}"
+        )
         return redirect('backups:generar_backup')
 
     creds = Credentials(

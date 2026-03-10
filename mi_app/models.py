@@ -132,7 +132,7 @@ class Presentacion(models.Model):
     color = models.CharField(max_length=25, verbose_name="Color")
     modelo = models.CharField(max_length=25, verbose_name="Modelo")
     funcion_principal = models.CharField(max_length=100, verbose_name="Función Principal")
-    descripcion = models.CharField(max_length=65, verbose_name="Descripción")
+    descripcion = models.CharField(max_length=700, verbose_name="Descripción")
     
     class Meta:
         verbose_name = "Tipo de Presentación"

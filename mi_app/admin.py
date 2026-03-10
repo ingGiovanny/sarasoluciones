@@ -9,4 +9,7 @@ admin.site.register(GestionCliente)
 admin.site.register(Pedido)
 
 
+
+
+
 # (Puedes agregar aquí cualquier otra tabla que tengas en models.py y quieras ver)

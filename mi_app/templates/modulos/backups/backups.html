@@ -5,167 +5,348 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/backups.css' %}">
 
-<div class="backup-wrapper"> 
-    <div class="container-fluid pt-4">
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0">Centro de Copias de Seguridad</h1>
+<div class="backup-wrapper">
+    <div class="container-fluid pt-4 pb-5">
+
+        <!-- ── Encabezado ── -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="backup-page-title">Centro de Copias de Seguridad</h1>
+                <p class="text-muted mt-2 mb-0" style="font-size: 0.875rem;">
+                    Gestiona, genera y monitorea los respaldos de la plataforma SST.
+                </p>
+            </div>
         </div>
 
-        <div class="row">
+        <!-- ══════════════════════════════════════
+             FILA 1: Backup Manual + Restaurar
+             ══════════════════════════════════════ -->
+        <div class="row g-4 mb-4">
+
+            <!-- ── Generar Respaldo ── -->
             <div class="col-lg-6">
-                <div class="card shadow mb-4">
+                <div class="card h-100">
+
                     <div class="card-header">
-                        <h6 class="text-primary">Generar Respaldo Manual</h6>
-                        <i class="bi bi-cloud-arrow-up-fill text-primary" style="font-size: 1.5rem;"></i>
+                        <div class="card-header-title primary">
+                            <div class="card-header-icon primary">
+                                <i class="bi bi-cloud-arrow-up-fill"></i>
+                            </div>
+                            Generar Respaldo Manual
+                        </div>
                     </div>
+
                     <div class="card-body">
-                        <p>Al hacer clic en el botón, el sistema realizará las siguientes acciones:</p>
-                        <ul>
-                            <li>Exportar la base de datos actual (MySQL).</li>
-                            <li>Comprimir el archivo con <strong>Gzip</strong>.</li>
-                            <li>Subir el archivo comprimido a <strong>Google Drive</strong>.</li>
+                        <p class="card-desc">Al iniciar el respaldo, el sistema ejecutará las siguientes acciones en secuencia:</p>
+
+                        <ul class="feature-list">
+                            <li>Exportar la base de datos actual <strong>(MySQL)</strong>.</li>
+                            <li>Comprimir el archivo con <strong>Gzip</strong> para reducir el peso.</li>
+                            <li>Subir el archivo comprimido a <strong>Google Drive</strong> de forma segura.</li>
                         </ul>
 
-                        <div class="alert alert-info" role="alert">
+                        <div class="alert-sst info">
                             <i class="bi bi-info-circle-fill"></i>
-                            <div><strong>Nota:</strong> El archivo se comprime antes de subirse a la nube.</div>
+                            <div><strong>Nota:</strong> El archivo se comprime antes de subirse. Solo necesitas hacer clic una vez.</div>
                         </div>
 
                         {% if autenticado %}
-                            <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+                            <div class="alert-sst success">
                                 <i class="bi bi-check-circle-fill"></i>
-                                <span>Cuenta de Google vinculada correctamente.</span>
+                                <span>Cuenta de Google vinculada correctamente. Lista para operar.</span>
                             </div>
                             <form id="formBackup" method="post" action="{% url 'backups:generar_backup' %}">
                                 {% csrf_token %}
-                                <button type="button" id="btnGenerar" class="btn btn-primary btn-lg w-100">
-                                    <i class="bi bi-play-fill"></i> Iniciar Copia de Seguridad
+                                <button type="button" id="btnGenerar" class="btn-sst-primary">
+                                    <i class="bi bi-play-circle-fill"></i>
+                                    Iniciar Copia de Seguridad
                                 </button>
                             </form>
                         {% else %}
-                            <div class="alert alert-warning" role="alert">
+                            <div class="alert-sst warning">
                                 <i class="bi bi-exclamation-triangle-fill"></i>
-                                <span>No hay cuenta vinculada. Debes autenticarte antes de continuar.</span>
+                                <span>No hay cuenta vinculada. Debes autenticarte con Google antes de continuar.</span>
                             </div>
-                            <a href="{% url 'backups:google_auth' %}" class="btn btn-warning btn-lg w-100">
-                                <i class="bi bi-google"></i> Vincular cuenta de Google
+                            <a href="{% url 'backups:google_auth' %}" class="btn-sst-google">
+                                <svg width="18" height="18" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                                </svg>
+                                Vincular cuenta de Google
                             </a>
                         {% endif %}
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-6">
-                <div class="card shadow mb-4">
+            <!-- ── Restaurar Backup ── -->
+            <div class="col-lg-6 d-flex flex-column gap-4">
+                <div class="card flex-grow-1">
+
                     <div class="card-header">
-                        <h6 class="text-warning">Restaurar Base de Datos</h6>
-                        <i class="bi bi-shield-lock-fill text-warning" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <div class="card-body">
-                        <p>Utiliza esta opción para cargar un respaldo previo al sistema:</p>
-                        <div class="alert alert-danger" role="alert">
-                            <i class="bi bi-exclamation-octagon-fill"></i>
-                            <div><strong>Atención:</strong> Restaurar un backup <strong>sobrescribirá</strong> toda la información actual.</div>
+                        <div class="card-header-title warning">
+                            <div class="card-header-icon warning">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+                            Restaurar Base de Datos
                         </div>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="card-desc">Carga un archivo de respaldo previo para revertir el estado de la base de datos.</p>
+
+                        <div class="alert-sst danger">
+                            <i class="bi bi-exclamation-octagon-fill"></i>
+                            <div><strong>Atención:</strong> Esta acción <strong>sobrescribirá</strong> toda la información actual de forma permanente. Asegúrate de tener un respaldo reciente antes de continuar.</div>
+                        </div>
+
                         <form id="formRestaurar" method="post" action="{% url 'backups:restaurar_backup' %}" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Archivo de respaldo</label>
-                                <input type="file" name="archivo_backup" id="inputBackup" class="form-control" required>
-                                <small class="text-muted">Selecciona el archivo .gz descargado de Drive.</small>
+                                <label class="field-label-sst">Archivo de respaldo (.gz)</label>
+                                <input type="file" name="archivo_backup" id="inputBackup" class="form-control" accept=".gz" required>
+                                <small class="form-text">Solo archivos <strong>.gz</strong> generados por el sistema.</small>
                             </div>
-                            <button type="button" id="btnRestaurar" class="btn btn-warning w-100">
-                                <i class="bi bi-arrow-counterclockwise"></i> Subir y Restaurar Datos
+                            <button type="button" id="btnRestaurar" class="btn-sst-warning">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                                Subir y Restaurar Datos
                             </button>
                         </form>
                     </div>
                 </div>
 
-                <div class="card shadow mb-4">
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div>
-                            <div class="text-xs fw-bold text-success text-uppercase mb-1">Respaldo Seguro en la Nube</div>
-                            <div class="h5 fw-bold">Gzip + Google Drive</div>
-                            <p class="mt-1 mb-0 small text-muted">Tus backups se comprimen y suben automáticamente.</p>
-                        </div>
-                        <i class="bi bi-cloud-check-fill text-secondary" style="font-size: 2.5rem;"></i>
+                <!-- Stat Card -->
+                <div class="stat-card">
+                    <div class="stat-card-icon">
+                        <i class="bi bi-cloud-check-fill"></i>
+                    </div>
+                    <div>
+                        <div class="stat-card-label">Almacenamiento</div>
+                        <div class="stat-card-value">Gzip + Google Drive</div>
+                        <div class="stat-card-sub">Los respaldos se comprimen y suben automáticamente a la nube.</div>
                     </div>
                 </div>
             </div>
+
         </div>
+
+        <!-- ══════════════════════════════════════
+             FILA 2: Historial de Backups
+             ══════════════════════════════════════ -->
+        <div class="history-card">
+
+            <div class="history-header">
+                <div class="history-title">
+                    <div class="history-title-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    Historial de Copias de Seguridad
+                </div>
+                {% if autenticado %}
+                <span class="history-badge">
+                    <i class="bi bi-google"></i> Drive Conectado
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="history-table-wrap" id="historialContainer">
+
+                {% if not autenticado %}
+                <!-- Sin autenticación -->
+                <div class="history-empty">
+                    <span class="history-empty-icon"><i class="bi bi-cloud-slash"></i></span>
+                    <p class="history-empty-text">
+                        Vincula tu cuenta de Google para ver el historial de backups almacenados en Drive.
+                    </p>
+                </div>
+
+                {% elif backups_historial %}
+                <!-- Tabla de backups -->
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Archivo</th>
+                            <th>Fecha de creación</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for backup in backups_historial %}
+                        <tr>
+                            <!-- Nombre -->
+                            <td>
+                                <div class="file-cell">
+                                    <div class="file-icon">
+                                        <i class="bi bi-file-earmark-zip-fill"></i>
+                                    </div>
+                                    <div>
+                                        <div class="file-name">{{ backup.name }}</div>
+                                        <div class="file-size">{{ backup.size }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <!-- Fecha -->
+                            <td style="white-space: nowrap; color: var(--gray-500); font-size: 0.845rem;">
+                                <i class="bi bi-calendar3 me-1" style="color: var(--gray-300);"></i>
+                                {{ backup.created_time }}
+                            </td>
+                            <!-- Estado -->
+                            <td>
+                                <span class="badge-sst success">
+                                    <i class="bi bi-check-circle-fill"></i> En Drive
+                                </span>
+                            </td>
+                            <!-- Acciones -->
+                            <td>
+                                <a href="{{ backup.web_view_link }}" target="_blank" class="drive-link">
+                                    <i class="bi bi-box-arrow-up-right"></i> Ver en Drive
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% else %}
+                <!-- Sin backups aún -->
+                <div class="history-empty">
+                    <span class="history-empty-icon"><i class="bi bi-inbox"></i></span>
+                    <p class="history-empty-text">
+                        Aún no hay copias de seguridad registradas en Google Drive. <br>
+                        Genera tu primer respaldo con el botón de arriba.
+                    </p>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
     </div>
 </div>
 
+<!-- ── Scripts ── -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Aseguramos que el DOM cargue antes de buscar los botones
-    document.addEventListener("DOMContentLoaded", function() {
-        {% if autenticado %}
-        let btnGenerar = document.getElementById("btnGenerar");
-        if (btnGenerar) {
-            btnGenerar.addEventListener("click", function () {
-                Swal.fire({
-                    title: '¿Iniciar respaldo?',
-                    text: "Se generará un dump comprimido y se subirá a Drive.",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#4e73df',
-                    confirmButtonText: 'Sí, comenzar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            title: 'Procesando...',
-                            html: 'Comprimiendo y subiendo a la nube...',
-                            allowOutsideClick: false,
-                            didOpen: () => Swal.showLoading()
-                        });
-                        document.getElementById("formBackup").submit();
-                    }
-                });
-            });
-        }
-        {% endif %}
+document.addEventListener("DOMContentLoaded", function () {
 
-        let btnRestaurar = document.getElementById("btnRestaurar");
-        if (btnRestaurar) {
-            btnRestaurar.addEventListener("click", function () {
-                if (!document.getElementById("inputBackup").files.length) {
-                    Swal.fire('Error', 'Por favor selecciona un archivo de backup primero.', 'error');
-                    return;
+    {% if autenticado %}
+    // ── Botón generar backup ──
+    const btnGenerar = document.getElementById("btnGenerar");
+    if (btnGenerar) {
+        btnGenerar.addEventListener("click", function () {
+            Swal.fire({
+                title: '¿Iniciar respaldo?',
+                text: "Se generará un dump comprimido y se subirá a Google Drive.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#163345',
+                cancelButtonColor: '#c9a227',
+                confirmButtonText: 'Sí, comenzar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Procesando...',
+                        html: 'Comprimiendo y subiendo a la nube...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                    document.getElementById("formBackup").submit();
                 }
-                Swal.fire({
-                    title: '¿Confirmar restauración?',
-                    html: '<p class="text-danger"><strong>¡ADVERTENCIA!</strong> Esta acción reemplazará todos los datos actuales.</p>',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#e74a3b',
-                    confirmButtonText: 'Sí, restaurar todo',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            title: 'Restaurando...',
-                            html: 'Descomprimiendo e inyectando datos...',
-                            allowOutsideClick: false,
-                            didOpen: () => Swal.showLoading()
-                        });
-                        document.getElementById("formRestaurar").submit();
-                    }
-                });
             });
-        }
+        });
+    }
+    {% endif %}
 
-        {% if messages %}
-            {% for message in messages %}
+    // ── Botón restaurar ──
+    const btnRestaurar = document.getElementById("btnRestaurar");
+    if (btnRestaurar) {
+        btnRestaurar.addEventListener("click", function () {
+            const inputArchivo = document.getElementById("inputBackup");
+            const archivo = inputArchivo.files[0];
+
+            // Validación 1: sin archivo
+            if (!archivo) {
                 Swal.fire({
-                    title: "{% if message.tags == 'success' %}¡Completado!{% else %}Hubo un problema{% endif %}",
-                    text: "{{ message|escapejs }}",
-                    icon: "{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}",
-                    confirmButtonColor: '#4e73df'
+                    icon: 'warning',
+                    title: 'Archivo requerido',
+                    text: 'Por favor selecciona un archivo de backup (.gz) primero.',
+                    confirmButtonColor: '#163345'
                 });
-            {% endfor %}
-        {% endif %}
-    });
+                return;
+            }
+
+            // Validación 2: extensión incorrecta
+            if (!archivo.name.endsWith('.gz')) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Formato incorrecto',
+                    text: 'El archivo debe tener extensión .gz. Asegúrate de seleccionar un backup generado por el sistema.',
+                    confirmButtonColor: '#163345'
+                });
+                return;
+            }
+
+            // Validación 3: archivo vacío o demasiado pequeño
+            if (archivo.size === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Archivo vacío',
+                    text: 'El archivo seleccionado está vacío. Selecciona un backup válido.',
+                    confirmButtonColor: '#163345'
+                });
+                return;
+            }
+
+            if (archivo.size < 100) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Archivo inválido',
+                    text: 'El archivo es demasiado pequeño para ser un backup válido.',
+                    confirmButtonColor: '#163345'
+                });
+                return;
+            }
+
+            // Todo OK → confirmar restauración
+            Swal.fire({
+                title: '¿Confirmar restauración?',
+                html: '<p style="color:#b91c1c;"><strong>¡ADVERTENCIA!</strong><br>Esta acción reemplazará <strong>todos los datos actuales</strong> de forma permanente.</p>',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#b91c1c',
+                cancelButtonColor: '#163345',
+                confirmButtonText: 'Sí, restaurar todo',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Restaurando...',
+                        html: 'Descomprimiendo e inyectando datos en la base de datos...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                    document.getElementById("formRestaurar").submit();
+                }
+            });
+        });
+    }
+
+    // ── Mensajes Django ──
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                title: "{% if message.tags == 'success' %}¡Operación exitosa!{% else %}Hubo un problema{% endif %}",
+                text: "{{ message|escapejs }}",
+                icon: "{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}",
+                confirmButtonColor: '#163345'
+            });
+        {% endfor %}
+    {% endif %}
+
+});
 </script>
 {% endblock %}

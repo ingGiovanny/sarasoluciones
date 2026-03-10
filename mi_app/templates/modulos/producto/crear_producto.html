@@ -45,10 +45,13 @@
 <script>
 function borrarImagenServidor(id) {
     if (confirm('¿Estás seguro de que quieres eliminar esta imagen de la galería?')) {
-        // Obtenemos el token CSRF de Django
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        fetch(`/mi_app/producto/eliminar-imagen/${id}/`, {
+        // EL TRUCO: Dejamos que Django calcule la ruta real usando un "0" falso, 
+        // y luego JavaScript reemplaza ese "0" por el ID verdadero (ej. 53).
+        let urlDinamica = "{% url 'mi_app:eliminar_imagen_producto' 0 %}".replace('0', id);
+
+        fetch(urlDinamica, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrftoken,
@@ -59,6 +62,8 @@ function borrarImagenServidor(id) {
                 // Si el servidor responde bien, eliminamos el cuadrito del HTML
                 document.getElementById(`contenedor-img-${id}`).remove();
                 Swal.fire('Eliminado', 'La imagen ha sido borrada', 'success');
+            } else {
+                Swal.fire('Error', 'Hubo un problema al borrar la imagen', 'error');
             }
         })
         .catch(error => console.error('Error:', error));
