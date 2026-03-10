@@ -76,72 +76,85 @@
             </div>
         </div>
 
-<div class="col-lg-5">
-    <form action="{% url 'mi_app:procesar_pago_simulado' %}" method="POST" id="form-pago-definitivo" class="summary-card p-4">
-        {% csrf_token %}
-        
-        <h4 class="fw-bold mb-4 pb-3 border-bottom border-2">Resumen del Pedido</h4>
-        
-        <div class="mb-4">
-            <label class="small fw-bold text-muted text-uppercase mb-2 d-block">
-                <i class="fas fa-map-marker-alt me-1 text-primary"></i> Dirección de Entrega
-            </label>
-            {% if direcciones %}
-                <select name="direccion_envio_id" id="selector_direccion" class="form-select form-select-lg rounded-3 border-2 shadow-sm" required style="font-size: 0.95rem; cursor: pointer;">
-                    <option value="" disabled selected>Selecciona una ubicación...</option>
-                    {% for dir in direcciones %}
-                        <option value="{{ dir.id }}">{{ dir.alias }} - {{ dir.ciudad }}</option>
-                    {% endfor %}
-                </select>
-            {% else %}
-                <div class="alert alert-warning py-3 rounded-3 shadow-sm border-0 small">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-exclamation-circle fa-2x me-3"></i>
-                        <div>
-                            <strong>Sin direcciones</strong><br>
-                            <a href="{% url 'mi_app:mi_perfil' %}" class="fw-bold text-decoration-none">Crear una nueva</a>
+        <div class="col-lg-5">
+            <form action="{% url 'mi_app:procesar_pago_simulado' %}" method="POST" id="form-pago-definitivo" class="summary-card p-4">
+                {% csrf_token %}
+                
+                <h4 class="fw-bold mb-4 pb-3 border-bottom border-2">Resumen del Pedido</h4>
+                
+                <div class="mb-4">
+                    <label class="small fw-bold text-muted text-uppercase mb-2 d-block">
+                        <i class="fas fa-map-marker-alt me-1 text-primary"></i> Dirección de Entrega
+                    </label>
+
+                    {% if direcciones %}
+                        {# ✅ Cliente CON direcciones: selector normal #}
+                        <select name="direccion_envio_id" id="selector_direccion"
+                                class="form-select form-select-lg rounded-3 border-2 shadow-sm"
+                                required style="font-size: 0.95rem; cursor: pointer;">
+                            <option value="" disabled selected>Selecciona una ubicación...</option>
+                            {% for dir in direcciones %}
+                                <option value="{{ dir.id }}">{{ dir.alias }} - {{ dir.ciudad }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        {# ⚠️ Cliente SIN direcciones: alerta visible + campo oculto vacío para que el form pueda hacer POST #}
+                        <input type="hidden" name="direccion_envio_id" value="">
+                        <div class="alert alert-warning py-3 rounded-3 shadow-sm border-0 small">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-circle fa-2x me-3"></i>
+                                <div>
+                                    <strong>No tienes direcciones guardadas</strong><br>
+                                    Debes agregar una dirección antes de continuar.<br>
+                                    <a href="{% url 'mi_app:mi_perfil' %}" class="fw-bold text-decoration-none">
+                                        <i class="fas fa-plus me-1"></i> Crear dirección en mi perfil
+                                    </a>
+                                </div>
+                            </div>
                         </div>
+                    {% endif %}
+                </div>
+
+                <div class="bg-secondary bg-opacity-10 p-4 rounded-4 mb-4 border">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted fw-semibold">Subtotal de artículos</span>
+                        <span class="fw-bold fs-5">$ {{ total_compra|floatformat:0 }}</span>
+                    </div>
+                    <hr class="opacity-25 my-3">
+                    <div class="d-flex justify-content-between align-items-end">
+                        <span class="h5 fw-bold mb-0 text-uppercase">Total Final</span>
+                        <span class="h3 fw-bold mb-0 text-success total-compra-span" style="letter-spacing: -0.5px;">
+                            $ {{ total_compra|floatformat:0 }}
+                        </span>
                     </div>
                 </div>
-            {% endif %}
+
+                <br>
+            <!-- El botón SIEMPRE está activo. La lógica de bloqueo es en JS y en el backend.-->
+           
+                <button type="button"
+                        onclick="procesarPagoFinal()"
+                        class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow position-relative overflow-hidden"
+                        style="background: var(--accent-color); border:none; padding: 18px 0; font-size: 1.2rem; transition: transform 0.2s;">
+                    <i class="fas fa-lock me-2"></i> Confirmar y Pagar
+                </button>
+
+                <div class="text-center mt-4">
+                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
+                        <i class="fas fa-shield-alt me-1"></i> Transacción 100% segura
+                    </span>
+                </div>
+            </form>
         </div>
 
-        <div class="bg-secondary bg-opacity-10 p-4 rounded-4 mb-4 border">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted fw-semibold">Subtotal de artículos</span>
-                <span class="fw-bold fs-5">$ {{ total_compra|floatformat:0 }}</span>
-            </div>
-            
-            <hr class="opacity-25 my-3">
-            
-            <div class="d-flex justify-content-between align-items-end">
-                <span class="h5 fw-bold mb-0 text-uppercase">Total Final</span>
-                <span class="h3 fw-bold mb-0 text-success total-compra-span" style="letter-spacing: -0.5px;">$ {{ total_compra|floatformat:0 }}</span>
-            </div>
-        </div>
-    
-<br>
-<br>
-        <button type="button" onclick="procesarPagoFinal()" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow position-relative overflow-hidden" style="background: var(--accent-color); border:none; padding: 18px 0; font-size: 1.2rem; transition: transform 0.2s;" {% if not direcciones %}disabled{% endif %}>
-            <i class="fas fa-lock me-2"></i> Confirmar y Pagar
-        </button>
-        
-        
-        <div class="text-center mt-4">
-            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
-                <i class="fas fa-shield-alt me-1"></i> Transacción 100% segura
-            </span>
-        </div>
-    </form>
-</div>
-
-    </div> 
+    </div>
     {% else %}
     <div class="empty-cart card py-5 border-0 shadow-sm text-center">
         <i class="fas fa-shopping-basket mb-3 fa-4x text-muted"></i>
         <h3 class="fw-bold">Tu carrito está vacío</h3>
         <p class="text-muted mb-4">Aún no has añadido productos a tu carrito de compras.</p>
-        <a href="{% url 'mi_app:productos_clientes' %}" class="btn btn-primary rounded-pill px-4 py-2" style="background: var(--accent-color); border:none;">Volver a la tienda</a>
+        <a href="{% url 'mi_app:productos_clientes' %}" class="btn btn-primary rounded-pill px-4 py-2"
+           style="background: var(--accent-color); border:none;">Volver a la tienda</a>
     </div>
     {% endif %}
 </div>
@@ -158,56 +171,73 @@ function modificarCantidadConSubtotal(productoId, operacion, botonPresionado) {
     const precioUnitario = parseFloat(fila.getAttribute('data-precio'));
     const spanCantidad = document.querySelector('.item-cantidad-' + productoId);
     let cantidadActual = parseInt(spanCantidad.innerText);
-    
+
     if (operacion === 'sumar') {
         cantidadActual++;
     } else if (operacion === 'restar' && cantidadActual > 1) {
         cantidadActual--;
     }
-    
+
     const nuevoSubtotalFila = precioUnitario * cantidadActual;
     const textoSubtotal = document.getElementById('subtotal-item-' + productoId);
     if (textoSubtotal) {
         textoSubtotal.innerText = '$ ' + nuevoSubtotalFila.toLocaleString('es-CO');
     }
-    
+
     if (typeof modificarCantidad === "function") {
         modificarCantidad(productoId, operacion);
     }
 }
 
 // ==========================================
-// FUNCIÓN 2: ANIMACIÓN Y ENVÍO FORZADO
+// FUNCIÓN 2: VALIDACIÓN COMPLETA Y ENVÍO
 // ==========================================
 function procesarPagoFinal() {
     const selector = document.getElementById('selector_direccion');
-    
-    // 1. Validar si eligió dirección
-    if (selector && selector.value === "") {
+    const isDark = document.body.classList.contains('dark-mode');
+    const swalTheme = {
+        background: isDark ? '#1e1e2f' : '#ffffff',
+        color: isDark ? '#f1f1f1' : '#212529',
+        confirmButtonColor: 'var(--accent-color)'
+    };
+
+    // Caso 1: No tiene selector (no tiene direcciones guardadas)
+    if (!selector) {
+        Swal.fire({
+            icon: 'warning',
+            title: '¡Necesitas una dirección!',
+            html: `Para completar tu compra debes tener al menos una dirección de envío guardada.<br><br>
+                   <a href="/mi-perfil/" class="btn btn-sm btn-primary rounded-pill px-3"
+                      style="background: var(--accent-color); border:none;">
+                      <i class="fas fa-plus me-1"></i> Ir a mi perfil y agregar dirección
+                   </a>`,
+            showConfirmButton: false,
+            showCloseButton: true,
+            ...swalTheme
+        });
+        return;
+    }
+
+    // Caso 2: Tiene el selector pero no eligió ninguna opción
+    if (selector.value === "") {
         Swal.fire({
             icon: 'warning',
             title: 'Falta la dirección',
             text: 'Por favor, selecciona a dónde quieres que enviemos tu pedido.',
-            confirmButtonColor: 'var(--accent-color)',
-            background: document.body.classList.contains('dark-mode') ? '#1e1e2f' : '#ffffff',
-            color: document.body.classList.contains('dark-mode') ? '#f1f1f1' : '#212529'
+            ...swalTheme
         });
-        return; 
+        return;
     }
 
-    // 2. Animación y envío FORZADO al servidor
+    // Caso 3: Todo ok → animación y envío
     Swal.fire({
         title: 'Procesando tu pago...',
         text: 'Generando factura y preparando el envío. Esto puede tardar unos segundos...',
         allowOutsideClick: false,
-        showConfirmButton: false, // Ocultamos el botón para que espere
-        background: document.body.classList.contains('dark-mode') ? '#1e1e2f' : '#ffffff',
-        color: document.body.classList.contains('dark-mode') ? '#f1f1f1' : '#212529',
+        showConfirmButton: false,
+        ...swalTheme,
         didOpen: () => {
             Swal.showLoading();
-            
-            // ESTA LÍNEA ENVÍA EL FORMULARIO
-            // Asegúrate de que tu formulario en el HTML tenga id="form-pago-definitivo"
             document.getElementById('form-pago-definitivo').submit();
         }
     });
@@ -230,4 +260,5 @@ function procesarPagoFinal() {
     });
 </script>
 {% endif %}
+
 {% endblock %}

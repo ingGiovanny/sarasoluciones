@@ -8,14 +8,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css_clientes/global_vars.css' %}">
     <link rel="stylesheet" href="{% static 'custom.css' %}">
+    <style>
+        /* Botón ojo para ver/ocultar contraseña */
+        .toggle-password {
+            position: absolute;
+            right: 40px; /* deja espacio al icono de candado */
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+            padding: 0 4px;
+            display: flex;
+            align-items: center;
+            z-index: 2;
+            transition: color 0.2s;
+        }
+        .toggle-password:hover {
+            color: #d4af37;
+        }
+        /* Asegura que el input no quede tapado por ambos iconos */
+        .input-group.has-toggle input[type="password"],
+        .input-group.has-toggle input[type="text"] {
+            padding-right: 72px;
+        }
+    </style>
 </head>
 <body>
 
 <div class="register-wrapper">
     <div class="register-container">
         <a href="{% url 'mi_app:contenido_cliente' %}" class="btn-back">
-        <i class="fas fa-arrow-left"></i> Volver
-    </a>
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
         <div class="register-header">
             <h2>Crear Cuenta</h2>
             <p>Únete a Soluciones Sara</p>
@@ -23,46 +49,63 @@
 
         <form method="POST" id="registerForm" novalidate>
             {% csrf_token %}
-            
+
             <div class="input-group">
-                <input type="text" name="first_name" id="first_name" placeholder="Nombres" required>
+                <input type="text" name="first_name" id="first_name"
+                       placeholder="Nombres" required
+                       value="{{ form_data.first_name|default:'' }}">
                 <i class="fas fa-user"></i>
                 <div class="error-message">Por favor ingresa tu nombre</div>
             </div>
 
             <div class="input-group">
-                <input type="text" name="last_name" id="last_name" placeholder="Apellidos" required>
+                <input type="text" name="last_name" id="last_name"
+                       placeholder="Apellidos" required
+                       value="{{ form_data.last_name|default:'' }}">
                 <i class="fas fa-user"></i>
                 <div class="error-message">Por favor ingresa tus apellidos</div>
             </div>
 
             <div class="input-group">
-                <input type="text" name="cedula" id="cedula" placeholder="Número de documento" pattern="[0-9]+" required>
+                <input type="text" name="cedula" id="cedula"
+                       placeholder="Número de documento" pattern="[0-9]+" required
+                       value="{{ form_data.cedula|default:'' }}">
                 <i class="fas fa-id-card"></i>
                 <div class="error-message">Ingresa un documento válido (solo números)</div>
             </div>
 
             <div class="input-group">
-                <input type="email" name="email" id="email" placeholder="Correo electrónico" required>
+                <input type="email" name="email" id="email"
+                       placeholder="Correo electrónico" required
+                       value="{{ form_data.email|default:'' }}">
                 <i class="fas fa-envelope"></i>
                 <div class="error-message">Ingresa un correo válido</div>
             </div>
 
-         <div class="input-group">
-                    <input type="tel" name="telefono" id="telefono" placeholder="Número de teléfono" 
-                        pattern="^3[0-9]{9}$" maxlength="10" required>
-                    <i class="fas fa-phone"></i>
-                    <div class="error-message">Debe empezar por 3 y tener 10 dígitos</div>
-                </div>
+            <div class="input-group">
+                <input type="tel" name="telefono" id="telefono"
+                       placeholder="Número de teléfono"
+                       pattern="^3[0-9]{9}$" maxlength="10" required
+                       value="{{ form_data.telefono|default:'' }}">
+                <i class="fas fa-phone"></i>
+                <div class="error-message">Debe empezar por 3 y tener 10 dígitos</div>
+            </div>
 
             <div class="input-group">
-                <input type="text" name="username" id="username" placeholder="Nombre de usuario" required>
+                <input type="text" name="username" id="username"
+                       placeholder="Nombre de usuario" required
+                       value="{{ form_data.username|default:'' }}">
                 <i class="fas fa-at"></i>
                 <div class="error-message">Elige un nombre de usuario</div>
             </div>
 
-            <div class="input-group">
-                <input type="password" name="password" id="password" placeholder="Contraseña" required minlength="8">
+            <!-- Contraseña con botón ver/ocultar -->
+            <div class="input-group has-toggle">
+                <input type="password" name="password" id="password"
+                       placeholder="Contraseña" required minlength="8">
+                <button type="button" class="toggle-password" data-target="password" aria-label="Mostrar contraseña">
+                    <i class="fas fa-eye"></i>
+                </button>
                 <i class="fas fa-lock"></i>
                 <div class="password-strength">
                     <div class="password-strength-bar"></div>
@@ -70,8 +113,13 @@
                 <div class="error-message">Mínimo 8 caracteres, incluye mayúsculas, números y símbolos</div>
             </div>
 
-            <div class="input-group">
-                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirmar contraseña" required>
+            <!-- Confirmar contraseña con botón ver/ocultar -->
+            <div class="input-group has-toggle">
+                <input type="password" name="confirm_password" id="confirm_password"
+                       placeholder="Confirmar contraseña" required>
+                <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Mostrar contraseña">
+                    <i class="fas fa-eye"></i>
+                </button>
                 <i class="fas fa-lock"></i>
                 <div class="error-message">Las contraseñas no coinciden</div>
             </div>
@@ -96,20 +144,31 @@ const passwordInput = document.getElementById('password');
 const confirmPasswordInput = document.getElementById('confirm_password');
 const btnRegister = document.getElementById('btnRegister');
 
-// Validación en tiempo real
-inputs.forEach(input => {
-    input.addEventListener('blur', () => validateField(input));
-    input.addEventListener('input', () => {
-        if (input.classList.contains('invalid')) {
-            validateField(input);
-        }
+// ── Ver / ocultar contraseña ──────────────────────────────────────────────────
+document.querySelectorAll('.toggle-password').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const targetId = btn.dataset.target;
+        const input = document.getElementById(targetId);
+        const icon = btn.querySelector('i');
+        const isPassword = input.type === 'password';
+
+        input.type = isPassword ? 'text' : 'password';
+        icon.classList.toggle('fa-eye', !isPassword);
+        icon.classList.toggle('fa-eye-slash', isPassword);
+        btn.setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
     });
 });
 
-// Validar campo individual
+// ── Validación en tiempo real ─────────────────────────────────────────────────
+inputs.forEach(input => {
+    input.addEventListener('blur', () => validateField(input));
+    input.addEventListener('input', () => {
+        if (input.classList.contains('invalid')) validateField(input);
+    });
+});
+
 function validateField(input) {
     const group = input.closest('.input-group');
-    
     if (input.validity.valid && input.value.trim() !== '') {
         group.classList.remove('invalid');
         group.classList.add('valid');
@@ -120,12 +179,11 @@ function validateField(input) {
         return false;
     }
 }
-const telefonoInput = document.getElementById('telefono');
 
+// Teléfono: solo números, máx 10
+const telefonoInput = document.getElementById('telefono');
 telefonoInput.addEventListener('input', () => {
-    // Evita que el usuario escriba letras o más de 10 caracteres
     telefonoInput.value = telefonoInput.value.replace(/[^0-9]/g, '').slice(0, 10);
-    
     const group = telefonoInput.closest('.input-group');
     if (telefonoInput.validity.patternMismatch) {
         group.classList.add('invalid');
@@ -134,33 +192,26 @@ telefonoInput.addEventListener('input', () => {
     }
 });
 
-// Validar contraseña especial
+// Fuerza de contraseña
 passwordInput.addEventListener('input', () => {
     const password = passwordInput.value;
     const group = passwordInput.closest('.input-group');
-    
     let strength = 0;
     if (password.length >= 8) strength++;
     if (/[A-Z]/.test(password)) strength++;
     if (/[0-9]/.test(password)) strength++;
     if (/[^A-Za-z0-9]/.test(password)) strength++;
-    
+
     group.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
     group.classList.add('has-password');
-    
-    if (strength <= 1) {
-        group.classList.add('strength-weak');
-    } else if (strength <= 3) {
-        group.classList.add('strength-medium');
-    } else {
-        group.classList.add('strength-strong');
-    }
+    if (strength <= 1) group.classList.add('strength-weak');
+    else if (strength <= 3) group.classList.add('strength-medium');
+    else group.classList.add('strength-strong');
 });
 
-// Validar que las contraseñas coincidan
+// Confirmar contraseña
 confirmPasswordInput.addEventListener('input', () => {
     const group = confirmPasswordInput.closest('.input-group');
-    
     if (confirmPasswordInput.value === passwordInput.value && confirmPasswordInput.value !== '') {
         group.classList.remove('invalid');
         group.classList.add('valid');
@@ -170,22 +221,17 @@ confirmPasswordInput.addEventListener('input', () => {
     }
 });
 
-// Submit del formulario
+// Submit
 form.addEventListener('submit', (e) => {
     e.preventDefault();
-    
     let isValid = true;
-    inputs.forEach(input => {
-        if (!validateField(input)) {
-            isValid = false;
-        }
-    });
-    
+    inputs.forEach(input => { if (!validateField(input)) isValid = false; });
+
     if (passwordInput.value !== confirmPasswordInput.value) {
         confirmPasswordInput.closest('.input-group').classList.add('invalid');
         isValid = false;
     }
-    
+
     if (isValid) {
         btnRegister.classList.add('loading');
         btnRegister.disabled = true;
@@ -195,12 +241,12 @@ form.addEventListener('submit', (e) => {
             icon: 'error',
             title: 'Errores en el formulario',
             text: 'Por favor corrige los campos marcados',
-            confirmButtonColor: '#d4af37' // Dorado para el botón de error
+            confirmButtonColor: '#d4af37'
         });
     }
 });
 
-// Mostrar mensajes de Django
+// Mensajes de Django
 {% if messages %}
     {% for message in messages %}
         Swal.fire({
