@@ -85,6 +85,8 @@ urlpatterns = [
     path('api/generar-descripcion-producto/', generar_descripcion_producto_ia, name='generar_descripcion_producto_ia'),
     path('api/generar-descripcion-detallada/', generar_descripcion_detallada_ia, name='generar_descripcion_detallada_ia'),
     
+    
+   
     # ==========================================
     # MÓDULOS DEL ADMINISTRADOR (CRUDs)
     # ==========================================

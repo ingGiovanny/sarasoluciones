@@ -79,18 +79,26 @@
     {% endfor %}
     {% endif %}
 
-    {% if form.errors %}
+   {% if form.errors %}
     var errors = '';
-    {% for field in form %}
-    {% for error in field.errors %}
-    errors += '{{error}}\n';
+    
+    // 1. Atrapamos los errores generales (como el del usuario duplicado)
+    {% for error in form.non_field_errors %}
+        errors += '{{ error }}\n';
     {% endfor %}
+
+    // 2. Atrapamos los errores específicos de cada campo
+    {% for field in form %}
+        {% for error in field.errors %}
+            errors += '{{ field.label }}: {{ error }}\n';
+        {% endfor %}
     {% endfor %}
 
     Swal.fire({
-        title: 'Error',
+        title: 'No se pudo guardar',
         text: errors,
         icon: 'error',
+        confirmButtonColor: '#163345'
     });
     {% endif %}
  
@@ -99,7 +107,7 @@
 </script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
   function confirmarEnvio() {
     Swal.fire({
