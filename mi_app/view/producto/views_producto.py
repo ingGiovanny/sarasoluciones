@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from mi_app.models import Producto, ImagenProducto, Administrador  # Importaciones limpias
+# 🚨 Agregamos Categoria y Marca a la importación de modelos
+from mi_app.models import Producto, ImagenProducto, Administrador, Categoria, Marca 
 from django.http import JsonResponse
 from django.contrib import messages
 from django.utils.decorators import method_decorator
@@ -12,6 +13,8 @@ from mi_app.forms.form_producto import ProductoForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin 
 from core.utils import exportar_a_pdf
 from django.views.decorators.http import require_POST
+# 🚨 Importamos Q para hacer búsquedas de texto avanzadas
+from django.db.models import Q 
 
 # ==========================================
 # VALIDACIÓN DE ROL ADMINISTRADOR
@@ -42,7 +45,7 @@ def reporte_productos(request):
     return exportar_a_pdf('Inventario de Productos', encabezados, datos)
 
 # ==========================================
-# LISTADO DE PRODUCTOS
+# LISTADO DE PRODUCTOS (Ahora con Filtros Múltiples)
 # ==========================================
 @method_decorator(never_cache, name='dispatch')
 class productoListView(AdminRequiredMixin, ListView):
@@ -53,6 +56,32 @@ class productoListView(AdminRequiredMixin, ListView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
+    # 🚨 AQUÍ ESTÁ LA MAGIA DE LOS FILTROS
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        # 1. Capturamos lo que el usuario envía por la URL
+        q = self.request.GET.get('q')
+        categoria_id = self.request.GET.get('categoria')
+        marca_id = self.request.GET.get('marca')
+        estado = self.request.GET.get('estado')
+
+        # 2. Aplicamos los filtros uno por uno si existen
+        if q:
+            # Busca si el texto coincide con el nombre de la presentación o la marca
+            queryset = queryset.filter(
+                Q(id_presentacion__nombre__icontains=q) | 
+                Q(id_marca__nombre_marca__icontains=q)
+            )
+        if categoria_id:
+            queryset = queryset.filter(id_categoria_id=categoria_id)
+        if marca_id:
+            queryset = queryset.filter(id_marca_id=marca_id)
+        if estado:
+            queryset = queryset.filter(estado_producto=estado)
+
+        return queryset
+    
     def post(self, request, *args, **kwargs):
         return JsonResponse({'nombre': 'Gestión de Productos'})
     
@@ -61,6 +90,10 @@ class productoListView(AdminRequiredMixin, ListView):
         context['titulo'] = 'Gestión de Productos'
         context['crear_url'] = reverse_lazy('mi_app:producto_crear')
         context['entidad'] = 'Producto'  
+        
+        # 🚨 Enviamos las opciones de filtros al HTML
+        context['categorias'] = Categoria.objects.all()
+        context['marcas'] = Marca.objects.all()
         return context
 
 # ==========================================
@@ -81,7 +114,6 @@ class productoCreateView(AdminRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        # Manejo masivo de imágenes (Dropzone o input múltiple)
         archivos = self.request.FILES.getlist('imagenes_multiple')
         for f in archivos:
             ImagenProducto.objects.create(producto=self.object, imagen=f)
@@ -159,20 +191,14 @@ def producto_cambiar_estado(request, pk):
 # ELIMINAR IMAGEN INDIVIDUAL (Vía AJAX)
 # ==========================================
 @login_required(login_url='login:login')
-@require_POST # Obliga a que solo se pueda acceder por método POST (seguridad)
+@require_POST
 def eliminar_imagen_producto(request, id):
     try:
-        # Buscamos la imagen por su ID
         imagen = get_object_or_404(ImagenProducto, id=id)
-        
-        # Eliminamos el archivo físico del servidor (opcional pero muy recomendado para ahorrar espacio)
         if imagen.imagen:
             imagen.imagen.delete(save=False)
             
-        # Eliminamos el registro de la base de datos
         imagen.delete()
-        
-        # Respondemos al JavaScript que todo salió bien
         return JsonResponse({'status': 'success', 'mensaje': 'Imagen eliminada correctamente.'})
         
     except Exception as e:

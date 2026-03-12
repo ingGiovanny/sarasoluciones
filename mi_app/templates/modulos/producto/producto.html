@@ -5,13 +5,46 @@
 {% endblock titulo %}
 
 {% block agregar %}
-<a href="{{crear_url}}" class=" btn btn-primary btn btn-xs"><i class="fas fa-plus"></i>
-          Agregar
-</a>
+<div class="d-flex justify-content-between align-items-center flex-wrap w-100 mb-3 gap-2">
+    
+    <div class="d-flex gap-2">
+        <a href="{{crear_url}}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Agregar
+        </a>
+        <a href="{% url 'mi_app:pdf_productos' %}" class="btn btn-danger btn-sm">
+            <i class="fas fa-file-pdf"></i> Descargar Reporte
+        </a>
+    </div>
 
-       <a href="{% url 'mi_app:pdf_productos' %}" class="btn btn-danger">
-    <i class="fas fa-file-pdf"></i> Descargar Reporte
-</a>
+    <form method="GET" class="d-flex gap-2 align-items-center m-0">
+        <span class="text-muted fw-bold me-2"><i class="fas fa-filter"></i> Filtrar:</span>
+        
+        <select name="categoria" class="form-control form-control-sm" style="width: auto;" onchange="this.form.submit()">
+            <option value="">Todas las Categorías</option>
+            {% for cat in categorias %}
+                <option value="{{ cat.id }}" {% if request.GET.categoria|add:'0' == cat.id %}selected{% endif %}>
+                    {{ cat.nombre_categoria }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="marca" class="form-control form-control-sm" style="width: auto;" onchange="this.form.submit()">
+            <option value="">Todas las Marcas</option>
+            {% for marca in marcas %}
+                <option value="{{ marca.id }}" {% if request.GET.marca|add:'0' == marca.id %}selected{% endif %}>
+                    {{ marca.nombre_marca }}
+                </option>
+            {% endfor %}
+        </select>
+
+        {% if request.GET.categoria or request.GET.marca %}
+            <a href="{% url 'mi_app:producto_lista' %}" class="btn btn-outline-secondary btn-sm" title="Limpiar Filtros">
+                <i class="fas fa-times"></i>
+            </a>
+        {% endif %}
+    </form>
+
+</div>
 {% endblock %}
 
 {% block columnas %}
