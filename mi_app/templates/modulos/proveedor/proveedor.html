@@ -1,28 +1,22 @@
 {% extends "listar.html" %}
 
 {% block titulo %}
-        <h1 class="text-center">Gestión De Proveedores</h1>
+    Gestión De Proveedores
 {% endblock titulo %}
 
 {% block agregar %}
-<a href="{{crear_url}}" class=" btn btn-primary btn btn-xs"><i class="fas fa-plus"></i>
-          Agregar
-</a>
-        <a href="{% url 'mi_app:pdf_proveedores' %}" class="btn btn-danger">
-    <i class="fas fa-file-pdf"></i> Descargar Reporte
-</a>
+    <a href="{{crear_url}}" class="btn btn-primary btn-xs"><i class="fas fa-plus"></i> Agregar</a>
 {% endblock %}
 
 {% block columnas %}
-
-                <th>Id</th>
-                        <th>Nombres completos</th>
-                        <th>tipo de documento</th>
-                        <th>Documento</th>
-                         <th>Direcion de empresa</th>
-                        <th>numero telefonico</th>
-                        <th>Descripcion</th>
-                        <th>Acciones</th>
+    <th>Id</th>
+    <th>Nombres completos</th>
+    <th>Tipo de documento</th>
+    <th>Documento</th>
+    <th>Dirección de empresa</th>
+    <th>Número telefónico</th>
+    <th>Descripción</th>
+    <th>Acciones</th>
 {% endblock %}
 
 {% block iterar %}
@@ -57,7 +51,4 @@
         showConfirmButton: false
       });
     {% endfor %}
-  {% endif %}
-</script>
-
 {% endblock %}

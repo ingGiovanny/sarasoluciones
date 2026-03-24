@@ -110,7 +110,7 @@
                 <div class="password-strength">
                     <div class="password-strength-bar"></div>
                 </div>
-                <div class="error-message">Mínimo 8 caracteres, incluye mayúsculas, números y símbolos</div>
+                <div class="error-message">Mínimo 8 caracteres</div>
             </div>
 
             <!-- Confirmar contraseña con botón ver/ocultar -->
@@ -126,7 +126,6 @@
 
             <button type="submit" class="btn-register" id="btnRegister">
                 <span class="btn-text">REGISTRARSE</span>
-                <div class="spinner"></div>
             </button>
 
             <div class="login-link">
@@ -138,11 +137,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-const form = document.getElementById('registerForm');
-const inputs = form.querySelectorAll('input[required]');
-const passwordInput = document.getElementById('password');
-const confirmPasswordInput = document.getElementById('confirm_password');
-const btnRegister = document.getElementById('btnRegister');
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('registerForm');
+    const inputs = form.querySelectorAll('input[required]');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    const btnRegister = document.getElementById('btnRegister');
+    const telefonoInput = document.getElementById('telefono');
+    const cedulaInput = document.getElementById('cedula');
 
 // ── Ver / ocultar contraseña ──────────────────────────────────────────────────
 document.querySelectorAll('.toggle-password').forEach(btn => {
@@ -165,7 +167,6 @@ inputs.forEach(input => {
     input.addEventListener('input', () => {
         if (input.classList.contains('invalid')) validateField(input);
     });
-});
 
 function validateField(input) {
     const group = input.closest('.input-group');
@@ -257,6 +258,5 @@ form.addEventListener('submit', (e) => {
     {% endfor %}
 {% endif %}
 </script>
-
 </body>
 </html>

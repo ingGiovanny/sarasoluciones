@@ -86,7 +86,9 @@
     <a href="/ayuda/" class="menu-item-custom">
         <i class="fas fa-question-circle"></i> Ayuda
     </a>
-<form action="{% url 'logout' %}" method="post" id="logout-form" style="display: none;">
+
+
+<form id="logout-form" action="{% url 'mi_app:salir_cliente' %}" method="POST" style="display: none;">
     {% csrf_token %}
     <input type="hidden" name="next" value="{% url 'mi_app:contenido_cliente' %}">
 </form>

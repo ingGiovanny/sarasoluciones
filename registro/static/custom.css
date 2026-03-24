@@ -38,10 +38,9 @@
     background-color: var(--accent-color);
 }
 
-.register-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
+        .back-button-container {
+            margin-bottom: 20px;
+        }
 
 .register-header h2 {
     font-weight: 800;
@@ -55,12 +54,10 @@
     font-size: 0.95rem;
 }
 
-/* Input Groups */
-.input-group {
-    position: relative;
-    margin-bottom: 25px;
-    transition: all 0.3s ease;
-}
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
 /* Ícono posicionado de forma fija para evitar saltos */
 .input-group i {
@@ -110,19 +107,22 @@
 .input-group.valid i { color: #27ae60; }
 .input-group.invalid i { color: #e74c3c; }
 
-/* Mensaje de error */
-.error-message {
-    color: #e74c3c;
-    font-size: 0.85rem;
-    margin-top: 5px;
-    margin-left: 15px;
-    display: none;
-}
+        /* LÓGICA DE ERRORES */
+        .error-message {
+            color: #d9534f;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none; /* Oculto por defecto */
+        }
+        
+        .input-group.invalid .error-message {
+            display: block; /* Solo se muestra si tiene clase invalid */
+        }
 
-.input-group.invalid .error-message {
-    display: block;
-    animation: shake 0.3s ease;
-}
+        input:invalid {
+            box-shadow: none; /* Previene estilos nativos feos */
+        }
 
 @keyframes shake {
     0%, 100% { transform: translateX(0); }

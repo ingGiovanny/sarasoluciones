@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block content %}
+
+
 <div class="carrusel-container">
     <div class="carrusel-slides" id="slides-wrapper">
         <div class="slide">
@@ -52,4 +54,31 @@
         </div>
     </a>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                            icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
+                            title: 'Soluciones Sara',
+                            text: '{{ message|escapejs }}',
+                            timer: 3500,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            toast: true,
+                            position: 'top-end',
+                            background: '#ffffff',
+                            color: '#333',
+                            // --- ESTA ES LA MAGIA ---
+                            didOpen: (toast) => {
+                                toast.style.marginTop = '70px'; // Ajusta los 70px a tu gusto para bajarlo más o menos
+                            }
+                        });
+            {% endfor %}
+        {% endif %}
+    });
+</script>
+
 {% endblock %}

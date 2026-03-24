@@ -1,18 +1,16 @@
 {% extends 'body.html' %}
-
 {% load static %}
+
 {% block content %}
-          <div class="position-relative w-100" style="height: 300px; overflow: hidden; margin: 0; padding: 0;">
+<div class="position-relative w-100" style="height: 300px; overflow: hidden; margin: 0; padding: 0;">
   <img src="{% static 'img/capacitaciones.png' %}"
        alt="Capacitaciones"
        class="position-absolute top-0 start-0 w-100 h-100"
        style="object-fit: cover; object-position: center;">
   
-  <!-- capa oscura -->
   <div class="position-absolute top-0 start-0 w-100 h-100"
        style="background-color: rgba(0, 0, 0, 0.5);"></div>
 
-  <!-- texto -->
   <div class="position-absolute top-50 start-50 translate-middle text-center text-white px-3">
     <h1 class="fw-bold"
         style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7); font-size: clamp(2rem, 5vw, 4rem); color: #F5F5DC;">
@@ -20,53 +18,46 @@
     </h1>
   </div>
 </div>
-<div class="main-content" style="padding: 20px; padding-top: 70px; padding-bottom: 80px; width: 100%">
 
+<div class="main-content" style="padding: 20px; padding-top: 70px; padding-bottom: 80px; width: 100%">
   <div class="col-md-12">
     <div class="card card-default">
+      
       <div class="card-header">
         <h3 class="card-title">
           <i class="fas fa-exclamation-triangle"></i>
-          {% block titulo %}
-          
-          {% endblock titulo %}
-         
+          {% block titulo %}{% endblock titulo %}
         </h3>
       </div>
+      
       <div class="card-body">
-        <div class="card-footer">
-          {% block agregar %}
-              {% if nombre_modelo_pdf %}
-      <a href="{% url 'exportar_pdf_universal' nombre_modelo_pdf %}" class="btn btn-danger btn-xs">
-          <i class="fas fa-file-pdf"></i> Reporte PDF
-      </a>
-    {% endif %}
-  </div>
-  <table id="example1" class="table table-bordered table-striped">
-          {% endblock %}
-          <div class="card-body">
-
+        
+        <div class="mb-3">
+          {% block agregar %}{% endblock %}
+          
+          {% if nombre_modelo_pdf %}
+            <a href="{% url 'exportar_pdf_universal' nombre_modelo_pdf %}" class="btn btn-danger btn-xs">
+                <i class="fas fa-file-pdf"></i> Reporte PDF
+            </a>
+          {% endif %}
         </div>
-        <table id="example1" class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              {% block columnas %}
-              {% endblock %}
-            </tr>
-          </thead>
-          
-          
 
-          <!--el id de esta tabla funciona con cualquier modulo ya que en el listar  -->
-                   <!-- de cualquier modulo solo llamamos los bloques de columnas y de iterar -->
-          <tbody id="tablagenerica">
-            {% block iterar %}
-            {% endblock %}
-          </tbody>
-        </table>
-
-        <style>
-          /* Estilo para el campo de búsqueda de DataTables */
+  <style>
+          .table-responsive-custom {
+              width: 100%;
+              overflow-x: auto; 
+              -webkit-overflow-scrolling: touch; 
+          }
+          
+          /* La magia real: Evitar que el texto salte de línea. 
+             Esto obliga a DataTables a estirar la tabla naturalmente */
+          table.dataTable th, 
+          table.dataTable td {
+              white-space: nowrap !important;
+              vertical-align: middle !important;
+              padding: 10px 15px !important; /* Da respiro al texto */
+          }
+          
           .dataTables_filter input {
             background-color: #ffffff !important;
             color: #000000 !important;
@@ -74,46 +65,56 @@
             border-radius: 5px !important;
             padding: 5px 10px !important;
           }
+          
+          .dataTables_empty {
+            text-align: center !important;
+            white-space: normal !important; /* Para que el mensaje de "No hay datos" sí pueda centrarse bien */
+          }
         </style>
+
+        <div class="table-responsive">
+            <table id="example1" class="table table-bordered table-striped" style="width: 100%;">
+              <thead>
+                <tr>
+                  {% block columnas %}
+                  {% endblock %}
+                </tr>
+              </thead>
+              <tbody id="tablagenerica">
+                {% block iterar %}
+                {% endblock %}
+              </tbody>
+            </table>
+          </div>
+
       </div>
     </div>
   </div>
 </div>
 
-
-<!-- ================== LIBRERÍAS CSS ================== -->
-
-<!-- ================== LIBRERÍAS JS ================== -->
-<!-- 1. JQUERY -->
-<!--<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>-->
-
-<!-- 2. BOOTSTRAP -->
-<!-- <script src="{% static 'lib/datatables-1.10.20/plugins/bootstrap-4-4.1.1/js/bootstrap.min.js' %}"></script>-->
-
-<!-- 3. DATATABLES + PLUGINS -->
-<!-- 4. ADMINLTE -->
-
-<!-- 5. SWEETALERT2 -->
 {% if messages %}
 
 <script src="{% static 'lib/datatables-1.10.20/js/jquery.es-ES.js' %}"></script>
 <script>
-  {% for message in messages %}
-  Swal.fire({
-    icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
-    title: '{{ message|escapejs }}',
-    timer: 2500,
-    showConfirmButton: false
+  document.addEventListener("DOMContentLoaded", function() {
+    {% for message in messages %}
+    Swal.fire({
+      icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
+      title: 'Soluciones Sara',
+      text: '{{ message|escapejs }}',
+      timer: 2500,
+      showConfirmButton: false
+    });
+    {% endfor %}
   });
-  {% endfor %}
 </script>
 {% endif %}
 
-<!-- 6. SCRIPT PERSONALIZADO -->
 <script>
   $(function() {
-    $("#example1").DataTable({
-      "responsive": true,
+    var table = $("#example1").DataTable({
+      "responsive": false, 
+      "scrollX": false,    /* Mantenemos apagado el scrollX para que actúe Bootstrap */
       "autoWidth": false,
       "language": {
           "lengthMenu": "Mostrar _MENU_ registros por página",
@@ -126,13 +127,19 @@
               "next": "Siguiente",
               "previous": "Anterior"
           }
+      },
+      /* EL CÓDIGO CORREGIDO: sin el $() */
+      "initComplete": function(settings, json) {
+          this.api().columns.adjust(); 
       }
+    });
+
+    /* Recalcula si el usuario voltea el celular (cambio de tamaño) */
+    $(window).on('resize', function () {
+        table.columns.adjust();
     });
   });
 </script>
 
-<!-- 7. BLOQUE EXTRA -->
-{% block extra_js %}
-{% endblock %}
-
+{% block extra_js %}{% endblock %}
 {% endblock %}
