@@ -192,3 +192,9 @@ BACKUP_ENCRYPTION_KEY = os.getenv('BACKUP_ENCRYPTION_KEY', SECRET_KEY)
 
 #groq
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
+
+# Configuración para permitir el inicio de sesión desde el dominio real
+CSRF_TRUSTED_ORIGINS = [
+    'https://sarasoluciones.artisandev.site',
+    'http://sarasoluciones.artisandev.site',
+]
