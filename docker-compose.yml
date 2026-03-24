@@ -19,9 +19,7 @@ services:
       - sarasoluciones_static_volume:/app/staticfiles
       - sarasoluciones_media_volume:/app/media
     ports:
-      # Mapea el puerto 8000 dentro del contenedor al puerto 8034 afuera, 
-      # en tu máquina. Así, puedes acceder a tu app desde http://localhost:8034.
-      3      # OJO Puerto del Proxy Inverso.. (8034)
+      - "8034:8000"
     networks:
       # Asegura que este contenedor pueda comunicarse con otros contenedores
       # en la misma red
