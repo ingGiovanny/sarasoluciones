@@ -18,6 +18,7 @@ services:
       # Monta un "volumen nombrado" para los archivos estáticos.
       - sarasoluciones_static_volume:/app/staticfiles
       - sarasoluciones_media_volume:/app/media
+      
     ports:
       - "8034:8000"
     networks:
