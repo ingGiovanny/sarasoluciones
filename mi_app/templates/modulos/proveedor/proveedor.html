@@ -41,6 +41,11 @@
 
 <!-- Mensajes con SweetAlert -->
 
+{% endblock %} <!-- Cerramos el bloque 'iterar' primero -->
+
+<!-- Mensajes con SweetAlert -->
+{% block extra_js %} <!-- Es buena práctica poner scripts en un bloque aparte si tu base.html lo permite -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   {% if messages %}
     {% for message in messages %}
@@ -51,4 +56,6 @@
         showConfirmButton: false
       });
     {% endfor %}
+  {% endif %} <!-- ESTE ERA EL QUE FALTABA -->
+</script>
 {% endblock %}
