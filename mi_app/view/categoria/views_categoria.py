@@ -84,13 +84,14 @@ class categoriaDeleteView(AdminRequiredMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         
-        # BUSQUEDA DIRECTA: ¿Existen productos con esta categoría?
+        # 1. Usar el filtro directo para evitar el error de producto_set
         hay_relacion = Producto.objects.filter(id_categoria=self.object).exists()
         
         if hay_relacion:
+            # 2. CAMBIO AQUÍ: Usar nombre_categoria en lugar de nombre
             messages.error(
                 request, 
-                f"No se puede eliminar la categoría '{self.object.nombre}' porque tiene productos asociados."
+                f"No se puede eliminar la categoría '{self.object.nombre_categoria}' porque tiene productos asociados."
             )
             return redirect(self.success_url)
 
