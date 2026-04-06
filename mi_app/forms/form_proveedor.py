@@ -76,7 +76,7 @@ class ProveedorForm(ModelForm):
             ),
             'descripcion': Textarea(
                 attrs={
-                    'placeholder': 'Ingrese una descripción del proveedor (productos, servicios, etc.)  sirve para saber nos provee el proveedor',
+                    'placeholder': 'Ingrese una descripción del proveedor (productos, servicios, etc.)  sirve para saber nos que provee el proveedor',
                     'class': 'form-control',
                     'rows': 4,
                     'maxlength': '500'
