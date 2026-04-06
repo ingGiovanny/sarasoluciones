@@ -9,7 +9,7 @@ class AdministradorForm(ModelForm):
     # 1. Validadores con expresiones regulares más estrictas
     telefono_validator = RegexValidator(
         regex=r'^3\d{9}$', 
-        message='El teléfono debe empezar con 3 y tener 10 dígitos (formato celular Colombia).'
+        message='El teléfono debe empezar con 3 y tener 10 dígitos numericos.'
     )
     documento_validator = RegexValidator(
         regex=r'^\d{7,12}$', 
