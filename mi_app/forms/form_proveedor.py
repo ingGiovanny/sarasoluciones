@@ -70,7 +70,7 @@ class ProveedorForm(ModelForm):
             'numero_telefonico': TextInput(
                 attrs={
                     'placeholder': 'Ej: 3001234567',
-                    'maxlength': '20',
+                    'maxlength': '10',
                     'class': 'form-control'
                 }
             ),

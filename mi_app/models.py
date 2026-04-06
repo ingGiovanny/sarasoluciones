@@ -60,7 +60,7 @@ class Proveedor(models.Model):
     tipo_documento = models.CharField(max_length=50)
     numero_documento_nit = models.CharField(max_length=15, unique=True)
     direccion_empresa = models.CharField(max_length=150)
-    numero_telefonico = models.CharField(max_length=15)
+    numero_telefonico = models.CharField(max_length=10)
     descripcion = models.TextField(max_length=100)
     
     class Meta:
