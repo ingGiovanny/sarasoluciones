@@ -11,6 +11,8 @@ from django.urls import reverse_lazy
 from mi_app.forms.form_proveedor import ProveedorForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
 from core.utils import exportar_a_pdf
+from django.db.models import ProtectedError # Importante para capturar el error si algo falla
+
 
 # ==========================================
 # BOUNCER (Validador de Admin)
@@ -106,19 +108,38 @@ class proveedorupdateView(AdminRequiredMixin, UpdateView):
 # ==========================================
 # ELIMINAR PROVEEDOR
 # ==========================================
+
+
 @method_decorator(never_cache, name='dispatch')
 class proveedorDeleteView(AdminRequiredMixin, DeleteView):
     model = Proveedor
     template_name = 'modulos/proveedor/eliminar_proveedor.html'
     success_url = reverse_lazy('mi_app:proveedor_lista')
     
-    def form_valid(self, form):
-        messages.success(self.request, "Proveedor eliminado correctamente")
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        """
+        Sobreescribimos el post para que en lugar de borrar, inactive.
+        """
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        
+        try:
+            # Opción A: Intento de borrado lógico (La sugerida por tu instructor)
+            # Simplemente cambiamos el campo 'activo' que agregamos al modelo
+            self.object.activo = False
+            self.object.save()
+            
+            messages.success(request, f"El proveedor '{self.object.nombre_completo}' ha sido inactivado correctamente para proteger el historial de compras.")
+            return redirect(success_url)
+            
+        except Exception as e:
+            # Por si ocurre algún error inesperado
+            messages.error(request, f"No se pudo procesar la solicitud: {str(e)}")
+            return redirect(success_url)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar proveedor'
+        context['titulo'] = 'Inactivar proveedor' # Cambiamos el título para que sea coherente
         context['entidad'] = 'Proveedores'
         context['listar_url'] = reverse_lazy('mi_app:proveedor_lista')
         return context
