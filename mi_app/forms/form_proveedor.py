@@ -23,7 +23,7 @@ class ProveedorForm(ModelForm):
     
     telefono_validator = RegexValidator(
         regex=r'^3\d{9}$',
-        message='El teléfono debe tener 10 dígitos y comenzar con 3'
+        message='El teléfono debe tener 10 dígitos numericos y comenzar con 3'
     )
     
     def __init__(self, *args, **kwargs):
