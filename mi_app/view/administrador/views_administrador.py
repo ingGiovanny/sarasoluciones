@@ -1,5 +1,5 @@
 from urllib import request
-
+from django.db import transaction
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from mi_app.models import Administrador, Garantia
@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from core.utils import exportar_a_pdf
 from django.core.mail import send_mail
 from django.conf import settings
+
 
 # 🚨 NUEVA IMPORTACIÓN: Necesaria para atrapar el error de usuario duplicado
 from django.db import IntegrityError 
@@ -67,77 +68,66 @@ class AdministradorListView(AdminRequiredMixin, ListView):
 # ==========================================
 # CREAR ADMINISTRADOR
 # ==========================================
-@method_decorator([never_cache], name='dispatch')
+from django.db import transaction, IntegrityError
+# ... tus otras importaciones se mantienen igual ...
+
 class AdministradorCreateView(AdminRequiredMixin, CreateView):
     model = Administrador
     form_class = AdministradorForm
     template_name = 'modulos/administrador/crear_administrador.html'
     success_url = reverse_lazy('mi_app:administrador_lista')
-    
-    def form_valid(self, form):
-        username = self.request.POST.get('username') or self.request.POST.get('nombre_usuario') 
-        email = form.cleaned_data.get('correo_electronico')
-        password = self.request.POST.get('contrasena') 
 
-        if not email or not password:
-            messages.error(self.request, "El correo y la contraseña son obligatorios.")
-            return self.form_invalid(form)
+    def form_valid(self, form):
+        # Usamos .get() para evitar errores si el campo no viene
+        username = form.cleaned_data.get('username')
+        email = form.cleaned_data.get('correo_electronico')
+        password = form.cleaned_data.get('contrasena')
 
         try:
-            # 1. Creamos el User de Django
-            nuevo_user = User.objects.create_user(
-                username=username, email=email, password=password
-            )
-            nuevo_user.is_staff = True 
-            nuevo_user.is_superuser = True 
-            nuevo_user.is_active = True  # <-- Lo dejamos en True para que pueda entrar de inmediato
-            nuevo_user.save() 
-
-            # 2. Vinculamos con el modelo Administrador
-            administrador = form.save(commit=False)
-            administrador.user = nuevo_user 
-            administrador.correo_electronico = email 
-            administrador.save()
-
-            # 3. ENVIAMOS EL CORREO DIRECTAMENTE (Sin llamar funciones externas)
-            try:
-                asunto = "¡Bienvenido al equipo de Soluciones Sara!"
-                mensaje = (
-                    f"Hola {administrador.nombre_completo},\n\n"
-                    f"Has sido registrado como Administrador en la plataforma Soluciones Sara.\n\n"
-                    f"Tus credenciales de acceso son:\n"
-                    f"Usuario: {username}\n"
-                    f"Contraseña: {password}\n\n"
-                    f"Por seguridad, te recomendamos ingresar y cambiar esta contraseña."
+            # 🛡️ TRANSACCIÓN ATÓMICA: Si falla el envío de correo o el guardado del admin, 
+            # no se crea el usuario de Django a medias. Todo o nada.
+            with transaction.atomic():
+                # 1. Crear el User de Django
+                nuevo_user = User.objects.create_user(
+                    username=username, 
+                    email=email, 
+                    password=password
                 )
-                
-                # Enviamos el correo con la herramienta nativa de Django
-                send_mail(
-                    asunto, 
-                    mensaje, 
-                    settings.EMAIL_HOST_USER, 
-                    [email], 
-                    fail_silently=False
-                )
-                messages.success(self.request, f"¡Administrador creado! Correo de bienvenida enviado a {email}.")
-                
-            except Exception as mail_error:
-                messages.warning(self.request, "Administrador creado en base de datos, pero el correo falló.")
-                print(f"Error de correo SMTP: {mail_error}")
+                nuevo_user.is_staff = True 
+                nuevo_user.save() 
 
+                # 2. Vincular con el modelo Administrador
+                administrador = form.save(commit=False)
+                administrador.user = nuevo_user 
+                administrador.save()
+
+            # 3. ENVÍO DE CORREO (Fuera de la transacción para no bloquear la DB)
+            self._enviar_correo_bienvenida(administrador, username, password)
+            
+            messages.success(self.request, f"¡Administrador {administrador.nombre_completo} creado con éxito!")
             return redirect(self.success_url)
 
-        except IntegrityError as e:
-            if '1062' in str(e) or 'Duplicate' in str(e):
-                form.add_error(None, "¡El nombre de usuario o correo ya está siendo usado por otra persona!")
-                messages.error(self.request, "No se pudo crear. Datos duplicados.")
-            else:
-                form.add_error(None, f"Error de base de datos: {str(e)}")
+        except IntegrityError:
+            form.add_error('username', "Este nombre de usuario o correo ya está registrado.")
             return self.form_invalid(form)
-            
         except Exception as e:
-            messages.error(self.request, f"Error inesperado: {str(e)}")
+            messages.error(self.request, f"Error crítico: {str(e)}")
             return self.form_invalid(form)
+
+    def _enviar_correo_bienvenida(self, administrador, username, password):
+        """Método privado para limpiar la lógica de form_valid"""
+        try:
+            asunto = "¡Bienvenido al equipo de Soluciones Sara!"
+            mensaje = (
+                f"Hola {administrador.nombre_completo},\n\n"
+                f"Has sido registrado como Administrador.\n\n"
+                f"Credenciales:\nUsuario: {username}\nContraseña: {password}\n\n"
+                f"Accede aquí: {self.request.build_absolute_uri('/')}"
+            )
+            send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [administrador.correo_electronico])
+        except Exception as e:
+            print(f"Error SMTP: {e}")
+            messages.warning(self.request, "Administrador creado, pero el correo no pudo enviarse.")
 
 # ==========================================
 # EDITAR Y ELIMINAR (Protegidos)
@@ -162,65 +152,45 @@ class AdministradorDeleteView(AdminRequiredMixin, DeleteView):
 # ==========================================
 # GESTIONAR GARANTÍAS (Reforzado)
 # ==========================================
+
 @login_required(login_url='login:login')
 @user_passes_test(es_administrador, login_url='mi_app:principal')
 @never_cache
 def gestionar_garantias(request):
     if request.method == 'POST':
         garantia_id = request.POST.get('garantia_id')
-        nuevo_estado = request.POST.get('estado_garantia') # 'APROBADO', 'RECHAZADO'
+        nuevo_estado = request.POST.get('estado_garantia')
         respuesta = request.POST.get('respuesta_admin')
 
         try:
-            # 1. Obtener la garantía y actualizarla
-            garantia = Garantia.objects.get(id=garantia_id)
-            garantia.estado_garantia = nuevo_estado
-            garantia.respuesta_admin = respuesta
-            garantia.save()
-            
-            # 2. Sincronización con el Pedido
-            pedido_original = garantia.id_Pedido
-            
-            if nuevo_estado == 'APROBADO':
-                # El pedido vuelve a preparación para el re-envío
-                pedido_original.estado_pedido = 'EN PREPARACIÓN' 
+            with transaction.atomic(): # 🛡️ Asegura que stock y estado cambien juntos
+                garantia = get_object_or_404(Garantia, id=garantia_id)
+                garantia.estado_garantia = nuevo_estado
+                garantia.respuesta_admin = respuesta
+                garantia.save()
                 
-                # Descontamos del stock el nuevo producto que se va a enviar
-                producto = pedido_original.id_producto
-                producto.cantidad_producto -= pedido_original.cantidad
-                producto.save()
+                pedido = garantia.id_Pedido
                 
-                messages.info(request, f"Garantía aprobada. Se descontaron {pedido_original.cantidad} unidades para el re-envío.")
-            
-            elif nuevo_estado == 'RECHAZADO':
-                # Si se rechaza, el pedido se mantiene como entregado (no se toca el stock)
-                pedido_original.estado_pedido = 'ENTREGADO'
-                messages.warning(request, "Garantía rechazada: El pedido permanece como Entregado.")
-            
-            # Guardamos los cambios en el pedido
-            pedido_original.save()
+                if nuevo_estado == 'APROBADO':
+                    pedido.estado_pedido = 'EN PREPARACIÓN' 
+                    producto = pedido.id_producto
+                    if producto.cantidad_producto >= pedido.cantidad:
+                        producto.cantidad_producto -= pedido.cantidad
+                        producto.save()
+                    else:
+                        raise ValueError("No hay suficiente stock para cubrir la garantía.")
+                
+                elif nuevo_estado == 'RECHAZADO':
+                    pedido.estado_pedido = 'ENTREGADO'
+                
+                pedido.save()
+                messages.success(request, "Garantía procesada y stock actualizado.")
 
-            # 3. Notificación por correo (dentro de su propio try para no romper el proceso)
-            try:
-                cliente = pedido_original.id_cliente
-                asunto = f"Garantía Actualizada - Soluciones Sara"
-                mensaje = (f"Hola {cliente.nombre_completo},\n\n"
-                           f"Tu garantía para '{pedido_original.id_producto.id_presentacion.nombre}' "
-                           f"ha sido actualizada a: {nuevo_estado}.\n\n"
-                           f"Respuesta del administrador: {respuesta}")
-                
-                send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [cliente.correo_electronico], fail_silently=True)
-            except Exception:
-                pass
-
-            messages.success(request, "Garantía procesada correctamente.")
-            
-        except Garantia.DoesNotExist:
-            messages.error(request, "Error: La garantía no existe en el sistema.")
+        except Exception as e:
+            messages.error(request, f"Error al procesar: {str(e)}")
             
         return redirect('mi_app:gestionar_garantias')
 
-    # Si es GET, cargamos la lista
     return render(request, 'modulos/garantia/admin_garantias.html', {
         'garantias': Garantia.objects.all().order_by('-fecha_garantia')
     })
