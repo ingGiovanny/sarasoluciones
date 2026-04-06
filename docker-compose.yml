@@ -106,3 +106,5 @@ volumes:
     name: sarasoluciones_static_volume
   sarasoluciones_media_volume:
     name: sarasoluciones_media_volume
+    
+

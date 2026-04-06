@@ -37,8 +37,13 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Etapa 6: Copiar el Código de la Aplicación
 COPY . .
 
+# Primero copiamos el script, le damos permisos y definimos el ENTRYPOINT
+# Antes de cualquier comando de ejecución (CMD)
 
+RUN chmod +x /app/entrypoint.sh
 
-# Etapa 8: Comando de Ejecución
+# El ENTRYPOINT siempre se ejecuta al arrancar el contenedor
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# El CMD se pasa como argumento al ENTRYPOINT (gracias al exec "$@" en tu script)
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-
