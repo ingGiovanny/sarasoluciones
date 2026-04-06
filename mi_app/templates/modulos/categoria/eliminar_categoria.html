@@ -4,13 +4,13 @@
     {% if hay_productos %}
         <div class="alert alert-danger shadow-sm text-center">
             <h5><i class="icon fas fa-ban"></i> ¡Acción no permitida!</h5>
-            <p>La categoría <strong>{{ object.nombre }}</strong> está siendo usada por uno o más productos.</p>
+            <p>La categoría <strong>{{ object.nombre_categoria }}</strong> está siendo usada por uno o más productos.</p>
             <p class="mb-0 small text-dark">Para eliminarla, primero debes cambiar o borrar los productos vinculados.</p>
         </div>
     {% else %}
         <div class="text-center">
             <h5><i class="icon fas fa-question-circle text-warning"></i> ¿Confirmar eliminación?</h5>
-            <p>¿Realmente deseas eliminar la categoría <strong>{{ object.nombre }}</strong>? (#{{ object.id }})</p>
+            <p>¿Realmente deseas eliminar la categoría <strong>{{ object.nombre_categoria }}</strong>? (#{{ object.id }})</p>
         </div>
     {% endif %}
 {% endblock %}
@@ -21,6 +21,7 @@
             <i class="fas fa-trash"></i> Sí, eliminar permanentemente
         </button>
     {% endif %}
+    
     <a href="{{ listar_url }}" class="btn btn-info btn-flat">
         <i class="fas fa-undo"></i> {% if hay_productos %}Regresar al listado{% else %}Cancelar{% endif %}
     </a>
