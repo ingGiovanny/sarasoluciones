@@ -1,11 +1,17 @@
 from django import forms
 from django.forms import ModelForm, TextInput, NumberInput, Select, DateInput
-from mi_app.models import Compra
+# IMPORTANTE: Debes importar Proveedor para poder filtrarlo
+from mi_app.models import Compra, Proveedor 
 
 class CompraForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Aplicamos la clase de Bootstrap a todos los campos de forma automática
+        
+        # 1. Filtramos el queryset: ADIÓS a los proveedores inactivos en el Select
+        self.fields['id_proveedor'].queryset = Proveedor.objects.filter(activo=True)
+        
+        # 2. Aplicamos la clase de Bootstrap a TODOS los campos automáticamente
+        # Esto incluye a id_proveedor, así que no necesitas la línea repetida
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
 
@@ -19,12 +25,9 @@ class CompraForm(ModelForm):
             'cantidad_productos': NumberInput(attrs={'placeholder': 'Cantidad'}),
             'observaciones': TextInput(attrs={'placeholder': 'Observaciones adicionales'}),
             
-            # 🔥 AQUÍ ESTÁ EL CAMBIO: type='date' activa el calendario nativo
+            # El calendario nativo que configuramos
             'fecha_compra': DateInput(
-                attrs={
-                    'type': 'date', 
-                    'class': 'form-control'
-                }, 
+                attrs={'type': 'date'}, 
                 format='%Y-%m-%d'
             ), 
             
