@@ -9,6 +9,8 @@ from django.urls import reverse_lazy
 from mi_app.forms.form_categoria import CategoriaForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin
 from django.views.decorators.cache import never_cache
+from django.shortcuts import redirect
+
 
 # ============================================================
 # VISTAS DE CATEGORÍA PROTEGIDAS
@@ -77,9 +79,24 @@ class categoriaDeleteView(AdminRequiredMixin, DeleteView):
     template_name = 'modulos/categoria/eliminar_categoria.html'
     success_url = reverse_lazy('mi_app:categoria_lista')
     
-    def form_valid(self, form):
-        messages.success(self.request, "Categoría eliminada correctamente")
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        # 1. Obtenemos el objeto que se quiere eliminar
+        self.object = self.get_object()
+        
+        # 2. Verificamos si hay productos relacionados
+        # Usamos el related_name o el nombre del modelo en minúsculas + _set
+        if self.object.producto_set.exists():
+            # Si existen productos, NO borramos y mandamos error
+            messages.error(
+                request, 
+                f"No se puede eliminar la categoría '{self.object.nombre}' porque todavía tiene productos asociados. "
+                f"Primero debes cambiar la categoría de esos productos o eliminarlos."
+            )
+            return redirect(self.success_url)
+
+        # 3. Si no hay relaciones, dejamos que DeleteView haga su trabajo normal
+        messages.success(request, "Categoría eliminada correctamente")
+        return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

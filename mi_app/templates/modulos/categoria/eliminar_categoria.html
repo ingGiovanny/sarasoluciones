@@ -1,15 +1,30 @@
 {% extends 'eliminar.html' %}
 
 {% block eliminar %}
-                <h5><i class="icon fas fa-ban"></i> Advertencia¡</h5>
-                Deseas eliminar la categoria? #{{object.id}}?
+    {% if object.producto_set.all %}
+        <div class="alert alert-danger shadow-sm">
+            <h5><i class="icon fas fa-exclamation-triangle"></i> ¡Acción Bloqueada!</h5>
+            No puedes eliminar la categoría <strong>{{ object.nombre }}</strong> (#{{ object.id }}) 
+            porque tiene <strong>{{ object.producto_set.count }}</strong> producto(s) asociado(s).
+            <br><small>Debes reubicar o eliminar los productos primero.</small>
+        </div>
+    {% else %}
+        <div class="alert alert-warning shadow-sm">
+            <h5><i class="icon fas fa-trash"></i> ¿Confirmar Eliminación?</h5>
+            ¿Estás seguro de que deseas eliminar permanentemente la categoría <strong>{{ object.nombre }}</strong> (#{{ object.id }})?
+            <br><small>Esta acción no se puede deshacer.</small>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block validar %}
-            <button type="submit" class="btn btn-success swalDefauldtSuccess">
-                <i class="fas fa-save"></i> Si, Aceptar
-            </button>
-            <a href="{{ listar_url }}" class="btn btn-info btn-flat">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
+    {% if not object.producto_set.all %}
+        <button type="submit" class="btn btn-danger">
+            <i class="fas fa-check"></i> Sí, Eliminar
+        </button>
+    {% endif %}
+    
+    <a href="{{ listar_url }}" class="btn btn-secondary btn-flat">
+        <i class="fas fa-times"></i> {% if object.producto_set.all %}Volver al listado{% else %}Cancelar{% endif %}
+    </a>
 {% endblock %}
