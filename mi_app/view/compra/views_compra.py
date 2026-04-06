@@ -72,7 +72,6 @@ class CompraCreateView(AdminRequiredMixin, CreateView):
         context['entidad'] = 'Compras'
         context['listar_url'] = reverse_lazy('mi_app:compras_lista')
         return context
-
 @method_decorator(never_cache, name='dispatch')
 class CompraUpdateView(AdminRequiredMixin, UpdateView):
     model = Compra
@@ -81,8 +80,42 @@ class CompraUpdateView(AdminRequiredMixin, UpdateView):
     success_url = reverse_lazy('mi_app:compras_lista')
     
     def form_valid(self, form):
-        messages.success(self.request, "Compra actualizada correctamente")
-        return super().form_valid(form)
+        # 1. Capturamos los datos ORIGINALES desde la base de datos usando el ID (pk) de la URL
+        # Hacemos esto ANTES de que super().form_valid() sobrescriba los datos con los del formulario
+        compra_original = Compra.objects.get(id=self.kwargs['pk'])
+        cantidad_anterior = compra_original.cantidad_productos
+        producto_anterior = compra_original.id_producto
+
+        # 2. Guardamos el formulario (esto actualiza la base de datos con lo nuevo)
+        response = super().form_valid(form)
+        
+        # 3. Capturamos los datos NUEVOS recién guardados
+        compra_actualizada = self.object
+        cantidad_nueva = compra_actualizada.cantidad_productos
+        producto_nuevo = compra_actualizada.id_producto
+
+        # 4. Lógica de ajuste de inventario
+        if producto_anterior == producto_nuevo:
+            # CASO A: Es el mismo producto, solo cambió la cantidad (o algún otro campo)
+            # La diferencia puede ser positiva (compró más) o negativa (compró menos)
+            diferencia = cantidad_nueva - cantidad_anterior
+            producto_nuevo.cantidad_producto += diferencia
+            producto_nuevo.save()
+        else:
+            # CASO B: Cambió el producto por completo
+            # Le restamos la cantidad al producto que había puesto por error
+            producto_anterior.cantidad_producto -= cantidad_anterior
+            # Un pequeño seguro para evitar inventarios negativos por si acaso
+            if producto_anterior.cantidad_producto < 0:
+                producto_anterior.cantidad_producto = 0
+            producto_anterior.save()
+
+            # Le sumamos la nueva cantidad al producto correcto
+            producto_nuevo.cantidad_producto += cantidad_nueva
+            producto_nuevo.save()
+
+        messages.success(self.request, "Compra actualizada y el inventario fue reajustado correctamente.")
+        return response
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
