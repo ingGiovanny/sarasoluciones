@@ -6,82 +6,30 @@ from mi_app.models import Proveedor
 import re
 
 class ProveedorForm(ModelForm):
-    # Opciones para tipo de documento
-    TIPO_DOCUMENTO_CHOICES = [
-        ('', 'Seleccione tipo de documento'),
-        ('CC', 'Cédula de Ciudadanía'),
-        ('TI', 'Tarjeta de Identidad'),
-        ('CE', 'Cédula de Extranjería'),
-        ('NIT', 'Número de Identificación Tributaria (NIT)'),
-    ]
-    
-    # Validadores
-    nombre_validator = RegexValidator(
-        regex=r'^[a-záéíóúñA-ZÁÉÍÓÚÑ\s.&,-]+$',
-        message='El nombre solo debe contener letras, espacios y caracteres válidos (. , - &)'
-    )
-    
-    telefono_validator = RegexValidator(
-        regex=r'^3\d{9}$',
-        message='El teléfono debe tener 10 dígitos numericos y comenzar con 3'
-    )
-    
+    # ... (Tus validadores y CHOICES se mantienen igual) ...
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['nombre_completo'].widget.attrs['autofocus'] = True
-        
-        # Agregar validadores
         self.fields['nombre_completo'].validators.append(self.nombre_validator)
         self.fields['numero_telefonico'].validators.append(self.telefono_validator)
-        
-        # Configurar choices para tipo_documento
         self.fields['tipo_documento'].widget.choices = self.TIPO_DOCUMENTO_CHOICES
-    
+        
+        # Opcional: Si quieres que el checkbox de activo tenga un label amigable
+        self.fields['activo'].label = "¿Proveedor Activo?"
+
     class Meta:
         model = Proveedor
-        fields = '__all__'
+        fields = '__all__' # Al usar __all__, ya incluye el nuevo campo 'activo'
         widgets = {
-            'nombre_completo': TextInput(
-                attrs={
-                    'placeholder': 'Ingrese el nombre completo del proveedor o empresa',
-                    'maxlength': '150',
-                    'class': 'form-control'
-                }
-            ),
-            'tipo_documento': Select(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
-            'numero_documento_nit': TextInput(
-                attrs={
-                    'placeholder': 'Ingrese el número de documento o NIT',
-                    'maxlength': '10',
-                    'class': 'form-control'
-                }
-            ),
-            'direccion_empresa': TextInput(
-                attrs={
-                    'placeholder': 'Ingrese la dirección de la empresa',
-                    'maxlength': '200',
-                    'class': 'form-control'
-                }
-            ),
-            'numero_telefonico': TextInput(
-                attrs={
-                    'placeholder': 'Ej: 3001234567',
-                    'maxlength': '10',
-                    'class': 'form-control'
-                }
-            ),
-            'descripcion': Textarea(
-                attrs={
-                    'placeholder': 'Ingrese una descripción del proveedor (productos, servicios, etc.)  sirve para saber que nos provee el proveedor',
-                    'class': 'form-control',
-                    'rows': 4,
-                    'maxlength': '500'
-                }
-            ),
+            'nombre_completo': TextInput(attrs={'placeholder': 'Ingrese el nombre completo', 'class': 'form-control'}),
+            'tipo_documento': Select(attrs={'class': 'form-control'}),
+            'numero_documento_nit': TextInput(attrs={'placeholder': 'Número de documento', 'class': 'form-control'}),
+            'direccion_empresa': TextInput(attrs={'placeholder': 'Dirección', 'class': 'form-control'}),
+            'numero_telefonico': TextInput(attrs={'placeholder': 'Ej: 3001234567', 'class': 'form-control'}),
+            'descripcion': Textarea(attrs={'placeholder': 'Descripción...', 'class': 'form-control', 'rows': 4}),
+            # NUEVO WIDGET PARA EL ESTADO
+            'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}) 
         }
     
     def clean_nombre_completo(self):

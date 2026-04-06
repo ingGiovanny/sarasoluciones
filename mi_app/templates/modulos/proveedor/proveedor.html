@@ -11,40 +11,45 @@
 {% block columnas %}
     <th>Id</th>
     <th>Nombres completos</th>
-    <th>Tipo de documento</th>
     <th>Documento</th>
-    <th>Dirección de empresa</th>
     <th>Número telefónico</th>
-    <th>Descripción</th>
-    <th>Acciones</th>
+    <th>Estado</th> <th>Acciones</th>
 {% endblock %}
 
 {% block iterar %}
+    {% for a in object_list %}
+        <tr {% if not a.activo %}style="background-color: #f8f9fa; color: #6c757d;"{% endif %}>
+            <td>{{ a.id }}</td>
+            <td>{{ a.nombre_completo }}</td>
+            <td><small class="text-muted">{{ a.tipo_documento }}:</small> {{ a.numero_documento_nit }}</td>
+            <td>{{ a.numero_telefonico }}</td>
+            
+            <td>
+                {% if a.activo %}
+                    <span class="badge bg-success">Activo</span>
+                {% else %}
+                    <span class="badge bg-danger">Inactivo</span>
+                {% endif %}
+            </td>
 
-            {% for a in object_list %}
-                    <tr>
-                        <td>{{ a.id }}</td>
-                        <td>{{ a.nombre_completo }}</td>
-                        <td>{{ a.tipo_documento }}</td>
-                        <td>{{ a.numero_documento_nit }}</td>
-                        <td>{{ a.direccion_empresa }}</td>
-                        <td>{{ a.numero_telefonico }}</td>
-                        <td>{{ a.descripcion }}</td>
+            <td>
+                <a href="{% url 'mi_app:proveedor_editar' a.id %}" class="btn btn-warning btn-sm" title="Editar">
+                    <i class="bi bi-pen-fill"></i>
+                </a>
+                
+                {% if a.activo %}
+                <a href="{% url 'mi_app:proveedor_eliminar' a.id %}" class="btn btn-danger btn-sm" title="Inactivar">
+                    <i class="bi bi-trash3-fill"></i>
+                </a>
+                {% else %}
+                <button class="btn btn-secondary btn-sm" disabled><i class="bi bi-slash-circle"></i></button>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
 
-                        <td>
-                              <a href="{% url 'mi_app:proveedor_editar' a.id %}"class="btn btn-warning btn-sm"data-bs-toggle="tooltip"title="Editar"><i class="bi bi-pen-fill"></i></a>
-                              <a href="{% url 'mi_app:proveedor_eliminar' a.id %}"class="btn btn-danger btn-sm"data-bs-toggle="tooltip"title="Eliminar"><i class="bi bi-trash3-fill"></i></a>
-                        </td>
-                    </tr>
-               
-                    {% endfor %}
-
-<!-- Mensajes con SweetAlert -->
-
-{% endblock %} <!-- Cerramos el bloque 'iterar' primero -->
-
-<!-- Mensajes con SweetAlert -->
-{% block extra_js %} <!-- Es buena práctica poner scripts en un bloque aparte si tu base.html lo permite -->
+{% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   {% if messages %}
@@ -56,6 +61,6 @@
         showConfirmButton: false
       });
     {% endfor %}
-  {% endif %} <!-- ESTE ERA EL QUE FALTABA -->
+  {% endif %}
 </script>
 {% endblock %}
