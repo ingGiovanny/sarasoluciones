@@ -1,30 +1,27 @@
 {% extends 'eliminar.html' %}
 
 {% block eliminar %}
-    {% if object.producto_set.all %}
-        <div class="alert alert-danger shadow-sm">
-            <h5><i class="icon fas fa-exclamation-triangle"></i> ¡Acción Bloqueada!</h5>
-            No puedes eliminar la categoría <strong>{{ object.nombre }}</strong> (#{{ object.id }}) 
-            porque tiene <strong>{{ object.producto_set.count }}</strong> producto(s) asociado(s).
-            <br><small>Debes reubicar o eliminar los productos primero.</small>
+    {% if hay_productos %}
+        <div class="alert alert-danger shadow-sm text-center">
+            <h5><i class="icon fas fa-ban"></i> ¡Acción no permitida!</h5>
+            <p>La categoría <strong>{{ object.nombre }}</strong> está siendo usada por uno o más productos.</p>
+            <p class="mb-0 small text-dark">Para eliminarla, primero debes cambiar o borrar los productos vinculados.</p>
         </div>
     {% else %}
-        <div class="alert alert-warning shadow-sm">
-            <h5><i class="icon fas fa-trash"></i> ¿Confirmar Eliminación?</h5>
-            ¿Estás seguro de que deseas eliminar permanentemente la categoría <strong>{{ object.nombre }}</strong> (#{{ object.id }})?
-            <br><small>Esta acción no se puede deshacer.</small>
+        <div class="text-center">
+            <h5><i class="icon fas fa-question-circle text-warning"></i> ¿Confirmar eliminación?</h5>
+            <p>¿Realmente deseas eliminar la categoría <strong>{{ object.nombre }}</strong>? (#{{ object.id }})</p>
         </div>
     {% endif %}
 {% endblock %}
 
 {% block validar %}
-    {% if not object.producto_set.all %}
+    {% if not hay_productos %}
         <button type="submit" class="btn btn-danger">
-            <i class="fas fa-check"></i> Sí, Eliminar
+            <i class="fas fa-trash"></i> Sí, eliminar permanentemente
         </button>
     {% endif %}
-    
-    <a href="{{ listar_url }}" class="btn btn-secondary btn-flat">
-        <i class="fas fa-times"></i> {% if object.producto_set.all %}Volver al listado{% else %}Cancelar{% endif %}
+    <a href="{{ listar_url }}" class="btn btn-info btn-flat">
+        <i class="fas fa-undo"></i> {% if hay_productos %}Regresar al listado{% else %}Cancelar{% endif %}
     </a>
 {% endblock %}
