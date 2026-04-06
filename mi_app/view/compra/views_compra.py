@@ -42,8 +42,29 @@ class CompraCreateView(AdminRequiredMixin, CreateView):
     success_url = reverse_lazy('mi_app:compras_lista')
     
     def form_valid(self, form):
-        messages.success(self.request, "Compra creada correctamente")
-        return super().form_valid(form)
+        # 1. Ejecutamos el guardado normal de la Compra
+        # Al hacer esto, Django crea la compra en la base de datos y la guarda en 'self.object'
+        response = super().form_valid(form)
+        
+        # 2. Tomamos la compra recién guardada
+        compra_recien_creada = self.object
+        
+        # 3. Buscamos el producto asociado a esa compra
+        producto = compra_recien_creada.id_producto
+        
+        # 4. Le sumamos la cantidad comprada al stock actual del producto
+        producto.cantidad_producto += compra_recien_creada.cantidad_productos
+        
+        # 5. Guardamos el producto con su nuevo inventario
+        producto.save()
+        
+        # 6. Enviamos un mensaje de éxito más descriptivo
+        messages.success(
+            self.request, 
+            f"Compra registrada. ¡Se sumaron {compra_recien_creada.cantidad_productos} unidades de {producto.id_presentacion.nombre} al inventario!"
+        )
+        
+        return response
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
