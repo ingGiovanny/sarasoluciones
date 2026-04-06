@@ -5,10 +5,10 @@
 # Etapa 1: Imagen Base
 FROM python:3.11-slim
 
-# Etapa 2: Variables de Entorno
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV DEBIAN_FRONTEND noninteractive
+# Etapa 2: Variables de Entorno (Corregido con "=")
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Etapa 3: Instalar Dependencias del Sistema
 RUN apt-get update && apt-get install -y --no-install-recommends \

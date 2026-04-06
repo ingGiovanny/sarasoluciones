@@ -56,7 +56,7 @@ class ProveedorForm(ModelForm):
             'numero_documento_nit': TextInput(
                 attrs={
                     'placeholder': 'Ingrese el número de documento o NIT',
-                    'maxlength': '15',
+                    'maxlength': '10',
                     'class': 'form-control'
                 }
             ),
@@ -76,7 +76,7 @@ class ProveedorForm(ModelForm):
             ),
             'descripcion': Textarea(
                 attrs={
-                    'placeholder': 'Ingrese una descripción del proveedor (productos, servicios, etc.)',
+                    'placeholder': 'Ingrese una descripción del proveedor (productos, servicios, etc.)  sirve para saber nos provee el proveedor',
                     'class': 'form-control',
                     'rows': 4,
                     'maxlength': '500'
@@ -186,24 +186,30 @@ class ProveedorForm(ModelForm):
         return direccion
     
     def clean_numero_telefonico(self):
-        telefono = self.cleaned_data.get('numero_telefonico', '').strip()
-        
+    # 1. Obtener y limpiar espacios básicos
+        valor_original = self.cleaned_data.get('numero_telefonico', '')
+        telefono = valor_original.strip()
+
         if not telefono:
             raise ValidationError('El número telefónico es obligatorio')
-        
-        # Eliminar espacios y guiones
-        telefono = telefono.replace(' ', '').replace('-', '')
-        
+
+        # 2. Limpieza de caracteres de formato comunes (espacios, guiones, paréntesis, signo +)
+        for char in [' ', '-', '(', ')', '+']:
+            telefono = telefono.replace(char, '')
+
+        # 3. Detección específica de letras o caracteres especiales no deseados
         if not telefono.isdigit():
-            raise ValidationError('El teléfono solo debe contener números')
-        
+            # Aquí es donde capturamos si realmente escribió letras como "310abc1234"
+            raise ValidationError('El número celular no puede contener letras ni caracteres especiales.')
+
+        # 4. Validación de longitud (estándar Colombia)
         if len(telefono) != 10:
-            raise ValidationError('El teléfono debe tener exactamente 10 dígitos')
-        
-        # Validar que comience con 3 (celulares en Colombia)
+            raise ValidationError(f'El teléfono debe tener exactamente 10 dígitos (ingresaste {len(telefono)})')
+
+        # 5. Validación de prefijo celular colombiano
         if not telefono.startswith('3'):
-            raise ValidationError('El teléfono celular debe comenzar con 3')
-        
+            raise ValidationError('El número celular debe iniciar con el dígito 3.')
+
         return telefono
     
     def clean_descripcion(self):
