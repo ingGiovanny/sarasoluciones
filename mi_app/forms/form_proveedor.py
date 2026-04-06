@@ -70,13 +70,13 @@ class ProveedorForm(ModelForm):
             'numero_telefonico': TextInput(
                 attrs={
                     'placeholder': 'Ej: 3001234567',
-                    'maxlength': '10',
+                    'maxlength': '20',
                     'class': 'form-control'
                 }
             ),
             'descripcion': Textarea(
                 attrs={
-                    'placeholder': 'Ingrese una descripción del proveedor (productos, servicios, etc.)  sirve para saber nos que provee el proveedor',
+                    'placeholder': 'Ingrese una descripción del proveedor (productos, servicios, etc.)  sirve para saber que nos provee el proveedor',
                     'class': 'form-control',
                     'rows': 4,
                     'maxlength': '500'
