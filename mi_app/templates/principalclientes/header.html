@@ -3,10 +3,8 @@
 <nav class="navbar navbar-expand-lg"> 
     <a href="{% url 'mi_app:contenido_cliente' %}" class="navbar-logo d-flex align-items-center text-decoration-none">
         <img src="{% static 'img/logosara.png' %}" alt="Logo Soluciones Sara" width="40" height="40" class="me-2" style="border-radius: 50%; object-fit: cover;">
-        
         <span>Soluciones Sara</span>
     </a>
-    
     
     <ul class="navbar-menu">
         <li><a href="{% url 'mi_app:contenido_cliente' %}">Inicio</a></li>
@@ -20,22 +18,25 @@
 
         {% if user.is_authenticated %}
             <li class="nav-item">
-             <a href="{% url 'mi_app:mi_perfil' %}" class="nav-link fw-bold text-white d-flex align-items-center" title="Ver mi perfil">
-            
-            <img src="{% static 'img/avatares/' %}{% if user.perfil_cliente %}{{ user.perfil_cliente.avatar|default:'avatar1.png' }}{% else %}avatar_admin.png{% endif %}" 
-                 class="rounded-circle me-2 bg-white" 
-                 style="width: 30px; height: 30px; object-fit: cover; border: 2px solid white; padding: 2px;">
-            
-            Hola, 
-            {% if user.perfil_cliente.nombre_completo %}
-                {{ user.perfil_cliente.nombre_completo|split:" "|first }}
-            {% elif user.administrador.nombre_completo %}
-                {{ user.administrador.nombre_completo|split:" "|first }}
-            {% else %}
-                {{ user.username }}
-            {% endif %}
-        </a>
+                <a href="{% url 'mi_app:mi_perfil' %}" class="nav-link fw-bold text-white d-flex align-items-center" title="Ver mi perfil">
+                    
+                    <img src="{% static 'img/avatares/' %}{% if user.perfil_cliente.avatar %}{{ user.perfil_cliente.avatar }}{% else %}avatar1.png{% endif %}" 
+                         class="rounded-circle me-2 bg-white" 
+                         style="width: 30px; height: 30px; object-fit: cover; border: 2px solid white; padding: 2px;">
+                    
+                    <span>
+                        Hola, 
+                        {% if user.perfil_cliente.nombre_completo %}
+                            {{ user.perfil_cliente.nombre_completo|truncatewords:1|cut:"..." }}
+                        {% elif user.administrador.nombre_completo %}
+                            {{ user.administrador.nombre_completo|truncatewords:1|cut:"..." }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </span>
+                </a>
             </li>
+            <li><a href="{% url 'login:logout' %}" class="text-danger ms-2"><i class="fas fa-sign-out-alt"></i></a></li>
         {% else %}
             <li><a href="{% url 'login:login' %}">Iniciar Sesión</a></li>
             <li><a href="{% url 'registro:registro' %}">Registro</a></li>
@@ -43,22 +44,21 @@
     </ul>
 
     <div class="navbar-actions d-flex align-items-center">
-        
-    <button class="sara-toggle-btn" id="darkModeBtn" onclick="toggleDarkMode()" type="button">
-    <div class="sara-slider-circle">
-        <i class="fas fa-sun" id="themeIcon"></i>
-    </div>
-</button>
+        <button class="sara-toggle-btn" id="darkModeBtn" onclick="toggleDarkMode()" type="button">
+            <div class="sara-slider-circle">
+                <i class="fas fa-sun" id="themeIcon"></i>
+            </div>
+        </button>
 
-{% if user.is_authenticated %}
-    <a href="{% url 'mi_app:ver_carrito' %}" class="cart-icon-wrapper ms-3">
-{% else %}
-    <a href="#" onclick="requiereLoginCarrito(event)" class="cart-icon-wrapper ms-3">
-{% endif %}
-        <i class="fas fa-shopping-cart"></i>
-        <span class="badge" id="cart-count">
-            {{ request.session.carrito|length|default:0 }}
-        </span>
-    </a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'mi_app:ver_carrito' %}" class="cart-icon-wrapper ms-3">
+        {% else %}
+            <a href="#" onclick="requiereLoginCarrito(event)" class="cart-icon-wrapper ms-3">
+        {% endif %}
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge" id="cart-count">
+                {{ request.session.carrito|length|default:0 }}
+            </span>
+        </a>
     </div>
 </nav>
