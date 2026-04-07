@@ -25,34 +25,38 @@
 
 {% block iterar %}
     {% for a in object_list %}                    
-        <tr {% if not a.estado %}style="opacity: 0.6; background-color: #f8f9fa;"{% endif %}>
+        <tr class="{% if not a.estado %}text-muted{% endif %}" 
+            {% if not a.estado %}style="opacity: 0.7;"{% endif %}>
+            
             <td>{{ a.id }}</td>
-            <td>{{ a.nombre_completo }}</td>
-            <td>{{ a.user.username }}</td>
-            <td>{{ a.numero_documento }}</td>
-            <td>{{ a.correo_electronico }}</td>
+            <td class="text-reset">{{ a.nombre_completo }}</td>
+            <td class="text-reset">{{ a.user.username }}</td>
+            <td class="text-reset">{{ a.numero_documento }}</td>
+            <td class="text-reset">{{ a.correo_electronico }}</td>
+            
             <td>
                 {% if a.estado %}
-                    <span class="badge badge-success"><i class="fas fa-check-circle"></i> Activo</span>
+                    <span class="badge badge-success px-2 py-1">
+                        <i class="fas fa-check-circle"></i> Activo
+                    </span>
                 {% else %}
-                    <span class="badge badge-secondary"><i class="fas fa-times-circle"></i> Inactivo</span>
+                    <span class="badge badge-secondary px-2 py-1">
+                        <i class="fas fa-times-circle"></i> Inactivo
+                    </span>
                 {% endif %}
             </td>
-            <td>{{ a.fecha_registro|date:"d/m/Y" }}</td>
+
+            <td class="text-reset">{{ a.fecha_registro|date:"d/m/Y" }}</td>
+            
             <td>
-                <a href="{% url 'mi_app:cliente_editar' a.id %}" class="btn btn-warning btn-sm shadow-sm" data-toggle="tooltip" title="Editar"> 
+                <a href="{% url 'mi_app:cliente_editar' a.id %}" class="btn btn-warning btn-sm" title="Editar"> 
                     <i class="fas fa-edit"></i>
                 </a>
 
                 <a href="{% url 'mi_app:cliente_estado' a.id %}" 
-                   class="btn btn-sm shadow-sm {% if a.estado %}btn-danger{% else %}btn-success{% endif %}" 
-                   data-toggle="tooltip" 
+                   class="btn btn-sm {% if a.estado %}btn-outline-danger{% else %}btn-outline-success{% endif %}" 
                    title="{% if a.estado %}Desactivar{% else %}Activar{% endif %}">
                     <i class="fas {% if a.estado %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
-                </a>
-
-                <a href="{% url 'mi_app:cliente_eliminar' a.id %}" class="btn btn-dark btn-sm shadow-sm" data-toggle="tooltip" title="Eliminar Permanentemente">
-                    <i class="fas fa-trash-alt"></i>
                 </a>
             </td>
         </tr>
