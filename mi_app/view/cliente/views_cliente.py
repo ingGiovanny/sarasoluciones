@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from mi_app.models import GestionCliente, Administrador # Importación limpia
+
+from mi_app.models import GestionCliente, Administrador, Pedido
 from django.http import JsonResponse
 from django.contrib import messages
 from django.utils.decorators import method_decorator
@@ -99,7 +100,8 @@ class clienteupdateView(AdminRequiredMixin, UpdateView):
 
 # ==========================================
 # ELIMINAR CLIENTE
-# ==========================================
+# ==========================================.
+
 @method_decorator(never_cache, name='dispatch')
 class ClienteDeleteView(AdminRequiredMixin, DeleteView):
     model = GestionCliente
@@ -108,15 +110,38 @@ class ClienteDeleteView(AdminRequiredMixin, DeleteView):
     
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        # Seguridad: eliminar el User asociado para que no queden cuentas "huérfanas"
-        if self.object.user:
-            self.object.user.delete()
-        messages.success(request, "Cliente y usuario eliminados correctamente")
-        return redirect(self.success_url)
+        
+        # 2. Verificamos si el cliente tiene pedidos
+        # Según tu error, la FK en Pedido es 'id_cliente'
+        hay_pedidos = Pedido.objects.filter(id_cliente=self.object).exists()
+        
+        if hay_pedidos:
+            messages.error(
+                request, 
+                f"No se puede eliminar al cliente '{self.object.nombre_completo}' porque tiene pedidos registrados en el sistema."
+            )
+            return redirect(self.success_url)
+
+        # Si no tiene pedidos, procedemos con la lógica que ya tenías
+        try:
+            if self.object.user:
+                self.object.user.delete()
+            
+            # El borrado del cliente se hace automáticamente al borrar el user 
+            # si tienes un CASCADE, o puedes hacerlo manualmente aquí:
+            self.object.delete()
+            
+            messages.success(request, "Cliente y usuario eliminados correctamente")
+            return redirect(self.success_url)
+        except Exception as e:
+            messages.error(request, f"Error al eliminar: {str(e)}")
+            return redirect(self.success_url)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # 3. Pasamos la validación al template
+        context['hay_pedidos'] = Pedido.objects.filter(id_cliente=self.get_object()).exists()
         context['titulo'] = 'Eliminar Cliente'
         context['entidad'] = 'Clientes'
-        context['listar_url'] = reverse_lazy('mi_app:cliente_lista')
+        context['listar_url'] = self.success_url
         return context
