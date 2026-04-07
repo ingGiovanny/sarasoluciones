@@ -15,6 +15,7 @@ class Administrador(models.Model):
     correo_electronico = models.EmailField(max_length=50, default="", verbose_name="Correo Electrónico")
     numero_documento = models.CharField(max_length=50, unique=True, verbose_name="Número Documento")
     telefono = models.CharField(max_length=50, null=True, blank=True)
+    estado = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Administrador"

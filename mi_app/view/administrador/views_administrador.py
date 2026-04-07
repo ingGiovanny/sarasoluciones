@@ -189,17 +189,7 @@ class AdministradorDeleteView(AdminRequiredMixin, DeleteView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        
-        # 1. Protección de Auto-eliminación
-        if request.user == self.object.user:
-            messages.error(request, "Acción denegada: No puedes eliminar tu propia cuenta.")
-            return redirect(self.success_url)
-
-        # 2. ESCUDO DE SUPERUSUARIO: Nadie puede borrar al jefe
-        if self.object.user and self.object.user.is_superuser:
-            messages.error(request, "Acción denegada: ¡Es imposible eliminar al Super Administrador del sistema!")
-            return redirect(self.success_url)
-
+     
         try:
             # Borramos primero el usuario de Django asociado
             if self.object.user:
