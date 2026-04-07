@@ -147,11 +147,75 @@ class AdministradorUpdateView(AdminRequiredMixin, UpdateView):
         messages.success(self.request, "Datos actualizados.")
         return super().form_valid(form)
 
+# ==========================================
+# CAMBIAR ESTADO ADMINISTRADOR
+# ==========================================
+@login_required(login_url='login:login')
+@user_passes_test(es_administrador, login_url='mi_app:inicio')
+@never_cache
+def administrador_cambiar_estado(request, pk):
+    admin = get_object_or_404(Administrador, id=pk)
+    
+    # 1. Protección de Auto-desactivación
+    if request.user == admin.user:
+        messages.error(request, "Por seguridad, no puedes desactivar tu propia cuenta.")
+        return redirect('mi_app:administrador_lista')
+
+    # 2. ESCUDO DE SUPERUSUARIO: Nadie puede tocar al jefe
+    if admin.user and admin.user.is_superuser:
+        messages.error(request, "Acción denegada: No puedes desactivar la cuenta del Super Administrador principal.")
+        return redirect('mi_app:administrador_lista')
+
+    # Cambiamos el estado y desactivamos/activamos el login
+    if admin.estado:
+        admin.estado = False
+        if admin.user:
+            admin.user.is_active = False # Bloquea el login
+            admin.user.save()
+        messages.warning(request, f"Administrador {admin.nombre_completo} desactivado.")
+    else:
+        admin.estado = True
+        if admin.user:
+            admin.user.is_active = True # Permite el login
+            admin.user.save()
+        messages.success(request, f"Administrador {admin.nombre_completo} activado.")
+    
+    admin.save()
+    return redirect('mi_app:administrador_lista')
+
+# ==========================================
+# ELIMINAR ADMINISTRADOR
+# ==========================================
 @method_decorator([never_cache], name='dispatch')
 class AdministradorDeleteView(AdminRequiredMixin, DeleteView):
     model = Administrador
     template_name = 'modulos/administrador/eliminar_administrador.html'
     success_url = reverse_lazy('mi_app:administrador_lista')
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        
+        # 1. Protección de Auto-eliminación
+        if request.user == self.object.user:
+            messages.error(request, "Acción denegada: No puedes eliminar tu propia cuenta.")
+            return redirect(self.success_url)
+
+        # 2. ESCUDO DE SUPERUSUARIO: Nadie puede borrar al jefe
+        if self.object.user and self.object.user.is_superuser:
+            messages.error(request, "Acción denegada: ¡Es imposible eliminar al Super Administrador del sistema!")
+            return redirect(self.success_url)
+
+        try:
+            # Borramos primero el usuario de Django asociado
+            if self.object.user:
+                self.object.user.delete()
+            
+            self.object.delete()
+            messages.success(request, "Administrador eliminado permanentemente.")
+            return redirect(self.success_url)
+        except Exception as e:
+            messages.error(request, f"Error al eliminar: {str(e)}")
+            return redirect(self.success_url)
 
 # ==========================================
 # GESTIONAR GARANTÍAS (Reforzado)

@@ -1,6 +1,7 @@
 from django.urls import path
 
 from mi_app.view import principal
+from mi_app.view.administrador import views_administrador
 from mi_app.view.cliente import views_cliente
 from . import views
 from mi_app.views import *
@@ -96,6 +97,7 @@ urlpatterns = [
     path('administradores/crear/', AdministradorCreateView.as_view(), name='administrador_crear'),
     path('administradores/editar/<int:pk>/', AdministradorUpdateView.as_view(), name='administrador_editar'),
     path('administradores/eliminar/<int:pk>/', AdministradorDeleteView.as_view(), name='administrador_eliminar'),
+    path('administradores/estado/<int:pk>/', views_administrador.administrador_cambiar_estado, name='administrador_estado'),
 
     
 
@@ -105,6 +107,7 @@ urlpatterns = [
     path('clientes/editar/<int:pk>/', clienteupdateView.as_view(), name='cliente_editar'),
     path('clientes/estado/<int:pk>/', views_cliente.cliente_cambiar_estado, name='cliente_estado'),
     path('clientes/eliminar/<int:pk>/',  views_cliente.ClienteDeleteView.as_view(), name='cliente_eliminar'),
+    
 
     # Proveedores
     path('proveedores/listar/', proveedorListView.as_view(), name='proveedor_lista'),
