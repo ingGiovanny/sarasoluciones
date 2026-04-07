@@ -43,20 +43,24 @@
             </td>
             
             <td>
-                <a href="{% url 'mi_app:administrador_estado' a.id %}" 
-                   class="btn btn-sm {% if a.estado %}btn-outline-danger{% else %}btn-outline-success{% endif %}" 
-                   title="Cambiar Estado">
-                    <i class="fas {% if a.estado %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
-                </a>
-                
-                <a href="{% url 'mi_app:administrador_editar' a.id %}" class="btn btn-warning btn-sm">
-                    <i class="fas fa-edit"></i>
-                </a>
+    {% if not a.user.is_superuser %}
+        <a href="{% url 'mi_app:administrador_estado' a.id %}" 
+           class="btn btn-sm {% if a.estado %}btn-outline-danger{% else %}btn-outline-success{% endif %}" 
+           title="Cambiar Estado">
+            <i class="fas {% if a.estado %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
+        </a>
 
-                <a href="{% url 'mi_app:administrador_eliminar' a.id %}" class="btn btn-danger btn-sm">
-                    <i class="fas fa-trash"></i>
-                </a>
-            </td>
+        <a href="{% url 'mi_app:administrador_eliminar' a.id %}" class="btn btn-danger btn-sm">
+            <i class="fas fa-trash"></i>
+        </a>
+    {% else %}
+        <span class="badge bg-primary"><i class="fas fa-crown"></i> Principal</span>
+    {% endif %}
+    
+    <a href="{% url 'mi_app:administrador_editar' a.id %}" class="btn btn-warning btn-sm">
+        <i class="fas fa-edit"></i>
+    </a>
+</td>
         </tr>
     {% endfor %}
 
