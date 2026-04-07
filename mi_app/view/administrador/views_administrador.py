@@ -20,10 +20,11 @@ from django.db import IntegrityError
 # EL "BOUNCER" (Validador de Admin)
 # ==========================================
 def es_administrador(user):
-    """ Verifica si el usuario es superuser o está en la tabla Administrador """
-    if user.is_authenticated:
-        return user.is_superuser or Administrador.objects.filter(user=user).exists()
-    return False
+    """ 
+    Verifica si el usuario que intenta entrar es un Superusuario 
+    o un Administrador con permisos activos (is_staff).
+    """
+    return user.is_authenticated and (user.is_superuser or user.is_staff)
 
 # ==========================================
 # REPORTES (¡Ahora Protegido!)
@@ -153,29 +154,35 @@ class AdministradorUpdateView(AdminRequiredMixin, UpdateView):
 @login_required(login_url='login:login')
 @user_passes_test(es_administrador, login_url='mi_app:inicio')
 @never_cache
-
 def administrador_cambiar_estado(request, pk):
     admin_perfil = get_object_or_404(Administrador, id=pk)
     user_django = admin_perfil.user
 
-    # 1. Protección para que no te quites los permisos a ti misma
+    # 1. Protección de auto-gestión
     if request.user == user_django:
-        messages.error(request, "No puedes quitarte tus propios permisos de administrador.")
+        messages.error(request, "No puedes modificar tus propios permisos.")
         return redirect('mi_app:administrador_lista')
 
-    # 2. PROCESO DE DEGRADACIÓN (De Admin a Cliente)
     if user_django:
-        # Quitamos los permisos de acceso al panel
-        user_django.is_staff = False
-        user_django.is_superuser = False
-        user_django.save()
+        # Lógica de INTERRUPTOR (Toggle)
+        if admin_perfil.estado:
+            # DEGRADAR: Está activo, lo pasamos a inactivo
+            user_django.is_staff = False
+            user_django.is_superuser = False
+            admin_perfil.estado = False
+            msg = f"{admin_perfil.nombre_completo} ha sido degradado a Cliente."
+            icono = "warning"
+        else:
+            # ASCENDER: Está inactivo, le devolvemos los permisos
+            user_django.is_staff = True
+            user_django.is_superuser = False
+            admin_perfil.estado = True
+            msg = f"{admin_perfil.nombre_completo} ahora es Administrador nuevamente."
+            icono = "success"
         
-        # Opcional: Si tienes una tabla de 'Cliente', podrías crearle un perfil aquí
-        # o simplemente marcar su perfil de admin como inactivo.
-        admin_perfil.estado = False 
+        user_django.save()
         admin_perfil.save()
-
-        messages.success(request, f"{admin_perfil.nombre_completo} ahora es un usuario sin permisos de administración.")
+        messages.add_message(request, messages.SUCCESS if admin_perfil.estado else messages.WARNING, msg)
     
     return redirect('mi_app:administrador_lista')
 
