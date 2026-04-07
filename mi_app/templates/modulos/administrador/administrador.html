@@ -24,48 +24,28 @@
 
 {% block iterar %}
     {% for a in object_list %}
-        <tr class="{% if not a.estado %}text-muted{% endif %}" 
-            {% if not a.estado %}style="opacity: 0.7;"{% endif %}>
-            
-            <td>{{ a.id }}</td>
-            <td class="text-reset">{{ a.nombre_completo }}</td>
-            <td class="text-reset"><span class="badge bg-info text-dark">{{ a.user.username }}</span></td>
-            <td class="text-reset">{{ a.correo_electronico }}</td>
-            <td class="text-reset">{{ a.numero_documento }}</td>
-            
-            <td>
-                {% if a.estado %}
-                    <span class="badge badge-success px-2 py-1">
-                        <i class="fas fa-check-circle"></i> Activo
-                    </span>
-                {% else %}
-                    <span class="badge badge-secondary px-2 py-1">
-                        <i class="fas fa-times-circle"></i> Inactivo
-                    </span>
-                {% endif %}
-            </td>
-
-            <td>
-                <a href="{% url 'mi_app:administrador_editar' a.id %}" class="btn btn-warning btn-sm shadow-sm" data-bs-toggle="tooltip" title="Editar">
-                    <i class="fas fa-edit"></i>
-                </a>
-
-                {% if not a.user.is_superuser %}
-                    <a href="{% url 'mi_app:administrador_estado' a.id %}" 
-                    class="btn btn-sm shadow-sm {% if a.estado %}btn-outline-danger{% else %}btn-outline-success{% endif %}" 
-                    data-bs-toggle="tooltip" 
-                    title="{% if a.estado %}Desactivar{% else %}Activar{% endif %}">
-                        <i class="fas {% if a.estado %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
-                    </a>
-
-                    <a href="{% url 'mi_app:administrador_eliminar' a.id %}" class="btn btn-dark btn-sm shadow-sm" data-bs-toggle="tooltip" title="Eliminar">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
-                {% else %}
-                    <span class="badge bg-primary ms-2"><i class="fas fa-star"></i> Super Admin</span>
-                {% endif %}
-            </td>
-        </tr>
+        <tr class="{% if not a.estado %}text-muted{% endif %}" {% if not a.estado %}style="opacity: 0.7;"{% endif %}>
+    <td class="text-reset">{{ a.nombre_completo }}</td>
+    <td class="text-reset">{{ a.user.username }}</td>
+    <td>
+        {% if a.estado %}
+            <span class="badge badge-success">Activo</span>
+        {% else %}
+            <span class="badge badge-secondary">Inactivo</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if not a.user.is_superuser or a.user != request.user %}
+        <a href="{% url 'mi_app:administrador_estado' a.id %}" 
+           class="btn btn-sm {% if a.estado %}btn-outline-danger{% else %}btn-outline-success{% endif %}" 
+           title="Cambiar Estado">
+            <i class="fas {% if a.estado %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
+        </a>
+        {% endif %}
+        
+        <a href="{% url 'mi_app:administrador_editar' a.id %}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+    </td>
+</tr>
     {% endfor %}
 
     <script>

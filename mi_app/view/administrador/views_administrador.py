@@ -84,7 +84,7 @@ class AdministradorCreateView(AdminRequiredMixin, CreateView):
                 username=username, email=email, password=password
             )
             nuevo_user.is_staff = True
-            nuevo_user.is_superuser = True
+            nuevo_user.is_superuser = False
             nuevo_user.is_active = True
             nuevo_user.save()
 
@@ -156,29 +156,24 @@ class AdministradorUpdateView(AdminRequiredMixin, UpdateView):
 def administrador_cambiar_estado(request, pk):
     admin = get_object_or_404(Administrador, id=pk)
     
-    # 1. Protección de Auto-desactivación
+    # 1. Evitar que te desactives a ti misma
     if request.user == admin.user:
-        messages.error(request, "Por seguridad, no puedes desactivar tu propia cuenta.")
+        messages.error(request, "No puedes desactivar tu propia cuenta.")
         return redirect('mi_app:administrador_lista')
 
-    # 2. ESCUDO DE SUPERUSUARIO: Nadie puede tocar al jefe
+    # 2. Protección para el Superusuario real
     if admin.user and admin.user.is_superuser:
-        messages.error(request, "Acción denegada: No puedes desactivar la cuenta del Super Administrador principal.")
+        messages.error(request, "El Superusuario principal no puede ser desactivado.")
         return redirect('mi_app:administrador_lista')
 
-    # Cambiamos el estado y desactivamos/activamos el login
-    if admin.estado:
-        admin.estado = False
-        if admin.user:
-            admin.user.is_active = False # Bloquea el login
-            admin.user.save()
-        messages.warning(request, f"Administrador {admin.nombre_completo} desactivado.")
-    else:
-        admin.estado = True
-        if admin.user:
-            admin.user.is_active = True # Permite el login
-            admin.user.save()
-        messages.success(request, f"Administrador {admin.nombre_completo} activado.")
+    # 3. Lógica de activación/desactivación
+    admin.estado = not admin.estado
+    if admin.user:
+        admin.user.is_active = admin.estado
+        admin.user.save()
+        
+    status_msg = "activado" if admin.estado else "desactivado"
+    messages.success(request, f"Administrador {admin.nombre_completo} {status_msg}.")
     
     admin.save()
     return redirect('mi_app:administrador_lista')
