@@ -67,6 +67,7 @@ class GestionCliente(models.Model):
     email_pendiente = models.EmailField(null=True, blank=True)
     avatar = models.CharField(max_length=30, default='avatar1.png', verbose_name="Avatar")
     fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
+    estado = models.BooleanField(default=True)
     
     class Meta:
         verbose_name = "Cliente"
@@ -74,6 +75,8 @@ class GestionCliente(models.Model):
         
     def __str__(self):
         return self.nombre_completo
+    def __str__(self):
+        return f"{self.nombre_completo} ({'Activo' if self.estado else 'Inactivo'})"
     
 @receiver(post_delete, sender=GestionCliente)
 def eliminar_usuario_vinculado(sender, instance, **kwargs):
