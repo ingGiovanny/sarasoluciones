@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from mi_app.models import Producto, ImagenProducto, Administrador, Categoria, Marca, Compra
+from mi_app.models import Pedido, Producto, ImagenProducto, Administrador, Categoria, Marca, Compra
 
 from django.http import JsonResponse
 from django.contrib import messages
@@ -150,9 +150,6 @@ class productoupdateView(AdminRequiredMixin, UpdateView):
 # ==========================================
 # ELIMINAR PRODUCTO
 # ==========================================
-
- 
-
 @method_decorator(never_cache, name='dispatch')
 class productoDeleteView(AdminRequiredMixin, DeleteView):
     model = Producto
@@ -162,14 +159,17 @@ class productoDeleteView(AdminRequiredMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         
-        # 1. Verificamos si este producto ya tiene compras registradas
-        # Usamos id_producto porque así se suele llamar la FK en el modelo Compra
+        # 1. Verificamos relaciones con Compras Y con Pedidos
         hay_compras = Compra.objects.filter(id_producto=self.object).exists()
+        hay_pedidos = Pedido.objects.filter(id_producto=self.object).exists() # <--- CLAVE
         
-        if hay_compras:
+        if hay_compras or hay_pedidos:
+            # 2. Aquí personalizamos el mensaje para que NO sea técnico
+            motivo = "compras" if hay_compras else "pedidos de clientes"
             messages.error(
                 request, 
-                f"No se puede eliminar '{self.object.id_presentacion.nombre}' porque tiene registros en el historial de compras."
+                f"No se puede eliminar '{self.object.id_presentacion.nombre}' porque ya está registrado en {motivo}. "
+                "Te recomendamos desactivar el producto en su lugar."
             )
             return redirect(self.success_url)
 
@@ -177,16 +177,17 @@ class productoDeleteView(AdminRequiredMixin, DeleteView):
             self.object.delete()
             messages.success(request, "Producto eliminado correctamente.")
             return redirect(self.success_url)
-        except Exception as e:
-            messages.error(request, f"Error inesperado: {str(e)}")
+        except Exception:
+            # 3. Mensaje genérico por si ocurre algo más, sin mostrar el código técnico
+            messages.error(request, "No se pudo completar la eliminación por restricciones de seguridad del sistema.")
             return redirect(self.success_url)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # 2. Pasamos la validación al context para el template
-        context['hay_compras'] = Compra.objects.filter(id_producto=self.get_object()).exists()
-        context['titulo'] = 'Eliminar producto'
-        context['entidad'] = 'Producto'
+        # Actualizamos la lógica del contexto para el template
+        obj = self.get_object()
+        context['hay_relaciones'] = Compra.objects.filter(id_producto=obj).exists() or \
+                                    Pedido.objects.filter(id_producto=obj).exists()
         context['listar_url'] = self.success_url
         return context
 
