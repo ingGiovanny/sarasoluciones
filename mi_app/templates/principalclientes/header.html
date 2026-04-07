@@ -20,17 +20,21 @@
 
         {% if user.is_authenticated %}
             <li class="nav-item">
-              <a href="{% url 'mi_app:mi_perfil' %}" class="nav-link fw-bold text-white d-flex align-items-center" title="Ver mi perfil">
-               <img src="{% static 'img/avatares/' %}{{ user.perfil_cliente.avatar|default:'avatar1.png' }}" 
+             <a href="{% url 'mi_app:mi_perfil' %}" class="nav-link fw-bold text-white d-flex align-items-center" title="Ver mi perfil">
+            
+            <img src="{% static 'img/avatares/' %}{% if user.perfil_cliente %}{{ user.perfil_cliente.avatar|default:'avatar1.png' }}{% else %}avatar_admin.png{% endif %}" 
                  class="rounded-circle me-2 bg-white" 
-                  style="width: 30px; height: 30px; object-fit: cover; border: 2px solid white; padding: 2px;">
-                 Hola, {{ user.perfil_cliente.nombre_completo|truncatewords:1 }}
-              </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'mi_app:salir_cliente' %}" class="btn btn-sm btn-outline-danger rounded-pill px-3 ms-2">
-                    <i class="fas fa-sign-out-alt"></i> Salir
-                </a>
+                 style="width: 30px; height: 30px; object-fit: cover; border: 2px solid white; padding: 2px;">
+            
+            Hola, 
+            {% if user.perfil_cliente.nombre_completo %}
+                {{ user.perfil_cliente.nombre_completo|split:" "|first }}
+            {% elif user.administrador.nombre_completo %}
+                {{ user.administrador.nombre_completo|split:" "|first }}
+            {% else %}
+                {{ user.username }}
+            {% endif %}
+        </a>
             </li>
         {% else %}
             <li><a href="{% url 'login:login' %}">Iniciar Sesión</a></li>
