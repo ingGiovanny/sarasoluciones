@@ -105,6 +105,7 @@ class categoriaDeleteView(AdminRequiredMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['listar_url'] =  reverse_lazy('mi_app:categoria_lista')
         # Pasamos el conteo al context para usarlo en el HTML "bonito"
         context['hay_productos'] = Producto.objects.filter(id_categoria=self.get_object()).exists()
         context['titulo'] = 'Eliminar categoría'
