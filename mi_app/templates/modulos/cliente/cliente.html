@@ -6,7 +6,7 @@
 
 {% block agregar %}
 <a href="{% url 'mi_app:cliente_crear' %}" class="btn btn-primary btn-xs">
-    <i class="fas fa-plus"></i> Agregar Cliente
+    <i class="fas fa-plus"></i> Agregar
 </a>
 <a href="{% url 'mi_app:pdf_clientes' %}" class="btn btn-danger">
     <i class="fas fa-file-pdf"></i> Descargar Reporte
@@ -17,68 +17,45 @@
     <th>N°</th>
     <th>Nombre Completo</th>
     <th>Usuario</th>
+    <th>Número Telefónico</th>
     <th>Documento</th>
     <th>Correo Electrónico</th>
-    <th>Estado</th> <th>Fecha Registro</th>
+    <th>Fecha Registro</th>
     <th>Acciones</th>
 {% endblock %}
 
 {% block iterar %}
     {% for a in object_list %}                    
-        <tr class="{% if not a.estado %}text-muted{% endif %}" 
-            {% if not a.estado %}style="opacity: 0.7;"{% endif %}>
-            
+        <tr>
             <td>{{ a.id }}</td>
-            <td class="text-reset">{{ a.nombre_completo }}</td>
-            <td class="text-reset">{{ a.user.username }}</td>
-            <td class="text-reset">{{ a.numero_documento }}</td>
-            <td class="text-reset">{{ a.correo_electronico }}</td>
-            
+            <td>{{ a.nombre_completo }}</td>
+            <td>{{ a.user.username }}</td>
+            <td>{{ a.numero_telefonico|default:"N/A" }}</td>
+            <td>{{ a.numero_documento }}</td>
+            <td>{{ a.correo_electronico }}</td>
+            <td>{{ a.fecha_registro|date:"d/m/Y" }}</td>
             <td>
-                {% if a.estado %}
-                    <span class="badge badge-success px-2 py-1">
-                        <i class="fas fa-check-circle"></i> Activo
-                    </span>
-                {% else %}
-                    <span class="badge badge-secondary px-2 py-1">
-                        <i class="fas fa-times-circle"></i> Inactivo
-                    </span>
-                {% endif %}
-            </td>
-
-            <td class="text-reset">{{ a.fecha_registro|date:"d/m/Y" }}</td>
-            
-            <td>
-                <a href="{% url 'mi_app:cliente_editar' a.id %}" class="btn btn-warning btn-sm" title="Editar"> 
-                    <i class="fas fa-edit"></i>
+                <a href="{% url 'mi_app:cliente_editar' a.id %}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar"> 
+                    <i class="bi bi-pen-fill"></i>
                 </a>
-
-                <a href="{% url 'mi_app:cliente_estado' a.id %}" 
-                   class="btn btn-sm {% if a.estado %}btn-outline-danger{% else %}btn-outline-success{% endif %}" 
-                   title="{% if a.estado %}Desactivar{% else %}Activar{% endif %}">
-                    <i class="fas {% if a.estado %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
+                <a href="{% url 'mi_app:cliente_eliminar' a.id %}" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Eliminar">
+                    <i class="bi bi-trash3-fill"></i>
                 </a>
             </td>
         </tr>
     {% endfor %}
 
+    
     <script>
       {% if messages %}
         {% for message in messages %}
           Swal.fire({
-            icon: '{% if "success" in message.tags %}success{% elif "warning" in message.tags %}warning{% elif "error" in message.tags %}error{% else %}info{% endif %}',
+            icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
             title: '{{ message|escapejs }}',
-            timer: 3000,
-            showConfirmButton: false,
-            toast: true,
-            position: 'top-end'
+            timer: 2500,
+            showConfirmButton: false
           });
         {% endfor %}
       {% endif %}
-
-      // Inicializar tooltips de Bootstrap
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-      })
     </script>
 {% endblock %}
