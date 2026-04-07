@@ -153,29 +153,30 @@ class AdministradorUpdateView(AdminRequiredMixin, UpdateView):
 @login_required(login_url='login:login')
 @user_passes_test(es_administrador, login_url='mi_app:inicio')
 @never_cache
+
 def administrador_cambiar_estado(request, pk):
-    admin = get_object_or_404(Administrador, id=pk)
-    
-    # 1. Evitar que te desactives a ti misma
-    if request.user == admin.user:
-        messages.error(request, "No puedes desactivar tu propia cuenta.")
+    admin_perfil = get_object_or_404(Administrador, id=pk)
+    user_django = admin_perfil.user
+
+    # 1. Protección para que no te quites los permisos a ti misma
+    if request.user == user_django:
+        messages.error(request, "No puedes quitarte tus propios permisos de administrador.")
         return redirect('mi_app:administrador_lista')
 
-    # 2. Protección para el Superusuario real
-    if admin.user and admin.user.is_superuser:
-        messages.error(request, "El Superusuario principal no puede ser desactivado.")
-        return redirect('mi_app:administrador_lista')
-
-    # 3. Lógica de activación/desactivación
-    admin.estado = not admin.estado
-    if admin.user:
-        admin.user.is_active = admin.estado
-        admin.user.save()
+    # 2. PROCESO DE DEGRADACIÓN (De Admin a Cliente)
+    if user_django:
+        # Quitamos los permisos de acceso al panel
+        user_django.is_staff = False
+        user_django.is_superuser = False
+        user_django.save()
         
-    status_msg = "activado" if admin.estado else "desactivado"
-    messages.success(request, f"Administrador {admin.nombre_completo} {status_msg}.")
+        # Opcional: Si tienes una tabla de 'Cliente', podrías crearle un perfil aquí
+        # o simplemente marcar su perfil de admin como inactivo.
+        admin_perfil.estado = False 
+        admin_perfil.save()
+
+        messages.success(request, f"{admin_perfil.nombre_completo} ahora es un usuario sin permisos de administración.")
     
-    admin.save()
     return redirect('mi_app:administrador_lista')
 
 # ==========================================
