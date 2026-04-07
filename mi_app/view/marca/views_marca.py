@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from mi_app.models import Marca # Importación específica
+from mi_app.models import Marca, Producto # Importación específica
 from django.http import JsonResponse
 from django.contrib import messages
 from django.utils.decorators import method_decorator
@@ -84,19 +84,41 @@ class marcaupdateView(AdminRequiredMixin, UpdateView):
         context['listar_url'] = reverse_lazy('mi_app:marca_lista')
         return context
 
+
+
 @method_decorator(never_cache, name='dispatch')
 class marcaDeleteView(AdminRequiredMixin, DeleteView):
     model = Marca
     template_name = 'modulos/marca/eliminar_marca.html'
     success_url = reverse_lazy('mi_app:marca_lista')
     
-    def form_valid(self, form):
-        messages.success(self.request, "Marca eliminada correctamente")
-        return super().form_valid(form)
-    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        
+        # Validamos si existen productos asociados a esta marca
+        # Revisa si en tu modelo Producto el campo se llama id_marca
+        hay_relacion = Producto.objects.filter(id_marca=self.object).exists()
+        
+        if hay_relacion:
+            messages.error(
+                request, 
+                f"No se puede eliminar la marca '{self.object.nombre_marca}' porque tiene productos vinculados."
+            )
+            return redirect(self.success_url)
+
+        try:
+            self.object.delete()
+            messages.success(request, "Marca eliminada correctamente.")
+            return redirect(self.success_url)
+        except Exception as e:
+            messages.error(request, f"Error al eliminar: {str(e)}")
+            return redirect(self.success_url)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # IMPORTANTE: Definimos las variables para el template
+        context['hay_productos'] = Producto.objects.filter(id_marca=self.get_object()).exists()
+        context['listar_url'] = self.success_url
         context['titulo'] = 'Eliminar marca'
         context['entidad'] = 'Marcas'
-        context['listar_url'] = reverse_lazy('mi_app:marca_lista')
         return context

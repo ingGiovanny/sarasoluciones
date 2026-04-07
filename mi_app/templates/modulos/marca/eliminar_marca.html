@@ -1,15 +1,28 @@
 {% extends 'eliminar.html' %}
 
 {% block eliminar %}
-                <h5><i class="icon fas fa-ban"></i> Advertencia¡</h5>
-                Deseas eliminar la marca? #{{object.id}}?
+    {% if hay_productos %}
+        <div class="alert alert-danger shadow-sm text-center">
+            <h5><i class="icon fas fa-ban"></i> ¡Acción no permitida!</h5>
+            <p>La marca <strong>{{ object.nombre_marca }}</strong> no se puede eliminar porque tiene productos asociados en el inventario.</p>
+            <p class="mb-0 small text-dark">Sugerencia: Cambia la marca de esos productos antes de intentar eliminar esta.</p>
+        </div>
+    {% else %}
+        <div class="text-center">
+            <h5><i class="icon fas fa-exclamation-triangle text-warning"></i> ¿Confirmar eliminación?</h5>
+            <p>¿Realmente deseas eliminar la marca <strong>{{ object.nombre_marca }}</strong>? (#{{ object.id }})</p>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block validar %}
-            <button type="submit" class="btn btn-success swalDefauldtSuccess">
-                <i class="fas fa-save"></i> Si, Aceptar
-            </button>
-            <a href="{{ listar_url }}" class="btn btn-info btn-flat">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
+    {% if not hay_productos %}
+        <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Sí, eliminar permanentemente
+        </button>
+    {% endif %}
+    
+    <a href="{{ listar_url }}" class="btn btn-info btn-flat">
+        <i class="fas fa-undo"></i> {% if hay_productos %}Regresar al listado{% else %}Cancelar{% endif %}
+    </a>
 {% endblock %}
