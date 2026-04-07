@@ -1,6 +1,7 @@
 from django.urls import path
 
 from mi_app.view import principal
+from mi_app.view.cliente import views_cliente
 from . import views
 from mi_app.views import *
 
@@ -102,7 +103,8 @@ urlpatterns = [
     path('clientes/listar/', ClienteListView.as_view(), name='cliente_lista'),
     path('clientes/crear/', clienteCreateView.as_view(), name='cliente_crear'),
     path('clientes/editar/<int:pk>/', clienteupdateView.as_view(), name='cliente_editar'),
-    path('clientes/eliminar/<int:pk>/', ClienteDeleteView.as_view(), name='cliente_eliminar'),
+    path('clientes/estado/<int:pk>/', views_cliente.cliente_cambiar_estado, name='cliente_estado'),
+    path('clientes/eliminar/<int:pk>/',  views_cliente.ClienteDeleteView.as_view(), name='cliente_eliminar'),
 
     # Proveedores
     path('proveedores/listar/', proveedorListView.as_view(), name='proveedor_lista'),
