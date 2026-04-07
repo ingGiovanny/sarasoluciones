@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-# 🚨 Agregamos Categoria y Marca a la importación de modelos
-from mi_app.models import Producto, ImagenProducto, Administrador, Categoria, Marca 
+
+from mi_app.models import Producto, ImagenProducto, Administrador, Categoria, Marca, Compra
+
 from django.http import JsonResponse
 from django.contrib import messages
 from django.utils.decorators import method_decorator
@@ -13,7 +14,7 @@ from mi_app.forms.form_producto import ProductoForm
 from mi_app.view.proteger_pagina_admin import AdminRequiredMixin 
 from core.utils import exportar_a_pdf
 from django.views.decorators.http import require_POST
-# 🚨 Importamos Q para hacer búsquedas de texto avanzadas
+#Importamos Q para hacer búsquedas de texto avanzadas
 from django.db.models import Q 
 
 # ==========================================
@@ -56,7 +57,7 @@ class productoListView(AdminRequiredMixin, ListView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    # 🚨 AQUÍ ESTÁ LA MAGIA DE LOS FILTROS
+    # 
     def get_queryset(self):
         queryset = super().get_queryset()
         
@@ -91,7 +92,7 @@ class productoListView(AdminRequiredMixin, ListView):
         context['crear_url'] = reverse_lazy('mi_app:producto_crear')
         context['entidad'] = 'Producto'  
         
-        # 🚨 Enviamos las opciones de filtros al HTML
+        # Enviamos las opciones de filtros al HTML
         context['categorias'] = Categoria.objects.all()
         context['marcas'] = Marca.objects.all()
         return context
@@ -149,21 +150,44 @@ class productoupdateView(AdminRequiredMixin, UpdateView):
 # ==========================================
 # ELIMINAR PRODUCTO
 # ==========================================
+
+ 
+
 @method_decorator(never_cache, name='dispatch')
 class productoDeleteView(AdminRequiredMixin, DeleteView):
     model = Producto
     template_name = 'modulos/producto/eliminar_producto.html'
     success_url = reverse_lazy('mi_app:producto_lista')
     
-    def form_valid(self, form):
-        messages.success(self.request, "Producto eliminado correctamente")
-        return super().form_valid(form)
-    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        
+        # 1. Verificamos si este producto ya tiene compras registradas
+        # Usamos id_producto porque así se suele llamar la FK en el modelo Compra
+        hay_compras = Compra.objects.filter(id_producto=self.object).exists()
+        
+        if hay_compras:
+            messages.error(
+                request, 
+                f"No se puede eliminar '{self.object.id_presentacion.nombre}' porque tiene registros en el historial de compras."
+            )
+            return redirect(self.success_url)
+
+        try:
+            self.object.delete()
+            messages.success(request, "Producto eliminado correctamente.")
+            return redirect(self.success_url)
+        except Exception as e:
+            messages.error(request, f"Error inesperado: {str(e)}")
+            return redirect(self.success_url)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # 2. Pasamos la validación al context para el template
+        context['hay_compras'] = Compra.objects.filter(id_producto=self.get_object()).exists()
         context['titulo'] = 'Eliminar producto'
         context['entidad'] = 'Producto'
-        context['listar_url'] = reverse_lazy('mi_app:producto_lista')
+        context['listar_url'] = self.success_url
         return context
 
 # ==========================================

@@ -1,15 +1,28 @@
 {% extends 'eliminar.html' %}
 
 {% block eliminar %}
-                <h5><i class="icon fas fa-ban"></i> Advertencia¡</h5>
-                Deseas eliminar el producto? #{{object.id}}?
+    {% if hay_compras %}
+        <div class="alert alert-danger shadow-sm text-center">
+            <h5><i class="icon fas fa-ban"></i> ¡Acción Bloqueada!</h5>
+            <p>El producto <strong>{{ object.id_presentacion.nombre }}</strong> no puede ser eliminado porque ya cuenta con registros en el historial de compras de <strong>Sarasoluciones</strong>.</p>
+            <p class="mb-0 small text-dark">Para mantener la integridad contable, te sugerimos <strong>desactivar</strong> el producto en lugar de eliminarlo.</p>
+        </div>
+    {% else %}
+        <div class="text-center">
+            <h5><i class="icon fas fa-exclamation-triangle text-warning"></i> ¿Confirmar eliminación?</h5>
+            <p>¿Realmente deseas eliminar permanentemente el producto <strong>{{ object.id_presentacion.nombre }}</strong>? (#{{ object.id }})</p>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block validar %}
-            <button type="submit" class="btn btn-success swalDefauldtSuccess">
-                <i class="fas fa-save"></i> Si, Aceptar
-            </button>
-            <a href="{{ listar_url }}" class="btn btn-info btn-flat">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
+    {% if not hay_compras %}
+        <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Sí, eliminar permanentemente
+        </button>
+    {% endif %}
+    
+    <a href="{{ listar_url }}" class="btn btn-info btn-flat">
+        <i class="fas fa-undo"></i> {% if hay_compras %}Regresar al listado{% else %}Cancelar{% endif %}
+    </a>
 {% endblock %}
