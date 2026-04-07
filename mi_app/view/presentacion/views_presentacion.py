@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from mi_app.models import Presentacion  # Importación directa
+from mi_app.models import Presentacion, Producto  # Importación directa
 from django.http import JsonResponse
 from django.contrib import messages
 from django.utils.decorators import method_decorator
@@ -69,19 +69,40 @@ class presentacionupdateView(AdminRequiredMixin, UpdateView):
         context['listar_url'] = reverse_lazy('mi_app:presentacion_lista')
         return context
 
+
 @method_decorator(never_cache, name='dispatch')
 class presentacionDeleteView(AdminRequiredMixin, DeleteView):
     model = Presentacion
     template_name = 'modulos/presentacion/eliminar_presentacion.html'
     success_url = reverse_lazy('mi_app:presentacion_lista')
     
-    def form_valid(self, form):
-        messages.success(self.request, "Presentación eliminada correctamente")
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        
+        # 2. Verificamos si hay productos usando esta presentación
+        # Según tu error anterior, el campo en Producto se llama 'id_presentacion'
+        hay_relacion = Producto.objects.filter(id_presentacion=self.object).exists()
+        
+        if hay_relacion:
+            messages.error(
+                request, 
+                f"No se puede eliminar la presentación '{self.object.nombre}' porque está asignada a productos existentes."
+            )
+            return redirect(self.success_url)
+
+        try:
+            self.object.delete()
+            messages.success(request, "Presentación eliminada correctamente.")
+            return redirect(self.success_url)
+        except Exception:
+            messages.error(request, "Error de integridad: No se pudo eliminar la presentación.")
+            return redirect(self.success_url)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # 3. Pasamos la variable al contexto para el mensaje "bonito"
+        context['hay_relacion'] = Producto.objects.filter(id_presentacion=self.get_object()).exists()
         context['titulo'] = 'Eliminar Presentación'
         context['entidad'] = 'Presentación'
-        context['listar_url'] = reverse_lazy('mi_app:presentacion_lista')
+        context['listar_url'] = self.success_url
         return context
